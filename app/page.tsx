@@ -7,6 +7,7 @@ import { SectionHeading } from '@/components/ui/SectionHeading';
 import { Button } from '@/components/ui/Button';
 import { getFeaturedProjects } from '@/lib/services/projects';
 import { VideoSection } from '@/components/layout/VideoSection';
+import { ContactCTA } from '@/components/portfolio/ContactCTA';
 
 export const metadata: Metadata = {
   title: 'Ravi Koomera - Motion Designer & Developer',
@@ -20,31 +21,15 @@ export default async function HomePage() {
   return (
     <>
       <HeroSection
-        title="Motion Design & Development"
-        subtitle="I create engaging digital experiences that combine motion design with modern web development"
-        ctaText="Work"
-        ctaHref="/projects"
-        secondaryCtaText="Get in Touch"
-        secondaryCtaHref="/contact"
+        title="Hi, I'm Ravi!"
+        subtitle="Motion Designer producing high-quality video content. Based in Frankfurt, Germany."
       />
       
       <VideoSection />
       
       <FeaturedProjects projects={featuredProjects} />
       
-      <Section>
-        <SectionHeading 
-          title="Let's Work Together"
-          subtitle="Have a project in mind? I'd love to hear about it!"
-          centered
-        />
-        
-        <div className="mt-8 flex justify-center">
-          <Button href="/contact" size="lg">
-            Contact Me
-          </Button>
-        </div>
-      </Section>
+      <ContactCTA />
     </>
   );
 }

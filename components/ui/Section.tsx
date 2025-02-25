@@ -1,5 +1,7 @@
 // components/ui/Section.tsx
-import { ReactNode } from 'react';
+'use client';
+
+import { ReactNode, forwardRef } from 'react';
 import { cn } from '@/lib/utils';
 import { Container } from './Container';
 
@@ -10,12 +12,10 @@ interface SectionProps {
   containerSize?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
 }
 
-export function Section({ 
-  children, 
-  className, 
-  background = 'white',
-  containerSize = 'xl'
-}: SectionProps) {
+export const Section = forwardRef<HTMLElement, SectionProps>(function Section(
+  { children, className, background = 'white', containerSize = 'xl' },
+  ref
+) {
   const bgClasses = {
     white: 'bg-white',
     gray: 'bg-gray-50',
@@ -24,10 +24,10 @@ export function Section({
   };
 
   return (
-    <section className={cn('py-16 md:py-24', bgClasses[background], className)}>
+    <section ref={ref} className={cn('py-16 md:py-24', bgClasses[background], className)}>
       <Container size={containerSize}>
         {children}
       </Container>
     </section>
   );
-}
+});

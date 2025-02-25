@@ -47,6 +47,30 @@ export default {
           '2xl': '1400px',
         },
       },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        scaleIn: {
+          '0%': { opacity: '0', transform: 'scale(0.9) translateY(30px)' },
+          '100%': { opacity: '1', transform: 'scale(1) translateY(0)' },
+        },
+        fadeOut: {
+          '0%': { opacity: '1' },
+          '100%': { opacity: '0' },
+        },
+        scaleOut: {
+          '0%': { opacity: '1', transform: 'scale(1) translateY(0)' },
+          '100%': { opacity: '0', transform: 'scale(0.9) translateY(30px)' },
+        },
+      },
+      animation: {
+        fadeIn: 'fadeIn 0.3s ease-out forwards',
+        scaleIn: 'scaleIn 0.4s ease-out forwards',
+        fadeOut: 'fadeOut 0.3s ease-in forwards',
+        scaleOut: 'scaleOut 0.4s ease-in forwards',
+      },
     },
   },
   plugins: [],
