@@ -17,6 +17,11 @@ export default {
           DEFAULT: '#1f2937',
           light: '#6b7280',
         },
+        accent: {
+          DEFAULT: '#f59e0b',
+          dark: '#d97706',
+          light: '#fbbf24',
+        },
       },
       spacing: {
         'xs': '0.25rem',

@@ -6,7 +6,7 @@ import { Container } from './Container';
 interface SectionProps {
   children: ReactNode;
   className?: string;
-  background?: 'white' | 'gray' | 'primary';
+  background?: 'white' | 'gray' | 'primary' | 'dark';
   containerSize?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
 }
 
@@ -20,6 +20,7 @@ export function Section({
     white: 'bg-white',
     gray: 'bg-gray-50',
     primary: 'bg-blue-50',
+    dark: 'bg-gray-900 text-white',
   };
 
   return (
