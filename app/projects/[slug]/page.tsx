@@ -8,13 +8,7 @@ import { Container } from '@/components/ui/Container';
 import { VideoPlayer } from '@/components/ui/VideoPlayer';
 import { getProjectBySlug, getAllProjects } from '@/lib/services/projects';
 
-type ProjectParams = {
-  params: {
-    slug: string;
-  };
-}
-
-export async function generateMetadata({ params }: ProjectParams): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const project = await getProjectBySlug(params.slug);
   
   if (!project) {
@@ -37,7 +31,7 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function ProjectDetailPage({ params }: ProjectParams) {
+export default async function Page({ params }: { params: { slug: string } }) {
   const project = await getProjectBySlug(params.slug);
   
   if (!project) {
