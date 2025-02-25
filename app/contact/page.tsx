@@ -21,7 +21,7 @@ export default async function ContactPage() {
             
             <p className="mb-8 text-lg text-gray-600">
               Have a project in mind or want to discuss a potential collaboration? Fill out the form 
-              and I'll get back to you as soon as possible.
+              and I&apos;ll get back to you as soon as possible.
             </p>
             
             <div className="space-y-6">

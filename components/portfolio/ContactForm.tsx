@@ -36,7 +36,7 @@ export function ContactForm() {
       
       setFormStatus('success');
       setFormState({ name: '', email: '', message: '' });
-    } catch (error) {
+    } catch {
       setFormStatus('error');
     } finally {
       setIsSubmitting(false);
@@ -47,7 +47,7 @@ export function ContactForm() {
     <form onSubmit={handleSubmit} className="space-y-6">
       {formStatus === 'success' && (
         <div className="rounded-md bg-green-50 p-4 text-sm text-green-700">
-          Thank you for your message! I'll get back to you soon.
+          Thank you for your message! I&apos;ll get back to you soon.
         </div>
       )}
       

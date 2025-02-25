@@ -4,7 +4,6 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { Container } from '@/components/ui/Container';
-import { Button } from '@/components/ui/Button';
 
 const navItems = [
   { label: 'Home', path: '/' },

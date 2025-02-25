@@ -1,6 +1,5 @@
 // lib/services/projects.ts
 import { Project } from '@/types';
-import { supabase } from '@/lib/supabase/client';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 
 export async function getFeaturedProjects() {

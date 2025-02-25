@@ -24,7 +24,7 @@ export default function AboutPage() {
               
               <div className="prose prose-lg">
                 <p>
-                  Hello! I'm Ravi, a motion designer and web developer with over 5 years 
+                  Hello! I&apos;m Ravi, a motion designer and web developer with over 5 years 
                   of experience creating engaging digital experiences.
                 </p>
                 
@@ -43,7 +43,7 @@ export default function AboutPage() {
                 </p>
                 
                 <p>
-                  When I'm not designing or coding, you can find me exploring new design trends, 
+                  When I&apos;m not designing or coding, you can find me exploring new design trends, 
                   experimenting with 3D animations, or hiking in nature to find inspiration.
                 </p>
               </div>
