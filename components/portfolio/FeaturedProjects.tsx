@@ -6,7 +6,7 @@ import { SectionHeading } from '@/components/ui/SectionHeading';
 import { ProjectCard } from '@/components/portfolio/ProjectCard';
 import { Button } from '@/components/ui/Button';
 import { Project } from '@/types';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -19,16 +19,17 @@ interface FeaturedProjectsProps {
 }
 
 export function FeaturedProjects({ projects }: FeaturedProjectsProps) {
-  if (!projects || projects.length === 0) {
-    return null;
-  }
-
+  // Always declare hooks at the top level, regardless of conditions
   const sectionRef = useRef<HTMLElement>(null);
   const headingRef = useRef<HTMLDivElement>(null);
   const projectsRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLDivElement>(null);
 
+  // Use GSAP hook before any conditional returns
   useGSAP(() => {
+    // Only run animations if we have projects
+    if (!projects || projects.length === 0) return;
+    
     const mm = gsap.matchMedia();
     
     mm.add("(min-width: 768px)", () => {
@@ -135,6 +136,11 @@ export function FeaturedProjects({ projects }: FeaturedProjectsProps) {
       ScrollTrigger.getAll().forEach(st => st.kill());
     };
   }, { scope: sectionRef });
+
+  // Early return after hooks are declared
+  if (!projects || projects.length === 0) {
+    return null;
+  }
 
   return (
     <Section background="gray" ref={sectionRef}>

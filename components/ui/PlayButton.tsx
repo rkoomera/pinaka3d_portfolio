@@ -14,17 +14,17 @@ export function PlayButton({ onClick, size = 'md', className = '' }: PlayButtonP
     sm: {
       button: 'p-5',
       icon: 'w-10 h-10',
-      triangle: 'border-y-[10px] border-l-[16px] ml-1.5',
+      triangle: 'border-y-[10px] border-y-transparent border-l-[16px] ml-1.5',
     },
     md: {
       button: 'p-8',
       icon: 'w-16 h-16',
-      triangle: 'border-y-[14px] border-l-[24px] ml-2',
+      triangle: 'border-y-[14px] border-y-transparent border-l-[24px] ml-2',
     },
     lg: {
       button: 'p-10',
       icon: 'w-20 h-20',
-      triangle: 'border-y-[18px] border-l-[30px] ml-2.5',
+      triangle: 'border-y-[18px] border-y-transparent border-l-[30px] ml-2.5',
     },
   };
 
@@ -42,7 +42,7 @@ export function PlayButton({ onClick, size = 'md', className = '' }: PlayButtonP
       {/* Simple triangle play icon */}
       <div className="relative z-10 flex items-center justify-center">
         <div className={`${icon} flex items-center justify-center`}>
-          <div className={`w-0 h-0 border-y-transparent ${triangle} border-l-white`}></div>
+          <div className={`w-0 h-0 ${triangle} border-l-white`}></div>
         </div>
       </div>
     </button>

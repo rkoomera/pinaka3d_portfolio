@@ -14,29 +14,32 @@ export function VideoSection() {
 
   // Handle body scroll lock when popup is open
   useEffect(() => {
+    // Store the current video ref value to use in cleanup
+    const currentVideoRef = videoRef.current;
+    
     if (showVideoPopup) {
       // Disable scrolling
       document.body.style.overflow = 'hidden';
       
       // Pause background video
-      if (videoRef.current) {
-        videoRef.current.pause();
+      if (currentVideoRef) {
+        currentVideoRef.pause();
       }
     } else {
       // Re-enable scrolling
       document.body.style.overflow = '';
       
       // Resume background video
-      if (videoRef.current) {
-        videoRef.current.play();
+      if (currentVideoRef) {
+        currentVideoRef.play();
       }
     }
     
     // Cleanup function
     return () => {
       document.body.style.overflow = '';
-      if (videoRef.current && videoRef.current.paused) {
-        videoRef.current.play();
+      if (currentVideoRef && currentVideoRef.paused) {
+        currentVideoRef.play();
       }
     };
   }, [showVideoPopup]);
@@ -93,7 +96,7 @@ export function VideoSection() {
       </video>
       
       {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/10 z-15"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-black/40 z-10"></div>
       
       {/* Content container */}
       <div className="absolute inset-0 flex flex-col items-center justify-center z-20 px-4 text-center">

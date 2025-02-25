@@ -2,9 +2,6 @@
 import { Metadata } from 'next';
 import { HeroSection } from '@/components/portfolio/HeroSection';
 import { FeaturedProjects } from '@/components/portfolio/FeaturedProjects';
-import { Section } from '@/components/ui/Section';
-import { SectionHeading } from '@/components/ui/SectionHeading';
-import { Button } from '@/components/ui/Button';
 import { getFeaturedProjects } from '@/lib/services/projects';
 import { VideoSection } from '@/components/layout/VideoSection';
 import { ContactCTA } from '@/components/portfolio/ContactCTA';

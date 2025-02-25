@@ -19,10 +19,16 @@ export function ContactCTA() {
   useEffect(() => {
     if (!sectionRef.current) return;
 
+    // Store current refs to use in cleanup
+    const currentSectionRef = sectionRef.current;
+    const currentHeadingRef = headingRef.current;
+    const currentButtonRef = buttonRef.current;
+    const currentDecorationRef = decorationRef.current;
+
     // Create a timeline for the animations
     const tl = gsap.timeline({
       scrollTrigger: {
-        trigger: sectionRef.current,
+        trigger: currentSectionRef,
         start: 'top 70%',
         end: 'bottom 20%',
         toggleActions: 'play none none none'
@@ -31,7 +37,7 @@ export function ContactCTA() {
 
     // Heading animation
     tl.fromTo(
-      headingRef.current,
+      currentHeadingRef,
       { 
         y: 40, 
         opacity: 0 
@@ -46,7 +52,7 @@ export function ContactCTA() {
 
     // Button animation with bounce effect
     tl.fromTo(
-      buttonRef.current,
+      currentButtonRef,
       { 
         y: 30, 
         opacity: 0, 
@@ -64,7 +70,7 @@ export function ContactCTA() {
 
     // Add a subtle pulse animation to the button
     tl.to(
-      buttonRef.current,
+      currentButtonRef,
       {
         scale: 1.05,
         duration: 0.5,
@@ -76,9 +82,9 @@ export function ContactCTA() {
     );
 
     // Background decoration animation
-    if (decorationRef.current) {
+    if (currentDecorationRef) {
       gsap.fromTo(
-        decorationRef.current,
+        currentDecorationRef,
         { 
           opacity: 0,
           scale: 0.8,
@@ -95,7 +101,7 @@ export function ContactCTA() {
       );
 
       // Add floating animation to decoration
-      gsap.to(decorationRef.current, {
+      gsap.to(currentDecorationRef, {
         y: 15,
         x: 10,
         rotation: 5,
@@ -108,13 +114,12 @@ export function ContactCTA() {
 
     return () => {
       // Clean up animations
-      if (sectionRef.current) {
-        const triggers = ScrollTrigger.getAll().filter(
-          trigger => trigger.vars.trigger === sectionRef.current
-        );
-        triggers.forEach(trigger => trigger.kill());
-      }
-      gsap.killTweensOf([headingRef.current, buttonRef.current, decorationRef.current]);
+      const triggers = ScrollTrigger.getAll().filter(
+        trigger => trigger.vars.trigger === currentSectionRef
+      );
+      triggers.forEach(trigger => trigger.kill());
+      
+      gsap.killTweensOf([currentHeadingRef, currentButtonRef, currentDecorationRef]);
     };
   }, []);
 
