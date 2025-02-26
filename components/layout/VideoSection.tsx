@@ -10,12 +10,49 @@ interface VideoSectionProps {
   className?: string;
 }
 
+// Helper function to check if a URL is from YouTube
+function isYouTubeUrl(url: string): boolean {
+  return url.includes('youtube.com') || url.includes('youtu.be');
+}
+
+// Helper function to check if a URL is from Vimeo
+function isVimeoUrl(url: string): boolean {
+  return url.includes('vimeo.com');
+}
+
+// Helper function to get YouTube embed URL
+function getYouTubeEmbedUrl(url: string): string {
+  let videoId = '';
+  
+  if (url.includes('youtube.com/watch')) {
+    // Format: https://www.youtube.com/watch?v=VIDEO_ID
+    const urlParams = new URLSearchParams(new URL(url).search);
+    videoId = urlParams.get('v') || '';
+  } else if (url.includes('youtu.be')) {
+    // Format: https://youtu.be/VIDEO_ID
+    videoId = url.split('/').pop() || '';
+  }
+  
+  return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+}
+
+// Helper function to get Vimeo embed URL
+function getVimeoEmbedUrl(url: string): string {
+  // Format: https://vimeo.com/VIDEO_ID
+  const videoId = url.split('/').pop() || '';
+  return `https://player.vimeo.com/video/${videoId}?autoplay=1`;
+}
+
 export function VideoSection({ 
   backgroundVideoUrl = "https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-videos//demo-reel-bg.mp4",
   popupVideoUrl = "https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-videos//demo-reel-bg.mp4",
   height = "h-screen",
   className = ""
 }: VideoSectionProps) {
+  // Debug the URLs
+  console.log('VideoSection - backgroundVideoUrl:', backgroundVideoUrl);
+  console.log('VideoSection - popupVideoUrl:', popupVideoUrl);
+  
   const [showVideoPopup, setShowVideoPopup] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
@@ -113,6 +150,19 @@ export function VideoSection({
     );
   }
 
+  // Determine what type of popup video we have
+  const isYouTube = popupVideoUrl ? isYouTubeUrl(popupVideoUrl) : false;
+  const isVimeo = popupVideoUrl ? isVimeoUrl(popupVideoUrl) : false;
+  const isEmbedVideo = isYouTube || isVimeo;
+
+  // Get the appropriate embed URL if needed
+  let embedUrl = '';
+  if (isYouTube && popupVideoUrl) {
+    embedUrl = getYouTubeEmbedUrl(popupVideoUrl);
+  } else if (isVimeo && popupVideoUrl) {
+    embedUrl = getVimeoEmbedUrl(popupVideoUrl);
+  }
+
   return (
     <section className={`relative w-full ${height} bg-black overflow-hidden ${className}`}>
       {/* Background video */}
@@ -161,16 +211,30 @@ export function VideoSection({
             className={`bg-black relative max-w-5xl w-full mx-4 shadow-2xl ${isClosing ? 'animate-scaleOut' : 'animate-scaleIn'}`}
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Borderless video */}
-            <video 
-              ref={popupVideoRef}
-              controls 
-              autoPlay 
-              className="w-full h-auto"
-            >
-              <source src={popupVideoUrl} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
+            {isEmbedVideo ? (
+              // Embedded iframe for YouTube or Vimeo
+              <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+                <iframe
+                  className="absolute top-0 left-0 w-full h-full"
+                  src={embedUrl}
+                  title="Video Player"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              </div>
+            ) : (
+              // Direct video file
+              <video 
+                ref={popupVideoRef}
+                controls 
+                autoPlay 
+                className="w-full h-auto"
+              >
+                <source src={popupVideoUrl} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            )}
           </div>
         </div>
       )}

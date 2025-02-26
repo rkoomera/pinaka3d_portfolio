@@ -11,9 +11,8 @@ export interface Project {
   content: string | null;
   summary: string | null;
   thumbnail_url: string | null;
-  images: string[] | null;
-  videos: string[] | null;
   background_video_url: string | null;
+  project_video_url?: string | null;
   client_name: string | null;
   client_website: string | null;
   published_date: string | null;

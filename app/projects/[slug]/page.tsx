@@ -5,11 +5,19 @@ import { notFound } from 'next/navigation';
 import { Section } from '@/components/ui/Section';
 import { Button } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
-import { ClientVideoSection } from '@/components/project/ClientVideoSection';
+import ClientVideoSection from '@/components/project/ClientVideoSection';
+import { RichTextContent } from '@/components/project/RichTextContent';
 import { getProjectBySlug, getAllProjects } from '@/lib/services/projects';
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const project = await getProjectBySlug(params.slug);
+type Props = {
+  params: {
+    slug: string;
+  };
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const slug = params.slug;
+  const project = await getProjectBySlug(slug);
   
   if (!project) {
     return {
@@ -31,12 +39,20 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function Page({ params }: { params: { slug: string } }) {
-  const project = await getProjectBySlug(params.slug);
+export default async function Page({ params }: Props) {
+  const slug = params.slug;
+  const project = await getProjectBySlug(slug);
   
   if (!project) {
     notFound();
   }
+  
+  // Debug project video URLs
+  console.log('Project data:', {
+    slug: project.slug,
+    background_video_url: project.background_video_url,
+    project_video_url: project.project_video_url
+  });
   
   return (
     <>
@@ -60,7 +76,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
         <div className="w-full overflow-hidden">
           <ClientVideoSection 
             backgroundVideoUrl={project.background_video_url}
-            popupVideoUrl={project.videos && project.videos.length > 0 ? project.videos[0] : project.background_video_url}
+            popupVideoUrl={project.project_video_url || "https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-videos/popup-demo.mp4"}
             height="aspect-[16/6]"
             className="shadow-md"
           />
@@ -91,7 +107,9 @@ export default async function Page({ params }: { params: { slug: string } }) {
               {project.summary && <p className="text-lg text-gray-700 leading-relaxed">{project.summary}</p>}
               
               {project.content && (
-                <div className="mt-6 text-gray-900" dangerouslySetInnerHTML={{ __html: project.content }} />
+                <div className="mt-6">
+                  <RichTextContent content={project.content} />
+                </div>
               )}
             </div>
           </div>
