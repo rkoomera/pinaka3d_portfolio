@@ -11,6 +11,13 @@ import { useState, useRef, useEffect } from 'react';
 // Fallback video URL in case a project doesn't have a background video
 const FALLBACK_VIDEO_URL = "https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-videos//demo-reel-bg.mp4";
 
+// Helper to detect mobile devices more reliably
+const isMobileDevice = () => {
+  if (typeof window === 'undefined') return false;
+  return window.innerWidth < 768 || 
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+};
+
 interface FeaturedProjectsProps {
   projects: Project[];
   showHeading?: boolean;
@@ -87,42 +94,70 @@ interface ProjectRowProps {
 
 function ProjectRow({ project }: ProjectRowProps) {
   const [isHovering, setIsHovering] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isVideoVisible, setIsVideoVisible] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   
   // Get the video URL from the project's background_video_url field, or use fallback if not available
   const videoUrl = project.background_video_url || FALLBACK_VIDEO_URL;
   
   const handleMouseEnter = () => {
-    setIsHovering(true);
+    if (!isMobile) {
+      setIsHovering(true);
+    }
   };
   
   const handleMouseLeave = () => {
-    setIsHovering(false);
+    if (!isMobile) {
+      setIsHovering(false);
+    }
   };
 
-  // Control video playback based on hover state
+  // Check if device is mobile
+  useEffect(() => {
+    // Initial check using both width and user agent
+    const checkIfMobile = () => {
+      setIsMobile(isMobileDevice());
+    };
+    
+    checkIfMobile();
+    
+    // Add event listener for window resize
+    window.addEventListener('resize', checkIfMobile);
+    
+    // Clean up
+    return () => window.removeEventListener('resize', checkIfMobile);
+  }, []);
+
+  // Set initial video visibility based on mobile detection
+  useEffect(() => {
+    setIsVideoVisible(isMobile);
+  }, [isMobile]);
+
+  // Control video playback based on hover state or mobile
   useEffect(() => {
     const videoElement = videoRef.current;
     if (!videoElement) return;
     
-    if (isHovering) {
-      // Ensure video is loaded and ready to play
-      videoElement.load();
+    if (isHovering || isMobile) {
+      setIsVideoVisible(true);
       
       // Use a promise to handle play() which returns a promise
       const playPromise = videoElement.play();
       
-      // Handle potential play() promise rejection (e.g., if user hasn't interacted with the document yet)
+      // Handle potential play() promise rejection
       if (playPromise !== undefined) {
         playPromise.catch(error => {
           console.log('Auto-play was prevented:', error);
+          // Still show the video even if autoplay is prevented
+          setIsVideoVisible(true);
         });
       }
-    } else {
-      // Pause the video when not hovering
+    } else if (!isMobile) {
       videoElement.pause();
+      setIsVideoVisible(false);
     }
-  }, [isHovering]);
+  }, [isHovering, isMobile]);
 
   return (
     <div className="group">
@@ -132,7 +167,7 @@ function ProjectRow({ project }: ProjectRowProps) {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <div className="relative aspect-[16/7] w-full overflow-hidden rounded-lg">
+        <div className="relative md:aspect-[16/7] aspect-[16/9] w-full overflow-hidden rounded-lg">
           {/* Background Video - using project's background_video_url */}
           <video
             ref={videoRef}
@@ -141,8 +176,9 @@ function ProjectRow({ project }: ProjectRowProps) {
             muted
             playsInline
             loop
-            preload="auto"
-            style={{ opacity: isHovering ? 1 : 0 }}
+            autoPlay={isMobile}
+            preload="metadata"
+            style={{ opacity: isVideoVisible ? 1 : 0 }}
           />
           
           {/* Thumbnail Image (shown when video is not playing) */}
@@ -150,7 +186,7 @@ function ProjectRow({ project }: ProjectRowProps) {
             className="absolute inset-0 bg-cover bg-center transition-opacity duration-300" 
             style={{ 
               backgroundImage: `url(${project.thumbnail_url})`,
-              opacity: isHovering ? 0 : 1
+              opacity: isVideoVisible ? 0 : 1
             }}
           />
           
@@ -161,16 +197,6 @@ function ProjectRow({ project }: ProjectRowProps) {
           <div className="absolute bottom-0 left-0 p-6 text-white">
             <h3 className="text-2xl font-bold">{project.title}</h3>
             <p className="mt-2 text-lg text-white/80">{project.subtitle}</p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {project.tech_stack?.map((tech) => (
-                <span 
-                  key={tech} 
-                  className="rounded-full bg-white/20 px-3 py-1 text-sm backdrop-blur-sm"
-                >
-                  {tech}
-                </span>
-              ))}
-            </div>
           </div>
         </div>
       </Link>
@@ -185,42 +211,70 @@ interface ProjectCardProps {
 
 function ProjectCard({ project }: ProjectCardProps) {
   const [isHovering, setIsHovering] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isVideoVisible, setIsVideoVisible] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   
   // Get the video URL from the project's background_video_url field, or use fallback if not available
   const videoUrl = project.background_video_url || FALLBACK_VIDEO_URL;
   
   const handleMouseEnter = () => {
-    setIsHovering(true);
+    if (!isMobile) {
+      setIsHovering(true);
+    }
   };
   
   const handleMouseLeave = () => {
-    setIsHovering(false);
+    if (!isMobile) {
+      setIsHovering(false);
+    }
   };
 
-  // Control video playback based on hover state
+  // Check if device is mobile
+  useEffect(() => {
+    // Initial check using both width and user agent
+    const checkIfMobile = () => {
+      setIsMobile(isMobileDevice());
+    };
+    
+    checkIfMobile();
+    
+    // Add event listener for window resize
+    window.addEventListener('resize', checkIfMobile);
+    
+    // Clean up
+    return () => window.removeEventListener('resize', checkIfMobile);
+  }, []);
+
+  // Set initial video visibility based on mobile detection
+  useEffect(() => {
+    setIsVideoVisible(isMobile);
+  }, [isMobile]);
+
+  // Control video playback based on hover state or mobile
   useEffect(() => {
     const videoElement = videoRef.current;
     if (!videoElement) return;
     
-    if (isHovering) {
-      // Ensure video is loaded and ready to play
-      videoElement.load();
+    if (isHovering || isMobile) {
+      setIsVideoVisible(true);
       
       // Use a promise to handle play() which returns a promise
       const playPromise = videoElement.play();
       
-      // Handle potential play() promise rejection (e.g., if user hasn't interacted with the document yet)
+      // Handle potential play() promise rejection
       if (playPromise !== undefined) {
         playPromise.catch(error => {
           console.log('Auto-play was prevented:', error);
+          // Still show the video even if autoplay is prevented
+          setIsVideoVisible(true);
         });
       }
-    } else {
-      // Pause the video when not hovering
+    } else if (!isMobile) {
       videoElement.pause();
+      setIsVideoVisible(false);
     }
-  }, [isHovering]);
+  }, [isHovering, isMobile]);
 
   return (
     <div className="group flex h-full flex-col">
@@ -230,7 +284,7 @@ function ProjectCard({ project }: ProjectCardProps) {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <div className="relative aspect-video w-full overflow-hidden rounded-lg">
+        <div className="relative md:aspect-video aspect-[16/9] w-full overflow-hidden rounded-lg">
           {/* Background Video */}
           <video
             ref={videoRef}
@@ -239,8 +293,9 @@ function ProjectCard({ project }: ProjectCardProps) {
             muted
             playsInline
             loop
-            preload="auto"
-            style={{ opacity: isHovering ? 1 : 0 }}
+            autoPlay={isMobile}
+            preload="metadata"
+            style={{ opacity: isVideoVisible ? 1 : 0 }}
           />
           
           {/* Thumbnail Image (shown when video is not playing) */}
@@ -248,7 +303,7 @@ function ProjectCard({ project }: ProjectCardProps) {
             className="absolute inset-0 bg-cover bg-center transition-opacity duration-300" 
             style={{ 
               backgroundImage: `url(${project.thumbnail_url})`,
-              opacity: isHovering ? 0 : 1
+              opacity: isVideoVisible ? 0 : 1
             }}
           />
           
@@ -259,21 +314,6 @@ function ProjectCard({ project }: ProjectCardProps) {
           <div className="absolute bottom-0 left-0 p-4 text-white">
             <h3 className="text-xl font-bold">{project.title}</h3>
             <p className="mt-1 text-sm text-white/80">{project.subtitle}</p>
-            <div className="mt-2 flex flex-wrap gap-1">
-              {project.tech_stack?.slice(0, 3).map((tech) => (
-                <span 
-                  key={tech} 
-                  className="rounded-full bg-white/20 px-2 py-0.5 text-xs backdrop-blur-sm"
-                >
-                  {tech}
-                </span>
-              ))}
-              {project.tech_stack && project.tech_stack.length > 3 && (
-                <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs backdrop-blur-sm">
-                  +{project.tech_stack.length - 3} more
-                </span>
-              )}
-            </div>
           </div>
         </div>
       </Link>
