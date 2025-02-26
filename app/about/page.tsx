@@ -13,37 +13,37 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <>
-      <Section className="pt-24 md:pt-32" background="white">
+      <Section className="pt-24 md:pt-32" background="light">
         <Container size="xl">
           <div className="grid grid-cols-1 gap-16 md:grid-cols-2">
             <div>
               <div className="mb-12">
-                <h1 className="mb-4 text-5xl text-gray-900 md:text-6xl">
+                <h1 className="mb-4 text-5xl text-dark dark:text-light transition-colors duration-200 md:text-6xl">
                   About Me
                 </h1>
-                <div className="h-1 w-20 bg-blue-600"></div>
+                <div className="h-1 w-20 bg-brand"></div>
               </div>
               
-              <p className="mb-6 text-xl leading-relaxed text-gray-900">
+              <p className="mb-6 text-xl leading-relaxed text-dark dark:text-light transition-colors duration-200">
                 Hello! I&apos;m Ravi, a motion designer and web developer with over 5 years 
                 of experience creating engaging digital experiences.
               </p>
               
-              <p className="mb-6 text-lg leading-relaxed text-gray-700 md:text-xl">
+              <p className="mb-6 text-lg leading-relaxed text-dark-secondary dark:text-gray-300 transition-colors duration-200 md:text-xl">
                 My journey began in graphic design, which evolved into a passion for bringing 
                 designs to life through motion and interactive experiences. I believe that 
                 thoughtful animation and seamless interactions are key to creating memorable 
                 digital products.
               </p>
               
-              <p className="mb-6 text-lg leading-relaxed text-gray-700 md:text-xl">
+              <p className="mb-6 text-lg leading-relaxed text-dark-secondary dark:text-gray-300 transition-colors duration-200 md:text-xl">
                 I specialize in combining motion design with modern web development, creating 
                 websites and applications that not only look great but also provide engaging 
                 user experiences. My technical expertise includes React, Next.js, TypeScript, 
                 and various animation libraries and tools.
               </p>
               
-              <p className="mb-8 text-lg leading-relaxed text-gray-700 md:text-xl">
+              <p className="mb-8 text-lg leading-relaxed text-dark-secondary dark:text-gray-300 transition-colors duration-200 md:text-xl">
                 When I&apos;m not designing or coding, you can find me exploring new design trends, 
                 experimenting with 3D animations, or hiking in nature to find inspiration.
               </p>

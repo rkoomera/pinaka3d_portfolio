@@ -15,28 +15,28 @@ export default async function ContactPage() {
       <Container size="lg">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
           <div>
-            <h1 className="mb-6 text-3xl font-bold text-gray-900 sm:text-4xl">
+            <h1 className="mb-6 text-3xl font-bold text-dark dark:text-light transition-colors duration-200 sm:text-4xl">
               Get in Touch
             </h1>
             
-            <p className="mb-8 text-lg text-gray-600">
+            <p className="mb-8 text-lg text-dark-secondary dark:text-gray-300 transition-colors duration-200">
               Have a project in mind or want to discuss a potential collaboration? Fill out the form 
               and I&apos;ll get back to you as soon as possible.
             </p>
             
             <div className="space-y-6">
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">Email</h2>
-                <p className="mt-2 text-gray-600">
-                  <a href="mailto:hello@ravikoomera.com" className="text-blue-600 hover:text-blue-800">
+                <h2 className="text-lg font-semibold text-dark dark:text-light transition-colors duration-200">Email</h2>
+                <p className="mt-2 text-dark-secondary dark:text-gray-300 transition-colors duration-200">
+                  <a href="mailto:hello@ravikoomera.com" className="text-brand hover:text-brand/80 transition-colors duration-200">
                     hello@ravikoomera.com
                   </a>
                 </p>
               </div>
               
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">Location</h2>
-                <p className="mt-2 text-gray-600">San Francisco, California</p>
+                <h2 className="text-lg font-semibold text-dark dark:text-light transition-colors duration-200">Location</h2>
+                <p className="mt-2 text-dark-secondary dark:text-gray-300 transition-colors duration-200">San Francisco, California</p>
               </div>
             </div>
           </div>

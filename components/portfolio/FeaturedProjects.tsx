@@ -22,7 +22,7 @@ interface FeaturedProjectsProps {
   projects: Project[];
   showHeading?: boolean;
   showViewAllButton?: boolean;
-  background?: 'white' | 'gray';
+  background?: 'light' | 'light-secondary' | 'dark' | 'dark-secondary' | 'accent' | 'brand';
   layout?: 'single' | 'grid';
   limit?: number;
 }
@@ -31,7 +31,7 @@ export function FeaturedProjects({
   projects, 
   showHeading = true, 
   showViewAllButton = true,
-  background = 'gray',
+  background = 'light-secondary',
   layout = 'single',
   limit
 }: FeaturedProjectsProps) {
@@ -194,9 +194,9 @@ function ProjectRow({ project }: ProjectRowProps) {
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-80" />
           
           {/* Project info */}
-          <div className="absolute bottom-0 left-0 p-6 text-white">
+          <div className="absolute bottom-0 left-0 p-6 text-white dark:text-white">
             <h3 className="text-2xl font-bold">{project.title}</h3>
-            <p className="mt-2 text-lg text-white/80">{project.subtitle}</p>
+            <p className="mt-2 text-lg text-white/80 dark:text-white/80">{project.subtitle}</p>
           </div>
         </div>
       </Link>
@@ -277,14 +277,14 @@ function ProjectCard({ project }: ProjectCardProps) {
   }, [isHovering, isMobile]);
 
   return (
-    <div className="group flex h-full flex-col">
+    <div className="group">
       <Link 
         href={`/projects/${project.slug}`}
         className="block"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <div className="relative md:aspect-video aspect-[16/9] w-full overflow-hidden rounded-lg">
+        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg">
           {/* Background Video */}
           <video
             ref={videoRef}
@@ -298,7 +298,7 @@ function ProjectCard({ project }: ProjectCardProps) {
             style={{ opacity: isVideoVisible ? 1 : 0 }}
           />
           
-          {/* Thumbnail Image (shown when video is not playing) */}
+          {/* Thumbnail Image */}
           <div 
             className="absolute inset-0 bg-cover bg-center transition-opacity duration-300" 
             style={{ 
@@ -311,9 +311,9 @@ function ProjectCard({ project }: ProjectCardProps) {
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-80" />
           
           {/* Project info */}
-          <div className="absolute bottom-0 left-0 p-4 text-white">
+          <div className="absolute bottom-0 left-0 p-4 text-white dark:text-white">
             <h3 className="text-xl font-bold">{project.title}</h3>
-            <p className="mt-1 text-sm text-white/80">{project.subtitle}</p>
+            <p className="mt-1 text-sm text-white/80 dark:text-white/80">{project.subtitle}</p>
           </div>
         </div>
       </Link>

@@ -46,19 +46,19 @@ export function ContactForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {formStatus === 'success' && (
-        <div className="rounded-md bg-green-50 p-4 text-sm text-green-700">
+        <div className="rounded-md bg-green-50 dark:bg-green-900 p-4 text-sm text-green-700 dark:text-green-200 transition-colors duration-200">
           Thank you for your message! I&apos;ll get back to you soon.
         </div>
       )}
       
       {formStatus === 'error' && (
-        <div className="rounded-md bg-red-50 p-4 text-sm text-red-700">
+        <div className="rounded-md bg-red-50 dark:bg-red-900 p-4 text-sm text-red-700 dark:text-red-200 transition-colors duration-200">
           Something went wrong. Please try again or email me directly.
         </div>
       )}
       
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="name" className="block text-sm font-medium text-dark dark:text-gray-300 transition-colors duration-200">
           Name
         </label>
         <input
@@ -68,12 +68,12 @@ export function ContactForm() {
           value={formState.name}
           onChange={handleChange}
           required
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 bg-white dark:bg-dark-secondary shadow-sm focus:border-brand focus:ring-brand dark:text-gray-200 transition-colors duration-200"
         />
       </div>
       
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="email" className="block text-sm font-medium text-dark dark:text-gray-300 transition-colors duration-200">
           Email
         </label>
         <input
@@ -83,12 +83,12 @@ export function ContactForm() {
           value={formState.email}
           onChange={handleChange}
           required
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 bg-white dark:bg-dark-secondary shadow-sm focus:border-brand focus:ring-brand dark:text-gray-200 transition-colors duration-200"
         />
       </div>
       
       <div>
-        <label htmlFor="message" className="block text-sm font-medium text-gray-700">
+        <label htmlFor="message" className="block text-sm font-medium text-dark dark:text-gray-300 transition-colors duration-200">
           Message
         </label>
         <textarea
@@ -98,7 +98,7 @@ export function ContactForm() {
           onChange={handleChange}
           required
           rows={6}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          className="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-700 bg-white dark:bg-dark-secondary shadow-sm focus:border-brand focus:ring-brand dark:text-gray-200 transition-colors duration-200"
         />
       </div>
       

@@ -6,21 +6,30 @@ export default {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./lib/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        primary: {
-          DEFAULT: '#2563eb',
-          dark: '#1d4ed8',
+        dark: {
+          DEFAULT: '#000000',
+          secondary: '#121212',
         },
-        text: {
-          DEFAULT: '#1f2937',
-          light: '#6b7280',
+        light: {
+          DEFAULT: '#ffffff',
+          secondary: '#f4f4f4',
         },
         accent: {
-          DEFAULT: '#f59e0b',
-          dark: '#d97706',
-          light: '#fbbf24',
+          DEFAULT: '#c6fb50',
+        },
+        brand: {
+          DEFAULT: '#7645fc',
+        },
+        primary: {
+          DEFAULT: '#7645fc',
+        },
+        text: {
+          DEFAULT: '#000000',
+          light: '#585254',
         },
       },
       spacing: {

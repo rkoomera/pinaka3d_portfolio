@@ -142,7 +142,7 @@ export function VideoSection({
   // If not mounted yet (server-side), render a placeholder
   if (!isMounted) {
     return (
-      <section className={`relative w-full ${height} bg-black overflow-hidden ${className}`}>
+      <section className={`relative w-full ${height} bg-black dark:bg-black overflow-hidden ${className} transition-colors duration-200`}>
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="h-16 w-16 animate-pulse rounded-full bg-white/20"></div>
         </div>
@@ -164,7 +164,7 @@ export function VideoSection({
   }
 
   return (
-    <section className={`relative w-full ${height} bg-black overflow-hidden ${className}`}>
+    <section className={`relative w-full ${height} bg-black dark:bg-black overflow-hidden ${className} transition-colors duration-200`}>
       {/* Background video */}
       <video 
         ref={videoRef}
@@ -191,7 +191,7 @@ export function VideoSection({
       {showVideoPopup && (
         <div 
           ref={popupRef}
-          className={`fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 ${isClosing ? 'animate-fadeOut' : 'animate-fadeIn'}`}
+          className={`fixed inset-0 bg-black/80 dark:bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 ${isClosing ? 'animate-fadeOut' : 'animate-fadeIn'} transition-colors duration-200`}
           onClick={handleClosePopup}
         >
           {/* Close button */}
@@ -208,7 +208,7 @@ export function VideoSection({
           
           <div 
             ref={videoContainerRef}
-            className={`bg-black relative max-w-5xl w-full mx-4 shadow-2xl ${isClosing ? 'animate-scaleOut' : 'animate-scaleIn'}`}
+            className={`bg-black dark:bg-black relative max-w-5xl w-full mx-4 shadow-2xl ${isClosing ? 'animate-scaleOut' : 'animate-scaleIn'} transition-colors duration-200`}
             onClick={(e) => e.stopPropagation()}
           >
             {isEmbedVideo ? (

@@ -15,7 +15,7 @@ export default async function ProjectsPage() {
   
   return (
     <>
-      <Section className="pt-24 md:pt-32 pb-4 md:pb-16" background="gray">
+      <Section className="pt-24 md:pt-32 pb-4 md:pb-16" background="light-secondary">
         <SectionHeading
           title="Work"
           subtitle="A collection of my recent work in motion design"
@@ -24,7 +24,7 @@ export default async function ProjectsPage() {
       </Section>
       
       <Section 
-        background="white" 
+        background="light" 
         className="py-2 md:py-4" 
         containerSize="full"
       >
@@ -33,15 +33,15 @@ export default async function ProjectsPage() {
             projects={projects} 
             showHeading={false} 
             showViewAllButton={false}
-            background="white"
+            background="light"
             layout="grid"
           />
         </div>
         
         {projects.length === 0 && (
-          <div className="rounded-lg bg-gray-50 p-12 text-center">
-            <h3 className="text-lg font-medium text-gray-900">No projects found</h3>
-            <p className="mt-2 text-gray-600">
+          <div className="rounded-lg bg-light-secondary dark:bg-dark-secondary p-12 text-center transition-colors duration-200">
+            <h3 className="text-lg font-medium text-dark dark:text-light transition-colors duration-200">No projects found</h3>
+            <p className="mt-2 text-dark-secondary dark:text-gray-300 transition-colors duration-200">
               Check back soon for updates to my portfolio.
             </p>
           </div>
