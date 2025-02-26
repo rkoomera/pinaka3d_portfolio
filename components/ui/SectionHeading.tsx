@@ -21,12 +21,12 @@ export function SectionHeading({
       centered && 'text-center',
       className
     )}>
-      <h2 className="mb-3 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+      <h2 className="mb-3 text-4xl tracking-tight text-gray-900 sm:text-5xl">
         {title}
       </h2>
       {subtitle && (
         <p className={cn(
-          "max-w-2xl text-lg text-gray-600",
+          "max-w-2xl text-xl text-gray-600",
           centered && "mx-auto"
         )}>
           {subtitle}

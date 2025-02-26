@@ -129,13 +129,13 @@ export function RichTextContent({ content, className }: RichTextContentProps) {
     },
     
     // Custom rendering for headings
-    h1: (props) => <h1 className="text-3xl font-bold mt-8 mb-4 text-gray-900" {...props} />,
-    h2: (props) => <h2 className="text-2xl font-bold mt-8 mb-3 text-gray-900" {...props} />,
-    h3: (props) => <h3 className="text-xl font-bold mt-6 mb-3 text-gray-900" {...props} />,
-    h4: (props) => <h4 className="text-lg font-bold mt-6 mb-2 text-gray-900" {...props} />,
+    h1: (props) => <h1 className="text-4xl font-normal mt-8 mb-4 text-gray-900 leading-tight" {...props} />,
+    h2: (props) => <h2 className="text-3xl font-normal mt-8 mb-3 text-gray-900 leading-tight" {...props} />,
+    h3: (props) => <h3 className="text-2xl font-normal mt-6 mb-3 text-gray-900 leading-relaxed" {...props} />,
+    h4: (props) => <h4 className="text-xl font-normal mt-6 mb-2 text-gray-900 leading-relaxed" {...props} />,
     
     // Custom rendering for paragraphs
-    p: (props) => <p className="my-4 text-gray-700 leading-relaxed" {...props} />,
+    p: (props) => <p className="my-4 text-gray-700 leading-relaxed text-lg" {...props} />,
     
     // Custom rendering for lists
     ul: (props) => <ul className="my-4 pl-6 list-disc space-y-2" {...props} />,

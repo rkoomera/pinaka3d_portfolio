@@ -15,14 +15,20 @@ export default async function ProjectsPage() {
   
   return (
     <>
-      <Section className="pt-24 md:pt-32">
+      <Section className="pt-24 md:pt-32 pb-4 md:pb-16" background="gray">
         <SectionHeading
-          title="My Projects"
-          subtitle="A collection of my recent work in motion design and web development"
+          title="Work"
+          subtitle="A collection of my recent work in motion design"
           centered
         />
-        
-        <div className="mt-12">
+      </Section>
+      
+      <Section 
+        background="white" 
+        className="py-2 md:py-4" 
+        containerSize="full"
+      >
+        <div className="-mt-4 max-w-[1400px] mx-auto">
           <FeaturedProjects 
             projects={projects} 
             showHeading={false} 

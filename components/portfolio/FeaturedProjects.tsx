@@ -66,7 +66,7 @@ export function FeaturedProjects({
         </div>
       ) : (
         // Grid layout
-        <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2">
+        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
           {displayedProjects.map((project) => (
             <ProjectCard
               key={project.id}

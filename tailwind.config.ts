@@ -31,10 +31,10 @@ export default {
         'xl': '4rem',
       },
       fontSize: {
-        'base': 'clamp(1rem, 1vw + 0.75rem, 1.125rem)',
-        'h1': 'clamp(2rem, 5vw + 1rem, 4rem)',
-        'h2': 'clamp(1.5rem, 3vw + 1rem, 2.5rem)',
-        'h3': 'clamp(1.25rem, 2vw + 1rem, 1.75rem)',
+        'base': 'clamp(1.125rem, 1.2vw + 0.9rem, 1.25rem)',
+        'h1': 'clamp(2.5rem, 5vw + 1.5rem, 4.5rem)',
+        'h2': 'clamp(2rem, 3vw + 1.5rem, 3rem)',
+        'h3': 'clamp(1.5rem, 2vw + 1.25rem, 2.25rem)',
       },
       container: {
         center: true,

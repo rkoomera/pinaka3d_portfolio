@@ -19,8 +19,12 @@ export function Header() {
     <header className="sticky top-0 z-50 bg-white border-b border-gray-100">
       <Container>
         <div className="flex items-center justify-between py-4">
-          <Link href="/" className="text-2xl font-bold text-gray-900">
-            Pinaka
+          <Link href="/" className="flex items-center">
+            <img 
+              src="https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-images//pinaka_logo.svg" 
+              alt="Pinaka Logo" 
+              className="h-12" 
+            />
           </Link>
 
           {/* Desktop Menu */}
