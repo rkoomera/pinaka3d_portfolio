@@ -24,7 +24,7 @@ export default async function HomePage() {
       
       <VideoSection />
       
-      <FeaturedProjects projects={featuredProjects} />
+      <FeaturedProjects projects={featuredProjects} limit={3} />
       
       <ContactCTA />
     </>

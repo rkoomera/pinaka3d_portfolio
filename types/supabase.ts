@@ -17,6 +17,7 @@ export interface Database {
           thumbnail_url: string | null;
           images: string[] | null;
           videos: string[] | null;
+          background_video_url: string | null;
           client_name: string | null;
           client_website: string | null;
           published_date: string | null;
@@ -40,6 +41,7 @@ export interface Database {
           thumbnail_url?: string | null;
           images?: string[] | null;
           videos?: string[] | null;
+          background_video_url?: string | null;
           client_name?: string | null;
           client_website?: string | null;
           published_date?: string | null;
@@ -63,6 +65,7 @@ export interface Database {
           thumbnail_url?: string | null;
           images?: string[] | null;
           videos?: string[] | null;
+          background_video_url?: string | null;
           client_name?: string | null;
           client_website?: string | null;
           published_date?: string | null;

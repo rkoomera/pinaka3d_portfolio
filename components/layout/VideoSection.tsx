@@ -3,17 +3,37 @@
 import { useState, useRef, useEffect } from 'react';
 import { PlayButton } from '@/components/ui/PlayButton';
 
-export function VideoSection() {
+interface VideoSectionProps {
+  backgroundVideoUrl?: string;
+  popupVideoUrl?: string;
+  height?: string;
+  className?: string;
+}
+
+export function VideoSection({ 
+  backgroundVideoUrl = "https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-videos//demo-reel-bg.mp4",
+  popupVideoUrl = "https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-videos//demo-reel-bg.mp4",
+  height = "h-screen",
+  className = ""
+}: VideoSectionProps) {
   const [showVideoPopup, setShowVideoPopup] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const popupVideoRef = useRef<HTMLVideoElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const videoContainerRef = useRef<HTMLDivElement>(null);
 
+  // Check if component is mounted (client-side only)
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   // Handle body scroll lock when popup is open
   useEffect(() => {
+    if (!isMounted) return;
+    
     // Store the current video ref value to use in cleanup
     const currentVideoRef = videoRef.current;
     
@@ -31,7 +51,7 @@ export function VideoSection() {
       
       // Resume background video
       if (currentVideoRef) {
-        currentVideoRef.play();
+        currentVideoRef.play().catch(e => console.log("Auto-play prevented:", e));
       }
     }
     
@@ -39,10 +59,10 @@ export function VideoSection() {
     return () => {
       document.body.style.overflow = '';
       if (currentVideoRef && currentVideoRef.paused) {
-        currentVideoRef.play();
+        currentVideoRef.play().catch(e => console.log("Auto-play prevented:", e));
       }
     };
-  }, [showVideoPopup]);
+  }, [showVideoPopup, isMounted]);
 
   // Handle opening the popup
   const handleOpenPopup = () => {
@@ -67,6 +87,8 @@ export function VideoSection() {
 
   // Handle escape key to close popup
   useEffect(() => {
+    if (!isMounted) return;
+    
     const handleEscKey = (event: KeyboardEvent) => {
       if (event.key === 'Escape' && showVideoPopup && !isClosing) {
         handleClosePopup();
@@ -78,10 +100,21 @@ export function VideoSection() {
     return () => {
       window.removeEventListener('keydown', handleEscKey);
     };
-  }, [showVideoPopup, isClosing]);
+  }, [showVideoPopup, isClosing, isMounted]);
+
+  // If not mounted yet (server-side), render a placeholder
+  if (!isMounted) {
+    return (
+      <section className={`relative w-full ${height} bg-black overflow-hidden ${className}`}>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="h-16 w-16 animate-pulse rounded-full bg-white/20"></div>
+        </div>
+      </section>
+    );
+  }
 
   return (
-    <section className="relative w-full h-screen bg-black overflow-hidden">
+    <section className={`relative w-full ${height} bg-black overflow-hidden ${className}`}>
       {/* Background video */}
       <video 
         ref={videoRef}
@@ -91,12 +124,12 @@ export function VideoSection() {
         muted
         playsInline
       >
-        <source src="https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-videos//demo-reel-bg.mp4" type="video/mp4" />
+        <source src={backgroundVideoUrl} type="video/mp4" />
         Your browser does not support the video tag.
       </video>
       
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-black/40 z-10"></div>
+      {/* Gradient overlay - lighter for better visibility */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/5 to-transparent z-10"></div>
       
       {/* Content container */}
       <div className="absolute inset-0 flex flex-col items-center justify-center z-20 px-4 text-center">
@@ -135,7 +168,7 @@ export function VideoSection() {
               autoPlay 
               className="w-full h-auto"
             >
-              <source src="https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-videos//demo-reel-bg.mp4" type="video/mp4" />
+              <source src={popupVideoUrl} type="video/mp4" />
               Your browser does not support the video tag.
             </video>
           </div>

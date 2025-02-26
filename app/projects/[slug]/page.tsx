@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation';
 import { Section } from '@/components/ui/Section';
 import { Button } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
-import { VideoPlayer } from '@/components/ui/VideoPlayer';
+import { ClientVideoSection } from '@/components/project/ClientVideoSection';
 import { getProjectBySlug, getAllProjects } from '@/lib/services/projects';
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
@@ -40,9 +40,10 @@ export default async function Page({ params }: { params: { slug: string } }) {
   
   return (
     <>
-      <Section className="pt-24 md:pt-32">
+      {/* Header Section */}
+      <Section className="pt-24 md:pt-32 !pb-0">
         <Container size="lg">
-          <div className="max-w-3xl mx-auto text-center mb-12">
+          <div className="max-w-3xl mx-auto text-center pb-16">
             <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl mb-3">
               {project.title}
             </h1>
@@ -51,9 +52,23 @@ export default async function Page({ params }: { params: { slug: string } }) {
               <p className="text-xl text-gray-600">{project.subtitle}</p>
             )}
           </div>
+        </Container>
+      </Section>
           
-          {project.thumbnail_url && (
-            <div className="relative aspect-video w-full overflow-hidden rounded-xl mb-12">
+      {/* Full-width Video Section */}
+      {project.background_video_url ? (
+        <div className="w-full overflow-hidden">
+          <ClientVideoSection 
+            backgroundVideoUrl={project.background_video_url}
+            popupVideoUrl={project.videos && project.videos.length > 0 ? project.videos[0] : project.background_video_url}
+            height="aspect-[16/6]"
+            className="shadow-md"
+          />
+        </div>
+      ) : project.thumbnail_url && (
+        <Section className="py-0">
+          <Container size="lg">
+            <div className="relative aspect-[16/6] w-full overflow-hidden rounded-xl">
               <Image
                 src={project.thumbnail_url}
                 alt={project.title}
@@ -62,80 +77,96 @@ export default async function Page({ params }: { params: { slug: string } }) {
                 priority
               />
             </div>
-          )}
+          </Container>
+        </Section>
+      )}
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            <div className="md:col-span-2">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">Overview</h2>
-              <div className="prose prose-lg max-w-none">
-                {project.summary && <p>{project.summary}</p>}
-                
-                {project.content && (
-                  <div dangerouslySetInnerHTML={{ __html: project.content }} />
-                )}
-              </div>
+      {/* Content Section */}
+      <Section className="!pt-12 !pb-12 md:!pt-16 md:!pb-16">
+        <Container size="lg">
+          {/* Project Overview */}
+          <div className="mb-16">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-6 inline-block pb-2 border-b-2 border-blue-500">Overview</h2>
+            <div className="prose prose-lg max-w-none">
+              {project.summary && <p className="text-lg text-gray-700 leading-relaxed">{project.summary}</p>}
+              
+              {project.content && (
+                <div className="mt-6 text-gray-900" dangerouslySetInnerHTML={{ __html: project.content }} />
+              )}
             </div>
-            
-            <div className="bg-gray-50 p-6 rounded-lg">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Project Details</h3>
-              <dl className="space-y-3">
+          </div>
+          
+          {/* Project Details */}
+          <div className="mb-16">
+            <h2 className="text-2xl font-semibold text-gray-900 mb-6 inline-block pb-2 border-b-2 border-blue-500">Project Details</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-6">
                 {project.client_name && (
                   <div>
-                    <dt className="text-sm font-medium text-gray-500">Client</dt>
-                    <dd className="mt-1 text-gray-900">{project.client_name}</dd>
+                    <h3 className="text-sm uppercase tracking-wider text-gray-500 mb-2">Client</h3>
+                    <p className="font-medium text-gray-900">{project.client_name}</p>
                   </div>
                 )}
                 
                 {project.duration && (
                   <div>
-                    <dt className="text-sm font-medium text-gray-500">Duration</dt>
-                    <dd className="mt-1 text-gray-900">{project.duration}</dd>
+                    <h3 className="text-sm uppercase tracking-wider text-gray-500 mb-2">Duration</h3>
+                    <p className="font-medium text-gray-900">{project.duration}</p>
                   </div>
                 )}
                 
                 {project.role && (
                   <div>
-                    <dt className="text-sm font-medium text-gray-500">My Role</dt>
-                    <dd className="mt-1 text-gray-900">{project.role}</dd>
+                    <h3 className="text-sm uppercase tracking-wider text-gray-500 mb-2">My Role</h3>
+                    <p className="font-medium text-gray-900">{project.role}</p>
                   </div>
                 )}
                 
-                {project.tech_stack && project.tech_stack.length > 0 && (
+                {project.client_website && (
                   <div>
-                    <dt className="text-sm font-medium text-gray-500">Technologies</dt>
-                    <dd className="mt-1">
-                      <div className="flex flex-wrap gap-2">
-                        {project.tech_stack.map((tech) => (
-                          <span 
-                            key={tech}
-                            className="inline-flex items-center rounded-full bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800"
-                          >
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
-                    </dd>
+                    <h3 className="text-sm uppercase tracking-wider text-gray-500 mb-2">Website</h3>
+                    <a 
+                      href={project.client_website} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="font-medium text-blue-600 hover:text-blue-800 transition-colors"
+                    >
+                      {(() => {
+                        try {
+                          const url = new URL(project.client_website);
+                          return url.hostname.replace('www.', '');
+                        } catch {
+                          return project.client_website;
+                        }
+                      })()}
+                    </a>
                   </div>
                 )}
-              </dl>
+              </div>
+              
+              <div>
+                {project.tech_stack && project.tech_stack.length > 0 && (
+                  <div>
+                    <h3 className="text-sm uppercase tracking-wider text-gray-500 mb-2">Technologies</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {project.tech_stack.map((tech) => (
+                        <span 
+                          key={tech}
+                          className="px-3 py-1 bg-gray-100 text-gray-800 rounded-md text-sm"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
           
-          {project.videos && project.videos.length > 0 && (
-            <div className="mb-12">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-6">Project Video</h2>
-              <VideoPlayer videoUrl={project.videos[0]} />
-            </div>
-          )}
-          
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            {project.client_website && (
-              <a href={project.client_website} target="_blank" rel="noopener noreferrer">
-                <Button>Visit Website</Button>
-              </a>
-            )}
-            
-            <Button href="/projects" variant="outline">
+          {/* Back Button */}
+          <div className="flex justify-center">
+            <Button href="/projects" variant="outline" className="px-8">
               Back to Projects
             </Button>
           </div>

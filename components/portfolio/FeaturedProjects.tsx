@@ -3,170 +3,280 @@
 
 import { Section } from '@/components/ui/Section';
 import { SectionHeading } from '@/components/ui/SectionHeading';
-import { ProjectCard } from '@/components/portfolio/ProjectCard';
 import { Button } from '@/components/ui/Button';
 import { Project } from '@/types';
-import { useRef } from 'react';
-import gsap from 'gsap';
-import { useGSAP } from '@gsap/react';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Link from 'next/link';
+import { useState, useRef, useEffect } from 'react';
 
-// Register the ScrollTrigger plugin
-gsap.registerPlugin(ScrollTrigger, useGSAP);
+// Fallback video URL in case a project doesn't have a background video
+const FALLBACK_VIDEO_URL = "https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-videos//demo-reel-bg.mp4";
 
 interface FeaturedProjectsProps {
   projects: Project[];
+  showHeading?: boolean;
+  showViewAllButton?: boolean;
+  background?: 'white' | 'gray';
+  layout?: 'single' | 'grid';
+  limit?: number;
 }
 
-export function FeaturedProjects({ projects }: FeaturedProjectsProps) {
-  // Always declare hooks at the top level, regardless of conditions
-  const sectionRef = useRef<HTMLElement>(null);
-  const headingRef = useRef<HTMLDivElement>(null);
-  const projectsRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLDivElement>(null);
-
-  // Use GSAP hook before any conditional returns
-  useGSAP(() => {
-    // Only run animations if we have projects
-    if (!projects || projects.length === 0) return;
-    
-    const mm = gsap.matchMedia();
-    
-    mm.add("(min-width: 768px)", () => {
-      // Desktop animations
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 70%",
-          end: "bottom 20%",
-          toggleActions: "play none none none"
-        }
-      });
-      
-      // Animate the heading
-      tl.fromTo(
-        headingRef.current,
-        { 
-          y: 50, 
-          opacity: 0 
-        },
-        { 
-          y: 0, 
-          opacity: 1, 
-          duration: 0.8, 
-          ease: "power3.out" 
-        }
-      );
-      
-      // Staggered animation for project cards
-      if (projectsRef.current) {
-        const projectCards = projectsRef.current.children;
-        tl.fromTo(
-          projectCards,
-          { 
-            y: 60, 
-            opacity: 0,
-            scale: 0.95
-          },
-          { 
-            y: 0, 
-            opacity: 1,
-            scale: 1,
-            stagger: 0.15, 
-            duration: 0.8, 
-            ease: "power3.out" 
-          },
-          "-=0.4"
-        );
-      }
-      
-      // Animate the button
-      tl.fromTo(
-        buttonRef.current,
-        { 
-          y: 30, 
-          opacity: 0 
-        },
-        { 
-          y: 0, 
-          opacity: 1, 
-          duration: 0.6, 
-          ease: "power3.out" 
-        },
-        "-=0.2"
-      );
-    });
-    
-    mm.add("(max-width: 767px)", () => {
-      // Mobile animations (simpler for performance)
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 80%",
-          toggleActions: "play none none none"
-        }
-      });
-      
-      tl.fromTo(
-        headingRef.current,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.6 }
-      );
-      
-      if (projectsRef.current) {
-        const projectCards = projectsRef.current.children;
-        tl.fromTo(
-          projectCards,
-          { y: 40, opacity: 0 },
-          { y: 0, opacity: 1, stagger: 0.1, duration: 0.6 },
-          "-=0.3"
-        );
-      }
-      
-      tl.fromTo(
-        buttonRef.current,
-        { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.5 },
-        "-=0.2"
-      );
-    });
-
-    return () => {
-      // Clean up all ScrollTriggers when component unmounts
-      ScrollTrigger.getAll().forEach(st => st.kill());
-    };
-  }, { scope: sectionRef });
-
-  // Early return after hooks are declared
+export function FeaturedProjects({ 
+  projects, 
+  showHeading = true, 
+  showViewAllButton = true,
+  background = 'gray',
+  layout = 'single',
+  limit
+}: FeaturedProjectsProps) {
   if (!projects || projects.length === 0) {
     return null;
   }
 
+  // Apply limit if specified
+  const displayedProjects = limit ? projects.slice(0, limit) : projects;
+
   return (
-    <Section background="gray" ref={sectionRef}>
-      <div ref={headingRef}>
-        <SectionHeading 
-          title="Featured Projects" 
-          subtitle="Selected works that showcase my design and development skills"
-          centered
-        />
-      </div>
-      
-      <div ref={projectsRef} className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-        {projects.map((project, index) => (
-          <ProjectCard 
-            key={project.id} 
-            project={project}
-            priority={index < 3}
+    <Section background={background}>
+      {showHeading && (
+        <div>
+          <SectionHeading 
+            title="Featured Projects" 
+            subtitle="Selected works that showcase my design and development skills"
+            centered
           />
-        ))}
-      </div>
+        </div>
+      )}
       
-      <div ref={buttonRef} className="mt-12 text-center">
-        <Button href="/projects" variant="outline">
-          View All Projects
-        </Button>
-      </div>
+      {layout === 'single' ? (
+        // Single column layout
+        <div className="mt-12 space-y-16">
+          {displayedProjects.map((project) => (
+            <ProjectRow 
+              key={project.id} 
+              project={project}
+            />
+          ))}
+        </div>
+      ) : (
+        // Grid layout
+        <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2">
+          {displayedProjects.map((project) => (
+            <ProjectCard
+              key={project.id}
+              project={project}
+            />
+          ))}
+        </div>
+      )}
+      
+      {showViewAllButton && (
+        <div className="mt-16 text-center">
+          <Button href="/projects" variant="outline">
+            View All Projects
+          </Button>
+        </div>
+      )}
     </Section>
+  );
+}
+
+// Component for single-column layout
+interface ProjectRowProps {
+  project: Project;
+}
+
+function ProjectRow({ project }: ProjectRowProps) {
+  const [isHovering, setIsHovering] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  
+  // Get the video URL from the project's background_video_url field, or use fallback if not available
+  const videoUrl = project.background_video_url || FALLBACK_VIDEO_URL;
+  
+  const handleMouseEnter = () => {
+    setIsHovering(true);
+  };
+  
+  const handleMouseLeave = () => {
+    setIsHovering(false);
+  };
+
+  // Control video playback based on hover state
+  useEffect(() => {
+    const videoElement = videoRef.current;
+    if (!videoElement) return;
+    
+    if (isHovering) {
+      // Ensure video is loaded and ready to play
+      videoElement.load();
+      
+      // Use a promise to handle play() which returns a promise
+      const playPromise = videoElement.play();
+      
+      // Handle potential play() promise rejection (e.g., if user hasn't interacted with the document yet)
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          console.log('Auto-play was prevented:', error);
+        });
+      }
+    } else {
+      // Pause the video when not hovering
+      videoElement.pause();
+    }
+  }, [isHovering]);
+
+  return (
+    <div className="group">
+      <Link 
+        href={`/projects/${project.slug}`}
+        className="block"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <div className="relative aspect-[16/7] w-full overflow-hidden rounded-lg">
+          {/* Background Video - using project's background_video_url */}
+          <video
+            ref={videoRef}
+            className="absolute inset-0 h-full w-full object-cover transition-opacity duration-300"
+            src={videoUrl}
+            muted
+            playsInline
+            loop
+            preload="auto"
+            style={{ opacity: isHovering ? 1 : 0 }}
+          />
+          
+          {/* Thumbnail Image (shown when video is not playing) */}
+          <div 
+            className="absolute inset-0 bg-cover bg-center transition-opacity duration-300" 
+            style={{ 
+              backgroundImage: `url(${project.thumbnail_url})`,
+              opacity: isHovering ? 0 : 1
+            }}
+          />
+          
+          {/* Overlay gradient */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-80" />
+          
+          {/* Project info */}
+          <div className="absolute bottom-0 left-0 p-6 text-white">
+            <h3 className="text-2xl font-bold">{project.title}</h3>
+            <p className="mt-2 text-lg text-white/80">{project.subtitle}</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {project.tech_stack?.map((tech) => (
+                <span 
+                  key={tech} 
+                  className="rounded-full bg-white/20 px-3 py-1 text-sm backdrop-blur-sm"
+                >
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </Link>
+    </div>
+  );
+}
+
+// Component for grid layout
+interface ProjectCardProps {
+  project: Project;
+}
+
+function ProjectCard({ project }: ProjectCardProps) {
+  const [isHovering, setIsHovering] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  
+  // Get the video URL from the project's background_video_url field, or use fallback if not available
+  const videoUrl = project.background_video_url || FALLBACK_VIDEO_URL;
+  
+  const handleMouseEnter = () => {
+    setIsHovering(true);
+  };
+  
+  const handleMouseLeave = () => {
+    setIsHovering(false);
+  };
+
+  // Control video playback based on hover state
+  useEffect(() => {
+    const videoElement = videoRef.current;
+    if (!videoElement) return;
+    
+    if (isHovering) {
+      // Ensure video is loaded and ready to play
+      videoElement.load();
+      
+      // Use a promise to handle play() which returns a promise
+      const playPromise = videoElement.play();
+      
+      // Handle potential play() promise rejection (e.g., if user hasn't interacted with the document yet)
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          console.log('Auto-play was prevented:', error);
+        });
+      }
+    } else {
+      // Pause the video when not hovering
+      videoElement.pause();
+    }
+  }, [isHovering]);
+
+  return (
+    <div className="group flex h-full flex-col">
+      <Link 
+        href={`/projects/${project.slug}`}
+        className="block"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <div className="relative aspect-video w-full overflow-hidden rounded-lg">
+          {/* Background Video */}
+          <video
+            ref={videoRef}
+            className="absolute inset-0 h-full w-full object-cover transition-opacity duration-300"
+            src={videoUrl}
+            muted
+            playsInline
+            loop
+            preload="auto"
+            style={{ opacity: isHovering ? 1 : 0 }}
+          />
+          
+          {/* Thumbnail Image (shown when video is not playing) */}
+          <div 
+            className="absolute inset-0 bg-cover bg-center transition-opacity duration-300" 
+            style={{ 
+              backgroundImage: `url(${project.thumbnail_url})`,
+              opacity: isHovering ? 0 : 1
+            }}
+          />
+          
+          {/* Overlay gradient */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-80" />
+          
+          {/* Project info */}
+          <div className="absolute bottom-0 left-0 p-4 text-white">
+            <h3 className="text-xl font-bold">{project.title}</h3>
+            <p className="mt-1 text-sm text-white/80">{project.subtitle}</p>
+            <div className="mt-2 flex flex-wrap gap-1">
+              {project.tech_stack?.slice(0, 3).map((tech) => (
+                <span 
+                  key={tech} 
+                  className="rounded-full bg-white/20 px-2 py-0.5 text-xs backdrop-blur-sm"
+                >
+                  {tech}
+                </span>
+              ))}
+              {project.tech_stack && project.tech_stack.length > 3 && (
+                <span className="rounded-full bg-white/20 px-2 py-0.5 text-xs backdrop-blur-sm">
+                  +{project.tech_stack.length - 3} more
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      </Link>
+    </div>
   );
 }

@@ -2,8 +2,8 @@
 import { Metadata } from 'next';
 import { Section } from '@/components/ui/Section';
 import { SectionHeading } from '@/components/ui/SectionHeading';
-import { ProjectCard } from '@/components/portfolio/ProjectCard';
 import { getAllProjects } from '@/lib/services/projects';
+import { FeaturedProjects } from '@/components/portfolio/FeaturedProjects';
 
 export const metadata: Metadata = {
   title: 'Projects - Ravi Koomera',
@@ -22,14 +22,14 @@ export default async function ProjectsPage() {
           centered
         />
         
-        <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project, index) => (
-            <ProjectCard
-              key={project.id}
-              project={project}
-              priority={index < 6}
-            />
-          ))}
+        <div className="mt-12">
+          <FeaturedProjects 
+            projects={projects} 
+            showHeading={false} 
+            showViewAllButton={false}
+            background="white"
+            layout="grid"
+          />
         </div>
         
         {projects.length === 0 && (

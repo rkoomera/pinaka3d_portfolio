@@ -25,7 +25,10 @@ export function SectionHeading({
         {title}
       </h2>
       {subtitle && (
-        <p className="max-w-2xl text-lg text-gray-600">
+        <p className={cn(
+          "max-w-2xl text-lg text-gray-600",
+          centered && "mx-auto"
+        )}>
           {subtitle}
         </p>
       )}
