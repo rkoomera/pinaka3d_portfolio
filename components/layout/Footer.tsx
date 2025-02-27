@@ -4,15 +4,22 @@
 import Link from 'next/link';
 import { Container } from '@/components/ui/Container';
 import Image from 'next/image';
+import { useTheme } from '@/components/theme/ThemeProvider';
 
 export function Footer() {
+  const { theme } = useTheme();
+
+  const logoSrc = theme === 'dark' 
+    ? "https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-images//pinaka_logo_dark.svg"
+    : "https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-images//pinaka_logo.svg";
+
   return (
     <footer className="bg-light dark:bg-dark border-t border-light-secondary dark:border-dark-secondary py-12 transition-colors duration-200">
       <Container>
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           <div>
             <Link href="/" className="mb-4 inline-block">
-              <Image src="https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-images//pinaka_logo.svg" alt="Ravi Koomera" width={120} height={40} />
+              <Image src={logoSrc} alt="Ravi Koomera" width={120} height={40} />
             </Link>
             <p className="text-dark-secondary dark:text-light-secondary mb-4">Motion Designer</p>
             <p className="text-dark-secondary dark:text-light-secondary max-w-md">

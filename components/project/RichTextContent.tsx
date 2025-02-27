@@ -95,7 +95,7 @@ export function RichTextContent({ content, className }: RichTextContentProps) {
           href={href} 
           target="_blank" 
           rel="noopener noreferrer"
-          className="text-blue-600 hover:text-blue-800 transition-colors"
+          className="text-brand hover:text-opacity-80 transition-colors"
         >
           {children}
         </a>
@@ -110,8 +110,8 @@ export function RichTextContent({ content, className }: RichTextContentProps) {
       
       if (!isInline && match) {
         return (
-          <div className="my-6 overflow-hidden rounded-lg bg-gray-800 text-white">
-            <div className="px-4 py-2 bg-gray-900 text-xs font-mono">{match[1]}</div>
+          <div className="my-6 overflow-hidden rounded-lg bg-dark text-light dark:bg-light-secondary dark:text-dark transition-colors duration-200">
+            <div className="px-4 py-2 bg-dark-secondary text-light dark:bg-light dark:text-dark-secondary text-xs font-mono transition-colors duration-200">{match[1]}</div>
             <pre className="p-4 overflow-auto">
               <code className={className}>
                 {children}
@@ -122,45 +122,45 @@ export function RichTextContent({ content, className }: RichTextContentProps) {
       }
       
       return (
-        <code className="bg-gray-100 px-1.5 py-0.5 rounded text-gray-800 font-mono text-sm">
+        <code className="bg-light-secondary dark:bg-dark-secondary px-1.5 py-0.5 rounded text-dark dark:text-light font-mono text-sm transition-colors duration-200">
           {children}
         </code>
       );
     },
     
     // Custom rendering for headings
-    h1: (props) => <h1 className="text-4xl font-normal mt-8 mb-4 text-gray-900 leading-tight" {...props} />,
-    h2: (props) => <h2 className="text-3xl font-normal mt-8 mb-3 text-gray-900 leading-tight" {...props} />,
-    h3: (props) => <h3 className="text-2xl font-normal mt-6 mb-3 text-gray-900 leading-relaxed" {...props} />,
-    h4: (props) => <h4 className="text-xl font-normal mt-6 mb-2 text-gray-900 leading-relaxed" {...props} />,
+    h1: (props) => <h1 className="text-4xl font-normal mt-8 mb-4 text-dark dark:text-light leading-tight transition-colors duration-200" {...props} />,
+    h2: (props) => <h2 className="text-3xl font-normal mt-8 mb-3 text-dark dark:text-light leading-tight transition-colors duration-200" {...props} />,
+    h3: (props) => <h3 className="text-2xl font-normal mt-6 mb-3 text-dark dark:text-light leading-relaxed transition-colors duration-200" {...props} />,
+    h4: (props) => <h4 className="text-xl font-normal mt-6 mb-2 text-dark dark:text-light leading-relaxed transition-colors duration-200" {...props} />,
     
     // Custom rendering for paragraphs
-    p: (props) => <p className="my-4 text-gray-700 leading-relaxed text-lg" {...props} />,
+    p: (props) => <p className="my-4 text-dark-secondary dark:text-light-secondary leading-relaxed text-lg transition-colors duration-200" {...props} />,
     
     // Custom rendering for lists
     ul: (props) => <ul className="my-4 pl-6 list-disc space-y-2" {...props} />,
     ol: (props) => <ol className="my-4 pl-6 list-decimal space-y-2" {...props} />,
-    li: (props) => <li className="text-gray-700" {...props} />,
+    li: (props) => <li className="text-dark-secondary dark:text-light-secondary transition-colors duration-200" {...props} />,
     
     // Custom rendering for blockquotes
     blockquote: (props) => (
-      <blockquote className="my-6 border-l-4 border-blue-500 pl-4 italic text-gray-600" {...props} />
+      <blockquote className="my-6 border-l-4 border-brand pl-4 italic text-dark-secondary dark:text-light-secondary transition-colors duration-200" {...props} />
     ),
     
     // Custom rendering for horizontal rules
-    hr: (props) => <hr className="my-8 border-gray-200" {...props} />,
+    hr: (props) => <hr className="my-8 border-light-secondary dark:border-dark-secondary transition-colors duration-200" {...props} />,
     
     // Custom rendering for tables
     table: (props) => (
       <div className="my-6 overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg" {...props} />
+        <table className="min-w-full divide-y divide-light-secondary dark:divide-dark-secondary border border-light-secondary dark:border-dark-secondary rounded-lg transition-colors duration-200" {...props} />
       </div>
     ),
-    thead: (props) => <thead className="bg-gray-50" {...props} />,
-    tbody: (props) => <tbody className="divide-y divide-gray-200" {...props} />,
+    thead: (props) => <thead className="bg-light-secondary dark:bg-dark-secondary transition-colors duration-200" {...props} />,
+    tbody: (props) => <tbody className="divide-y divide-light-secondary dark:divide-dark-secondary transition-colors duration-200" {...props} />,
     tr: (props) => <tr {...props} />,
-    th: (props) => <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider" {...props} />,
-    td: (props) => <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500" {...props} />,
+    th: (props) => <th className="px-6 py-3 text-left text-xs font-medium text-dark-secondary dark:text-light-secondary uppercase tracking-wider transition-colors duration-200" {...props} />,
+    td: (props) => <td className="px-6 py-4 whitespace-nowrap text-sm text-dark-secondary dark:text-light-secondary transition-colors duration-200" {...props} />,
   };
 
   return (

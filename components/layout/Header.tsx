@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { Container } from '@/components/ui/Container';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
+import { useTheme } from '@/components/theme/ThemeProvider';
 
 const navItems = [
   { label: 'Home', path: '/' },
@@ -15,6 +16,11 @@ const navItems = [
 
 export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { theme } = useTheme();
+
+  const logoSrc = theme === 'dark' 
+    ? "https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-images//pinaka_logo_dark.svg"
+    : "https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-images//pinaka_logo.svg";
 
   return (
     <header className="sticky top-0 z-50 bg-white dark:bg-dark border-b border-gray-100 dark:border-gray-800 transition-colors duration-200">
@@ -22,7 +28,7 @@ export function Header() {
         <div className="flex items-center justify-between py-4">
           <Link href="/" className="flex items-center">
             <img 
-              src="https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-images//pinaka_logo.svg" 
+              src={logoSrc}
               alt="Pinaka Logo" 
               className="h-12" 
             />
