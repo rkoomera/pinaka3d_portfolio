@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Section } from '@/components/ui/Section';
 import { Container } from '@/components/ui/Container';
 import { getAllProjects } from '@/lib/services/projects';
+import { requireAuth } from '@/lib/services/auth';
 
 export const metadata: Metadata = {
   title: 'Admin - Projects',
@@ -10,6 +11,9 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminProjectsPage() {
+  // Ensure user is authenticated
+  const user = await requireAuth();
+  
   const projects = await getAllProjects();
   
   return (

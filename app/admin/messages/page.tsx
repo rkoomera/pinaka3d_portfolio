@@ -2,13 +2,17 @@ import { Metadata } from 'next';
 import { Section } from '@/components/ui/Section';
 import { Container } from '@/components/ui/Container';
 import { MessageList } from '@/components/admin/MessageList';
+import { requireAuth } from '@/lib/services/auth';
 
 export const metadata: Metadata = {
   title: 'Messages | Admin Dashboard',
   description: 'View and manage contact messages',
 };
 
-export default function MessagesPage() {
+export default async function MessagesPage() {
+  // Ensure user is authenticated
+  const user = await requireAuth();
+  
   return (
     <Section className="py-12">
       <Container>

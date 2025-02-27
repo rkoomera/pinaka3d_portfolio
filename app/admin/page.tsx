@@ -5,7 +5,7 @@ import { DashboardStats } from '@/components/admin/DashboardStats';
 import { DashboardCard } from '@/components/admin/DashboardCard';
 import { getUnreadCount } from '@/lib/services/contact';
 import { getProjectCount } from '@/lib/services/projects';
-import { getAllUsers } from '@/lib/services/auth';
+import { getAllUsers, requireAuth } from '@/lib/services/auth';
 
 export const metadata: Metadata = {
   title: 'Admin Dashboard',
@@ -13,6 +13,9 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminDashboardPage() {
+  // Ensure user is authenticated
+  const user = await requireAuth();
+  
   const unreadCount = await getUnreadCount();
   const projectCount = await getProjectCount();
   const users = await getAllUsers();
