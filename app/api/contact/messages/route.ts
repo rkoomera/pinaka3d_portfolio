@@ -1,15 +1,20 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-
-// Initialize Supabase client with service role key to bypass RLS
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+import { createServiceClient } from '@/lib/supabase/serviceClient';
 
 export async function GET() {
   try {
-    console.log('Fetching messages from API route using service role key');
+    console.log('Fetching messages from API route');
+    
+    // Use the service client which has better error handling
+    const supabase = await createServiceClient();
+    
+    if (!supabase) {
+      console.error('Failed to create Supabase client - service client returned null');
+      return NextResponse.json(
+        { error: 'Failed to create database client' },
+        { status: 500 }
+      );
+    }
     
     const { data: messages, error, count } = await supabase
       .from('contact_messages')
