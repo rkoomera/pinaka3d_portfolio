@@ -1,8 +1,7 @@
 // lib/supabase/server.ts
-import { createServerClient, type CookieOptions } from '@supabase/ssr';
-import { cookies } from 'next/headers';
-import { Database } from '@/types/supabase';
 import { createClient } from '@supabase/supabase-js';
+import { Database } from '@/types/supabase';
+import { cookies } from 'next/headers';
 
 // This client is used for static generation (build time)
 export function createStaticSupabaseClient() {
@@ -12,43 +11,39 @@ export function createStaticSupabaseClient() {
   );
 }
 
-// This client is used for server-side rendering (request time)
-export function createServerSupabaseClient() {
-  // Check if we're in a static context (build time)
-  const isStaticContext = typeof cookies === 'function' && (() => {
-    try {
-      cookies();
-      return false; // If no error, we're in a dynamic context
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (e) {
-      return true; // If error, we're in a static context
-    }
-  })();
-
-  // If we're in a static context, use the static client
-  if (isStaticContext) {
+// This client is used for server-side operations that need auth (within request context)
+export async function createServerSupabaseClient() {
+  try {
+    const cookieStore = await cookies();
+    
+    console.log('Server client: Creating client with cookies');
+    
+    return createClient<Database>(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true
+        },
+        global: {
+          fetch: (url, options) => {
+            // Log the cookies being sent with each request
+            if (options?.headers) {
+              const headers = options.headers as Record<string, string>;
+              if (headers.cookie) {
+                console.log('Server client: Request with cookies:', headers.cookie);
+              }
+            }
+            return fetch(url, options);
+          }
+        }
+      }
+    );
+  } catch (error) {
+    // If cookies() fails (outside request context), fall back to static client
+    console.warn('Falling back to static client due to cookies() error:', error);
     return createStaticSupabaseClient();
   }
-
-  // Otherwise, use the server client with cookies
-  return createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        async get(name: string) {
-          const cookieStore = await cookies();
-          return cookieStore.get(name)?.value;
-        },
-        async set(name: string, value: string, options: CookieOptions) {
-          const cookieStore = await cookies();
-          cookieStore.set(name, value, options);
-        },
-        async remove(name: string, options: CookieOptions) {
-          const cookieStore = await cookies();
-          cookieStore.set(name, '', { ...options, maxAge: 0 });
-        },
-      },
-    }
-  );
 }

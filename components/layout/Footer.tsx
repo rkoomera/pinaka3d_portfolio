@@ -16,19 +16,27 @@ export function Footer() {
   return (
     <footer className="bg-light dark:bg-dark border-t border-light-secondary dark:border-dark-secondary py-12 transition-colors duration-200">
       <Container>
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-16 md:grid-cols-3">
           <div>
             <Link href="/" className="mb-4 inline-block">
-              <Image src={logoSrc} alt="Ravi Koomera" width={120} height={40} />
+              <Image 
+                src={logoSrc} 
+                alt="Pinaka" 
+                width={50} 
+                height={40} 
+                style={{ height: 'auto' }}
+                priority
+              />
             </Link>
-            <p className="text-dark-secondary dark:text-light-secondary mb-4">Motion Designer</p>
+            <h3 className="text-dark-secondary dark:text-light-secondary mb-4 text-4xl font-medium">Pinaka</h3>
             <p className="text-dark-secondary dark:text-light-secondary max-w-md">
               Creating engaging motion design and interactive experiences for brands and products.
             </p>
           </div>
           
           <div>
-            <h4 className="text-dark dark:text-light mb-4">Navigation</h4>
+            <h4 className="text-dark dark:text-light mb-2 text-2xl">Navigation</h4>
+            <div className="h-0.5 w-20 mb-4 bg-brand"></div>
             <ul className="space-y-2">
               <li><Link href="/" className="text-dark-secondary dark:text-light-secondary hover:text-brand transition-colors">Home</Link></li>
               <li><Link href="/projects" className="text-dark-secondary dark:text-light-secondary hover:text-brand transition-colors">Projects</Link></li>
@@ -38,7 +46,8 @@ export function Footer() {
           </div>
           
           <div>
-            <h4 className="text-dark dark:text-light mb-4">Social</h4>
+            <h4 className="text-dark dark:text-light mb-2 text-2xl">Social</h4>
+            <div className="h-0.5 w-20 mb-4 bg-brand"></div>
             <ul className="space-y-2">
               <li><a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-dark-secondary dark:text-light-secondary hover:text-brand transition-colors">GitHub</a></li>
               <li><a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-dark-secondary dark:text-light-secondary hover:text-brand transition-colors">LinkedIn</a></li>

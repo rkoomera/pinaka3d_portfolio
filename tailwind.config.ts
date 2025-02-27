@@ -13,10 +13,16 @@ export default {
         dark: {
           DEFAULT: '#000000',
           secondary: '#121212',
+          card: '#1a1a1a',
+          border: '#2a2a2a',
+          hover: '#333333',
         },
         light: {
           DEFAULT: '#ffffff',
           secondary: '#f4f4f4',
+          card: '#f8f8f8',
+          border: '#e0e0e0',
+          hover: '#eeeeee',
         },
         accent: {
           DEFAULT: '#c6fb50',

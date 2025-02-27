@@ -72,6 +72,11 @@
     color: rgb(var(--accent));
   }
   
+  /* Admin pages use brand color for hover */
+  .admin-page a:hover {
+    color: rgb(var(--brand));
+  }
+  
   /* Ensure all text is regular weight by default */
   .font-medium, .font-semibold, .font-bold {
     @apply font-normal;

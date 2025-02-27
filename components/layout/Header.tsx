@@ -2,6 +2,7 @@
 'use client'
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 import { Container } from '@/components/ui/Container';
 import { ThemeToggle } from '@/components/theme/ThemeToggle';
@@ -27,10 +28,13 @@ export function Header() {
       <Container>
         <div className="flex items-center justify-between py-4">
           <Link href="/" className="flex items-center">
-            <img 
+            <Image 
               src={logoSrc}
               alt="Pinaka Logo" 
-              className="h-12" 
+              width={50}
+              height={48}
+              style={{ height: 'auto' }}
+              priority
             />
           </Link>
 
@@ -42,7 +46,7 @@ export function Header() {
                   <li key={item.path}>
                     <Link 
                       href={item.path} 
-                      className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                      className="text-dark-secondary dark:text-light-secondary hover:text-brand dark:hover:text-brand transition-colors"
                     >
                       {item.label}
                     </Link>
@@ -57,7 +61,7 @@ export function Header() {
           <div className="flex items-center space-x-2 md:hidden">
             <ThemeToggle />
             <button 
-              className="text-gray-700 dark:text-gray-300"
+              className="text-dark-secondary dark:text-light-secondary hover:text-brand dark:hover:text-brand transition-colors"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -75,7 +79,7 @@ export function Header() {
             <div className="flex justify-end py-4">
               <button 
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="text-gray-700 dark:text-gray-300"
+                className="text-dark-secondary dark:text-light-secondary hover:text-brand dark:hover:text-brand transition-colors"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -87,7 +91,7 @@ export function Header() {
                 <Link 
                   key={item.path}
                   href={item.path} 
-                  className="text-xl text-gray-800 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                  className="text-xl text-dark-secondary dark:text-light-secondary hover:text-brand dark:hover:text-brand transition-colors"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {item.label}

@@ -26,17 +26,8 @@ export default async function ContactPage() {
             
             <div className="space-y-6">
               <div>
-                <h2 className="text-lg font-semibold text-dark dark:text-light transition-colors duration-200">Email</h2>
-                <p className="mt-2 text-dark-secondary dark:text-gray-300 transition-colors duration-200">
-                  <a href="mailto:hello@ravikoomera.com" className="text-brand hover:text-brand/80 transition-colors duration-200">
-                    hello@ravikoomera.com
-                  </a>
-                </p>
-              </div>
-              
-              <div>
                 <h2 className="text-lg font-semibold text-dark dark:text-light transition-colors duration-200">Location</h2>
-                <p className="mt-2 text-dark-secondary dark:text-gray-300 transition-colors duration-200">San Francisco, California</p>
+                <p className="mt-2 text-dark-secondary dark:text-gray-300 transition-colors duration-200">Frankfurt, Germany</p>
               </div>
             </div>
           </div>

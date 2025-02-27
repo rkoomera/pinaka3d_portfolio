@@ -104,6 +104,32 @@ export interface Database {
           created_at?: string;
         };
       };
+      contact_messages: {
+        Row: {
+          id: string;
+          name: string;
+          email: string;
+          message: string;
+          created_at: string;
+          read: boolean;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          email: string;
+          message: string;
+          created_at?: string;
+          read?: boolean;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          email?: string;
+          message?: string;
+          created_at?: string;
+          read?: boolean;
+        };
+      };
     };
     Views: {
       [_ in never]: never;
