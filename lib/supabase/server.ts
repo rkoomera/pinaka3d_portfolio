@@ -1,7 +1,8 @@
 // lib/supabase/server.ts
 import { createClient } from '@supabase/supabase-js';
-import { Database } from '@/types/supabase';
+import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { cookies } from 'next/headers';
+import { Database } from '@/types/supabase';
 
 // This client is used for static generation (build time)
 export function createStaticSupabaseClient() {
@@ -14,36 +15,13 @@ export function createStaticSupabaseClient() {
 // This client is used for server-side operations that need auth (within request context)
 export async function createServerSupabaseClient() {
   try {
-    const cookieStore = await cookies();
-    
-    console.log('Server client: Creating client with cookies');
-    
+    // Create a client without cookies first
     return createClient<Database>(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        auth: {
-          persistSession: true,
-          autoRefreshToken: true,
-          detectSessionInUrl: true
-        },
-        global: {
-          fetch: (url, options) => {
-            // Log the cookies being sent with each request
-            if (options?.headers) {
-              const headers = options.headers as Record<string, string>;
-              if (headers.cookie) {
-                console.log('Server client: Request with cookies:', headers.cookie);
-              }
-            }
-            return fetch(url, options);
-          }
-        }
-      }
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
   } catch (error) {
-    // If cookies() fails (outside request context), fall back to static client
-    console.warn('Falling back to static client due to cookies() error:', error);
-    return createStaticSupabaseClient();
+    console.error('Error creating server client:', error);
+    return null;
   }
 }

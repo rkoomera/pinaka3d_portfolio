@@ -24,12 +24,10 @@ export function MessageList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expandedMessageId, setExpandedMessageId] = useState<string | null>(null);
-  const [debugInfo, setDebugInfo] = useState<any>(null);
   
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        console.log('Fetching messages from client component');
         setLoading(true);
         const response = await fetch('/api/contact/messages');
         
@@ -38,22 +36,11 @@ export function MessageList() {
         }
         
         const data = await response.json();
-        console.log('Received data:', data);
         setMessages(data.messages || []);
-        setDebugInfo(data);
         setError(null);
       } catch (err) {
         console.error('Error fetching messages:', err);
         setError(`Failed to load messages: ${err instanceof Error ? err.message : String(err)}`);
-        
-        // Try the debug endpoint as a fallback
-        try {
-          const debugResponse = await fetch('/api/contact/debug');
-          const debugData = await debugResponse.json();
-          setDebugInfo(debugData);
-        } catch (debugErr) {
-          console.error('Debug endpoint also failed:', debugErr);
-        }
       } finally {
         setLoading(false);
       }
@@ -97,12 +84,6 @@ export function MessageList() {
     return (
       <div className="space-y-4">
         <div className="text-center py-8 text-red-500">{error}</div>
-        {debugInfo && (
-          <div className="p-4 border rounded bg-light-secondary dark:bg-dark-secondary overflow-auto">
-            <h3 className="font-medium mb-2">Debug Information:</h3>
-            <pre className="text-xs">{JSON.stringify(debugInfo, null, 2)}</pre>
-          </div>
-        )}
       </div>
     );
   }
@@ -113,12 +94,6 @@ export function MessageList() {
         <div className="text-center py-12 border rounded-lg bg-light-secondary dark:bg-dark-secondary">
           <p className="text-dark-secondary dark:text-light-secondary">No messages found</p>
         </div>
-        {debugInfo && (
-          <div className="p-4 border rounded bg-light-secondary dark:bg-dark-secondary overflow-auto">
-            <h3 className="font-medium mb-2">Debug Information:</h3>
-            <pre className="text-xs">{JSON.stringify(debugInfo, null, 2)}</pre>
-          </div>
-        )}
       </div>
     );
   }

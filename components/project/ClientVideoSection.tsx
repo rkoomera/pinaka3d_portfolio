@@ -28,10 +28,6 @@ export default function ClientVideoSection({
   height,
   className
 }: ClientVideoSectionProps) {
-  // Debug the URLs
-  console.log('ClientVideoSection - backgroundVideoUrl:', backgroundVideoUrl);
-  console.log('ClientVideoSection - popupVideoUrl:', popupVideoUrl);
-  
   return (
     <VideoSection
       backgroundVideoUrl={backgroundVideoUrl}

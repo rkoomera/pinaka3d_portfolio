@@ -1,8 +1,7 @@
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { createPagesSupabaseClient } from '@/lib/supabase/pagesClient';
 import { createServiceClient } from '@/lib/supabase/serviceClient';
-import { createServerActionClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
+import { createClient } from '@supabase/supabase-js';
 import { redirect } from 'next/navigation';
 import { Database } from '@/types/supabase';
 
@@ -15,9 +14,14 @@ export interface User {
   display_name: string | null;
 }
 
+// This function should only be used in Server Actions
 export async function signIn(email: string, password: string) {
-  const cookieStore = await cookies();
-  const supabase = createServerActionClient<Database>({ cookies: () => cookieStore });
+  'use server';
+  
+  const supabase = createClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
   
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
@@ -31,16 +35,25 @@ export async function signIn(email: string, password: string) {
   return data;
 }
 
+// This function should only be used in Server Actions
 export async function signOut() {
-  const cookieStore = await cookies();
-  const supabase = createServerActionClient<Database>({ cookies: () => cookieStore });
+  'use server';
+  
+  const supabase = createClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+  
   await supabase.auth.signOut();
 }
 
+// This function can be used in Server Components
 export async function getCurrentUser() {
   try {
-    const cookieStore = await cookies();
-    const supabase = createServerActionClient<Database>({ cookies: () => cookieStore });
+    const supabase = createClient<Database>(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
     
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -59,14 +72,28 @@ export async function getCurrentUser() {
       if (profileError) {
         // Try with service client as fallback
         const serviceClient = await createServiceClient();
-        const { data: serviceProfile, error: serviceProfileError } = await serviceClient
-          .from('user_profiles')
-          .select('*')
-          .eq('id', user.id)
-          .single();
-        
-        if (serviceProfileError) {
-          // Return basic user without profile
+        if (serviceClient) {
+          const { data: serviceProfile, error: serviceProfileError } = await serviceClient
+            .from('user_profiles')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+          
+          if (serviceProfileError) {
+            // Return basic user without profile
+            return {
+              id: user.id,
+              email: user.email!,
+              role: 'viewer',
+              created_at: user.created_at,
+              last_sign_in_at: user.last_sign_in_at,
+              display_name: user.email?.split('@')[0] || 'User',
+            } as User;
+          }
+          
+          profile = serviceProfile;
+        } else {
+          // Return basic user without profile if service client is null
           return {
             id: user.id,
             email: user.email!,
@@ -76,8 +103,6 @@ export async function getCurrentUser() {
             display_name: user.email?.split('@')[0] || 'User',
           } as User;
         }
-        
-        profile = serviceProfile;
       }
       
       const userData = {
@@ -125,6 +150,11 @@ export async function getAllUsers(): Promise<User[]> {
     // Use service client to bypass RLS
     const supabase = await createServiceClient();
     
+    if (!supabase) {
+      console.error('Failed to create service client');
+      return [];
+    }
+    
     // Get all users from auth.users
     const { data: authUsers, error: authError } = await supabase.auth.admin.listUsers();
     
@@ -165,6 +195,10 @@ export async function getAllUsers(): Promise<User[]> {
 export async function createUser(email: string, password: string, role: 'admin' | 'editor' | 'viewer', displayName?: string) {
   try {
     const supabase = await createServiceClient();
+    
+    if (!supabase) {
+      throw new Error('Failed to create service client');
+    }
     
     // Create the user in auth.users
     const { data: authData, error: authError } = await supabase.auth.admin.createUser({
@@ -212,6 +246,10 @@ export async function updateUser(userId: string, data: { role?: string; display_
   try {
     const supabase = await createServiceClient();
     
+    if (!supabase) {
+      throw new Error('Failed to create service client');
+    }
+    
     const { error } = await supabase
       .from('user_profiles')
       .update(data)
@@ -231,6 +269,10 @@ export async function updateUser(userId: string, data: { role?: string; display_
 export async function deleteUser(userId: string) {
   try {
     const supabase = await createServiceClient();
+    
+    if (!supabase) {
+      throw new Error('Failed to create service client');
+    }
     
     // Delete the user from auth.users
     const { error: authError } = await supabase.auth.admin.deleteUser(userId);
