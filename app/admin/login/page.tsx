@@ -14,10 +14,14 @@ function LoginForm() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [hasRedirected, setHasRedirected] = useState(false);
   
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = searchParams.get('redirectTo') || '/admin';
+  const redirectTo = searchParams?.get('redirectTo') || '/admin';
+  // Check if we're coming from a redirect to prevent loops
+  const fromRedirect = searchParams?.get('from') === 'auth';
   
   const supabase = createBrowserClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -27,22 +31,32 @@ function LoginForm() {
   // Check auth status on mount
   useEffect(() => {
     const checkAuth = async () => {
+      if (hasRedirected || fromRedirect) {
+        // Skip auth check if we're coming from a redirect or already redirected
+        setIsCheckingAuth(false);
+        return;
+      }
+      
       try {
+        setIsCheckingAuth(true);
         const { data, error } = await supabase.auth.getSession();
+        
         if (error) {
           console.error('Error checking auth status:', error);
         } else if (data.session) {
           // If already logged in, redirect to admin dashboard
+          setHasRedirected(true);
           router.push(redirectTo);
-          router.refresh();
         }
       } catch (err: unknown) {
         console.error('Unexpected error checking auth:', err);
+      } finally {
+        setIsCheckingAuth(false);
       }
     };
     
     checkAuth();
-  }, [supabase.auth, router, redirectTo]);
+  }, [supabase.auth, router, redirectTo, hasRedirected, fromRedirect]);
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,18 +64,32 @@ function LoginForm() {
     setError(null);
     
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      console.log('Attempting login with email:', email);
+      
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
       
       if (error) {
+        console.error('Login error from Supabase:', error);
         throw error;
       }
       
-      // Redirect to the admin dashboard or the requested page
-      router.push(redirectTo);
-      router.refresh();
+      if (data.session) {
+        console.log('Login successful, session:', data.session.access_token.slice(0, 10) + '...');
+        console.log('User ID:', data.user?.id);
+        console.log('Redirecting to:', redirectTo);
+        
+        // Set hasRedirected to prevent further redirects
+        setHasRedirected(true);
+        
+        // Use window.location for a full page refresh to ensure session is properly recognized
+        window.location.href = redirectTo;
+      } else {
+        console.error('No session returned after login');
+        throw new Error('No session returned after login');
+      }
     } catch (err: unknown) {
       console.error('Login error:', err);
       setError(err instanceof Error ? err.message : 'Failed to sign in');
@@ -69,6 +97,10 @@ function LoginForm() {
       setIsLoading(false);
     }
   };
+  
+  if (isCheckingAuth) {
+    return <LoginFormLoading />;
+  }
   
   return (
     <div className="bg-white dark:bg-dark-card rounded-lg shadow-lg p-8 transition-colors duration-200">

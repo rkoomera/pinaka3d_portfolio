@@ -17,6 +17,7 @@ export function AdminNav({ user }: AdminNavProps) {
   const [unreadCount, setUnreadCount] = useState(0);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isSigningOut, setIsSigningOut] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
   
   // Create Supabase client
@@ -60,13 +61,21 @@ export function AdminNav({ user }: AdminNavProps) {
   }, []);
   
   const handleSignOut = async () => {
+    if (isSigningOut) return; // Prevent multiple sign-out attempts
+    
     try {
+      setIsSigningOut(true);
       await supabase.auth.signOut();
-      router.push('/admin/login');
-      router.refresh();
+      
+      // Clear any local storage or cookies
+      localStorage.removeItem('supabase.auth.token');
+      
+      // Use window.location for a full page refresh to the login page
+      window.location.href = '/admin/login?from=auth';
     } catch (error) {
       console.error('Error signing out:', error);
       setError('Failed to sign out. Please try again.');
+      setIsSigningOut(false);
     }
   };
   
@@ -181,9 +190,10 @@ export function AdminNav({ user }: AdminNavProps) {
                 
                 <button
                   onClick={handleSignOut}
+                  disabled={isSigningOut}
                   className="block w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-light-hover dark:hover:bg-dark-hover transition-colors duration-200"
                 >
-                  Sign Out
+                  {isSigningOut ? 'Signing Out...' : 'Sign Out'}
                 </button>
               </div>
             )}

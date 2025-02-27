@@ -50,10 +50,11 @@ export async function signOut() {
 // This function can be used in Server Components
 export async function getCurrentUser() {
   try {
-    const supabase = createClient<Database>(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    // Import the createServerClient function
+    const { createServerClient } = await import('@/lib/supabase/serverClient');
+    
+    // Create a server client that can access cookies
+    const supabase = await createServerClient();
     
     try {
       const { data: { user } } = await supabase.auth.getUser();
@@ -126,12 +127,15 @@ export async function getCurrentUser() {
 }
 
 export async function requireAuth() {
+  console.log('requireAuth: Checking authentication...');
   const user = await getCurrentUser();
   
   if (!user) {
-    redirect('/admin/login');
+    console.log('requireAuth: No user found, redirecting to login');
+    redirect('/admin/login?from=auth');
   }
   
+  console.log('requireAuth: User authenticated:', user.email);
   return user;
 }
 
