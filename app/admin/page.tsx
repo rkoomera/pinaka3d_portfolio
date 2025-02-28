@@ -7,6 +7,8 @@ import { getUnreadCount } from '@/lib/services/contact';
 import { getProjectCount } from '@/lib/services/projects';
 import { getAllUsers, requireAuth } from '@/lib/services/auth';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Admin Dashboard',
   description: 'Admin dashboard for Pinaka portfolio site',
@@ -14,7 +16,7 @@ export const metadata: Metadata = {
 
 export default async function AdminDashboardPage() {
   // Ensure user is authenticated
-  const user = await requireAuth();
+  await requireAuth();
   
   const unreadCount = await getUnreadCount();
   const projectCount = await getProjectCount();
@@ -22,13 +24,13 @@ export default async function AdminDashboardPage() {
   const userCount = users.length;
   
   return (
-    <Section>
+    <Section background="white" className="dark:bg-gray-950">
       <Container>
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-dark dark:text-light transition-colors duration-200">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white transition-colors duration-200">
             Admin Dashboard
           </h1>
-          <div className="text-sm text-text-light dark:text-light-secondary">
+          <div className="text-sm text-gray-700 dark:text-gray-300">
             Last updated: {new Date().toLocaleString()}
           </div>
         </div>
@@ -37,7 +39,7 @@ export default async function AdminDashboardPage() {
         <DashboardStats />
         
         {/* Main Cards */}
-        <h2 className="text-xl font-semibold text-dark dark:text-light mb-4 transition-colors duration-200">
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 transition-colors duration-200">
           Manage Content
         </h2>
         
@@ -94,7 +96,7 @@ export default async function AdminDashboardPage() {
         </div>
         
         {/* Additional Cards */}
-        <h2 className="text-xl font-semibold text-dark dark:text-light mb-4 transition-colors duration-200">
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4 transition-colors duration-200">
           Coming Soon
         </h2>
         

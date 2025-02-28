@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { submitContactForm } from '@/lib/services/contact';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
   try {
     console.log('Processing contact form submission');

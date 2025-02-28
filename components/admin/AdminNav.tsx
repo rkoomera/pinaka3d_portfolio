@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 import { User } from '@/lib/services/auth';
 import { createBrowserClient } from '@supabase/ssr';
@@ -13,7 +13,6 @@ interface AdminNavProps {
 
 export function AdminNav({ user }: AdminNavProps) {
   const pathname = usePathname();
-  const router = useRouter();
   const [unreadCount, setUnreadCount] = useState(0);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -92,10 +91,10 @@ export function AdminNav({ user }: AdminNavProps) {
   // If there's an error, show a minimal version with error message
   if (error) {
     return (
-      <nav className="bg-light dark:bg-dark border-b border-light-border dark:border-dark-border transition-colors duration-200 py-4">
+      <nav className="bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 transition-colors duration-200 py-4">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between">
-            <Link href="/admin" className="text-xl font-bold text-dark dark:text-light transition-colors duration-200">
+            <Link href="/admin" className="text-xl font-bold text-gray-900 dark:text-white transition-colors duration-200">
               Admin
             </Link>
             <div className="text-red-500">{error}</div>
@@ -108,10 +107,10 @@ export function AdminNav({ user }: AdminNavProps) {
   // If user is missing or invalid, show debug info
   if (!user || !user.email) {
     return (
-      <nav className="bg-light dark:bg-dark border-b border-light-border dark:border-dark-border transition-colors duration-200 py-4">
+      <nav className="bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 transition-colors duration-200 py-4">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between">
-            <Link href="/admin" className="text-xl font-bold text-dark dark:text-light transition-colors duration-200">
+            <Link href="/admin" className="text-xl font-bold text-gray-900 dark:text-white transition-colors duration-200">
               Admin
             </Link>
             <div className="text-red-500">Error: Invalid user data</div>
@@ -122,11 +121,11 @@ export function AdminNav({ user }: AdminNavProps) {
   }
   
   return (
-    <nav className="bg-light dark:bg-dark border-b border-light-border dark:border-dark-border transition-colors duration-200 py-4">
+    <nav className="bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 transition-colors duration-200 py-4">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <Link href="/admin" className="text-xl font-bold text-dark dark:text-light transition-colors duration-200">
+            <Link href="/admin" className="text-xl font-bold text-gray-900 dark:text-white transition-colors duration-200">
               Admin
             </Link>
             
@@ -137,8 +136,8 @@ export function AdminNav({ user }: AdminNavProps) {
                   href={item.path}
                   className={`relative px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
                     pathname === item.path
-                      ? 'bg-light-secondary dark:bg-dark-secondary text-dark dark:text-light'
-                      : 'text-text-light dark:text-light-secondary hover:text-brand hover:dark:text-brand'
+                      ? 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white'
+                      : 'text-gray-700 dark:text-gray-300 hover:text-brand hover:dark:text-brand'
                   }`}
                 >
                   {item.label}
@@ -156,7 +155,7 @@ export function AdminNav({ user }: AdminNavProps) {
           <div className="relative" ref={userMenuRef}>
             <button
               onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-              className="flex items-center space-x-2 text-dark dark:text-light hover:text-brand dark:hover:text-brand transition-colors duration-200"
+              className="flex items-center space-x-2 text-gray-900 dark:text-white hover:text-brand dark:hover:text-brand transition-colors duration-200"
             >
               <div className="w-8 h-8 rounded-full bg-brand text-white flex items-center justify-center">
                 {user.display_name?.[0]?.toUpperCase() || user.email[0]?.toUpperCase()}
@@ -174,16 +173,16 @@ export function AdminNav({ user }: AdminNavProps) {
             </button>
             
             {isUserMenuOpen && (
-              <div className="absolute right-0 mt-2 w-48 py-2 bg-light dark:bg-dark-card rounded-md shadow-lg border border-light-border dark:border-dark-border z-10 transition-colors duration-200">
-                <div className="px-4 py-2 border-b border-light-border dark:border-dark-border">
-                  <p className="text-sm font-medium text-dark dark:text-light">{user.display_name || user.email.split('@')[0]}</p>
-                  <p className="text-xs text-text-light dark:text-light-secondary">{user.email}</p>
-                  <p className="text-xs text-text-light dark:text-light-secondary mt-1">Role: {user.role}</p>
+              <div className="absolute right-0 mt-2 w-48 py-2 bg-white dark:bg-gray-800 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 z-10 transition-colors duration-200">
+                <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">{user.display_name || user.email.split('@')[0]}</p>
+                  <p className="text-xs text-gray-700 dark:text-gray-300">{user.email}</p>
+                  <p className="text-xs text-gray-700 dark:text-gray-300 mt-1">Role: {user.role}</p>
                 </div>
                 
                 <Link
                   href="/admin/users"
-                  className="block px-4 py-2 text-sm text-text-light dark:text-light-secondary hover:bg-light-hover dark:hover:bg-dark-hover transition-colors duration-200"
+                  className="block px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
                 >
                   User Settings
                 </Link>
@@ -191,7 +190,7 @@ export function AdminNav({ user }: AdminNavProps) {
                 <button
                   onClick={handleSignOut}
                   disabled={isSigningOut}
-                  className="block w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-light-hover dark:hover:bg-dark-hover transition-colors duration-200"
+                  className="block w-full text-left px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
                 >
                   {isSigningOut ? 'Signing Out...' : 'Sign Out'}
                 </button>

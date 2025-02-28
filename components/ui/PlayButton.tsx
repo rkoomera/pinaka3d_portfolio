@@ -32,7 +32,7 @@ export function PlayButton({ onClick, size = 'md', className = '' }: PlayButtonP
 
   return (
     <button
-      className={`group relative bg-brand/80 backdrop-blur-sm text-light dark:text-light ${button} rounded-full shadow-lg flex items-center justify-center hover:bg-brand transition-all duration-300 border-2 border-accent/40 hover:scale-105 ${className}`}
+      className={`group relative bg-brand/80 backdrop-blur-sm text-white dark:text-white ${button} rounded-full shadow-lg flex items-center justify-center hover:bg-brand transition-all duration-300 border-2 border-accent/40 hover:scale-105 ${className}`}
       onClick={onClick}
       aria-label="Play video"
     >
@@ -42,7 +42,7 @@ export function PlayButton({ onClick, size = 'md', className = '' }: PlayButtonP
       {/* Simple triangle play icon */}
       <div className="relative z-10 flex items-center justify-center">
         <div className={`${icon} flex items-center justify-center`}>
-          <div className={`w-0 h-0 ${triangle} border-l-light dark:border-l-light`}></div>
+          <div className={`w-0 h-0 ${triangle} border-l-white dark:border-l-white`}></div>
         </div>
       </div>
     </button>

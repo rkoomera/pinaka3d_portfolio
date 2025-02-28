@@ -5,6 +5,8 @@ import { Container } from '@/components/ui/Container';
 import { getAllProjects } from '@/lib/services/projects';
 import { requireAuth } from '@/lib/services/auth';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Admin - Projects',
   description: 'Manage your portfolio projects',
@@ -12,15 +14,15 @@ export const metadata: Metadata = {
 
 export default async function AdminProjectsPage() {
   // Ensure user is authenticated
-  const user = await requireAuth();
+  await requireAuth();
   
   const projects = await getAllProjects();
   
   return (
-    <Section>
+    <Section background="white" className="dark:bg-gray-950">
       <Container>
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-dark dark:text-light transition-colors duration-200">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white transition-colors duration-200">
             Projects
           </h1>
           <Link 
@@ -34,38 +36,38 @@ export default async function AdminProjectsPage() {
           </Link>
         </div>
         
-        <div className="border border-light-border dark:border-dark-border rounded-lg shadow-sm overflow-hidden">
+        <div className="border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-light-border dark:divide-dark-border">
-              <thead className="bg-light-secondary dark:bg-dark-secondary">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-100 dark:bg-gray-800">
                 <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-dark-secondary dark:text-light-secondary uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                     Title
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-dark-secondary dark:text-light-secondary uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                     Category
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-dark-secondary dark:text-light-secondary uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                     Status
                   </th>
-                  <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-dark-secondary dark:text-light-secondary uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-light-border dark:divide-dark-border">
+              <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
                 {projects.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="px-6 py-12 text-center text-dark-secondary dark:text-light-secondary">
+                    <td colSpan={4} className="px-6 py-12 text-center text-gray-700 dark:text-gray-300">
                       No projects found
                     </td>
                   </tr>
                 ) : (
                   projects.map((project) => (
-                    <tr key={project.id} className="hover:bg-light-hover dark:hover:bg-dark-hover transition-colors">
+                    <tr key={project.id} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
-                          <div className="h-10 w-10 flex-shrink-0 rounded bg-light-secondary dark:bg-dark-secondary overflow-hidden">
+                          <div className="h-10 w-10 flex-shrink-0 rounded bg-gray-100 dark:bg-gray-800 overflow-hidden">
                             {project.thumbnail_url && (
                               <img 
                                 src={project.thumbnail_url} 
@@ -75,17 +77,17 @@ export default async function AdminProjectsPage() {
                             )}
                           </div>
                           <div className="ml-4">
-                            <div className="text-sm font-medium text-dark dark:text-light">
+                            <div className="text-sm font-medium text-gray-900 dark:text-white">
                               {project.title}
                             </div>
-                            <div className="text-sm text-dark-secondary dark:text-light-secondary">
+                            <div className="text-sm text-gray-700 dark:text-gray-300">
                               {project.slug}
                             </div>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-dark dark:text-light">
+                        <div className="text-sm text-gray-900 dark:text-white">
                           {project.category}
                         </div>
                       </td>

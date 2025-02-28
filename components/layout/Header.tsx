@@ -24,7 +24,7 @@ export function Header() {
     : "https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-images//pinaka_logo.svg";
 
   return (
-    <header className="sticky top-0 z-50 bg-white dark:bg-dark border-b border-gray-100 dark:border-gray-800 transition-colors duration-200">
+    <header className="sticky top-0 z-50 bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 transition-colors duration-200">
       <Container>
         <div className="flex items-center justify-between py-4">
           <Link href="/" className="flex items-center">
@@ -46,7 +46,7 @@ export function Header() {
                   <li key={item.path}>
                     <Link 
                       href={item.path} 
-                      className="text-dark-secondary dark:text-light-secondary hover:text-brand dark:hover:text-brand transition-colors"
+                      className="text-gray-800 dark:text-gray-200 hover:text-brand dark:hover:text-brand-light transition-colors"
                     >
                       {item.label}
                     </Link>
@@ -61,7 +61,7 @@ export function Header() {
           <div className="flex items-center space-x-2 md:hidden">
             <ThemeToggle />
             <button 
-              className="text-dark-secondary dark:text-light-secondary hover:text-brand dark:hover:text-brand transition-colors"
+              className="text-gray-800 dark:text-gray-200 hover:text-brand dark:hover:text-brand-light transition-colors"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -74,12 +74,12 @@ export function Header() {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div className="fixed inset-0 bg-white dark:bg-dark z-50 md:hidden transition-colors duration-200">
+        <div className="fixed inset-0 bg-white dark:bg-gray-900 z-50 md:hidden transition-colors duration-200">
           <Container>
             <div className="flex justify-end py-4">
               <button 
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="text-dark-secondary dark:text-light-secondary hover:text-brand dark:hover:text-brand transition-colors"
+                className="text-gray-800 dark:text-gray-200 hover:text-brand dark:hover:text-brand-light transition-colors"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -91,7 +91,7 @@ export function Header() {
                 <Link 
                   key={item.path}
                   href={item.path} 
-                  className="text-xl text-dark-secondary dark:text-light-secondary hover:text-brand dark:hover:text-brand transition-colors"
+                  className="text-xl text-gray-800 dark:text-gray-200 hover:text-brand dark:hover:text-brand-light transition-colors"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {item.label}

@@ -1,70 +1,70 @@
 // components/ui/VideoPlayer.tsx
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { cn } from '@/lib/utils';
+import React, { useState, useRef, useEffect } from 'react';
+import { PlayButton } from './PlayButton';
 
 interface VideoPlayerProps {
-  videoUrl: string;
-  posterUrl?: string;
+  src: string;
+  poster?: string;
   className?: string;
-  aspectRatio?: 'square' | 'video' | 'vertical';
+  autoPlay?: boolean;
+  loop?: boolean;
+  muted?: boolean;
+  controls?: boolean;
+  showPlayButton?: boolean;
 }
 
-export function VideoPlayer({ 
-  videoUrl, 
-  posterUrl,
-  className,
-  aspectRatio = 'video'
+export function VideoPlayer({
+  src,
+  poster,
+  className = '',
+  autoPlay = false,
+  loop = true,
+  muted = true,
+  controls = false,
+  showPlayButton = true,
 }: VideoPlayerProps) {
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(autoPlay);
+  const [showControls, setShowControls] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
-
-  const aspectRatioClasses = {
-    square: 'aspect-square',
-    video: 'aspect-video',
-    vertical: 'aspect-[9/16]',
-  };
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    const handleLoadedData = () => {
-      setIsLoaded(true);
-    };
-
-    video.addEventListener('loadeddata', handleLoadedData);
-
-    return () => {
-      video.removeEventListener('loadeddata', handleLoadedData);
+    if (isPlaying) {
+      video.play().catch((error) => {
+        console.error('Error playing video:', error);
+        setIsPlaying(false);
+      });
+    } else {
       video.pause();
-      video.src = ''; // Clear the source
-      video.load(); // Reset the video element
-    };
-  }, [videoUrl]);
+    }
+  }, [isPlaying]);
+
+  const togglePlay = () => {
+    setIsPlaying(!isPlaying);
+    setShowControls(true);
+  };
 
   return (
-    <div className={cn(
-      'relative overflow-hidden rounded-xl bg-black shadow-lg',
-      aspectRatioClasses[aspectRatio],
-      className
-    )}>
+    <div className={`relative overflow-hidden rounded-xl shadow-lg ${className}`}>
       <video
         ref={videoRef}
-        className="h-full w-full object-cover"
-        poster={posterUrl}
-        controls // Always show native controls
+        src={src}
+        poster={poster}
+        loop={loop}
+        muted={muted}
         playsInline
-        preload="metadata"
-      >
-        <source src={videoUrl} type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-
-      {!isLoaded && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/10 backdrop-blur-sm">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-white border-t-transparent"></div>
+        controls={showControls && controls}
+        className="w-full h-full object-cover"
+        onEnded={() => setIsPlaying(false)}
+      />
+      
+      {showPlayButton && !isPlaying && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/30 dark:bg-black/40">
+          <PlayButton onClick={togglePlay} size="lg" />
         </div>
       )}
     </div>

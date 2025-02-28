@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { updateUser as updateUserService, deleteUser as deleteUserService, requireAdmin } from '@/lib/services/auth';
 
+export const dynamic = 'force-dynamic';
+
 export async function PATCH(
   request: NextRequest,
   { params }: { params: { userId: string } }

@@ -4,6 +4,8 @@ import { Container } from '@/components/ui/Container';
 import { MessageList } from '@/components/admin/MessageList';
 import { requireAuth } from '@/lib/services/auth';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Messages | Admin Dashboard',
   description: 'View and manage contact messages',
@@ -11,14 +13,14 @@ export const metadata: Metadata = {
 
 export default async function MessagesPage() {
   // Ensure user is authenticated
-  const user = await requireAuth();
+  await requireAuth();
   
   return (
-    <Section className="py-12">
+    <Section className="py-12 dark:bg-gray-950" background="white">
       <Container>
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-dark dark:text-light">Messages</h1>
-          <p className="text-dark-secondary dark:text-light-secondary mt-2">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Messages</h1>
+          <p className="text-gray-700 dark:text-gray-300 mt-2">
             View and manage contact form submissions
           </p>
         </div>

@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { createServiceClient } from '@/lib/supabase/serviceClient';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
   try {
     console.log('Fetching messages from API route');

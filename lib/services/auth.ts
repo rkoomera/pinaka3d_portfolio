@@ -1,5 +1,3 @@
-import { createServerSupabaseClient } from '@/lib/supabase/server';
-import { createPagesSupabaseClient } from '@/lib/supabase/pagesClient';
 import { createServiceClient } from '@/lib/supabase/serviceClient';
 import { createClient } from '@supabase/supabase-js';
 import { redirect } from 'next/navigation';
@@ -64,11 +62,13 @@ export async function getCurrentUser() {
       }
       
       // Get additional user data from profiles table
-      let { data: profile, error: profileError } = await supabase
+      const { data: profile, error: profileError } = await supabase
         .from('user_profiles')
         .select('*')
         .eq('id', user.id)
         .single();
+      
+      let profileData = profile;
       
       if (profileError) {
         // Try with service client as fallback
@@ -92,7 +92,7 @@ export async function getCurrentUser() {
             } as User;
           }
           
-          profile = serviceProfile;
+          profileData = serviceProfile;
         } else {
           // Return basic user without profile if service client is null
           return {
@@ -109,10 +109,10 @@ export async function getCurrentUser() {
       const userData = {
         id: user.id,
         email: user.email!,
-        role: profile?.role || 'viewer',
+        role: profileData?.role || 'viewer',
         created_at: user.created_at,
         last_sign_in_at: user.last_sign_in_at,
-        display_name: profile?.display_name || user.email?.split('@')[0] || 'User',
+        display_name: profileData?.display_name || user.email?.split('@')[0] || 'User',
       } as User;
       
       return userData;
@@ -290,6 +290,31 @@ export async function deleteUser(userId: string) {
     return true;
   } catch (error) {
     console.error('Error deleting user:', error);
+    throw error;
+  }
+}
+
+export async function getUserProfile(userId: string) {
+  try {
+    const supabase = await createServiceClient();
+    
+    if (!supabase) {
+      throw new Error('Failed to create service client');
+    }
+    
+    const { data: profile, error } = await supabase
+      .from('user_profiles')
+      .select('*')
+      .eq('id', userId)
+      .single();
+    
+    if (error) {
+      throw error;
+    }
+    
+    return profile;
+  } catch (error) {
+    console.error('Error getting user profile:', error);
     throw error;
   }
 } 

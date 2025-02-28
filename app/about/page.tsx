@@ -13,7 +13,7 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <>
-      <Section className="pt-24 md:pt-32" background="light">
+      <Section className="pt-24 md:pt-32" background="white">
         <Container size="xl">
           <div className="grid grid-cols-1 gap-16 md:grid-cols-2">
             <div>

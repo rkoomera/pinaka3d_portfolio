@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createUser as createUserService, requireAdmin } from '@/lib/services/auth';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   try {
     // Check if the user is authenticated and is an admin

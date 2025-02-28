@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/Button';
 
 export function ContactCTA() {
   return (
-    <Section background="light" className="relative">
+    <Section background="white" className="relative">
       <div>
         <SectionHeading 
           title="Let's Work Together"

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default async function ContactPage() {
   return (
-    <Section className="pt-24 md:pt-32">
+    <Section className="pt-24 md:pt-32" background="white">
       <Container size="lg">
         <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
           <div>

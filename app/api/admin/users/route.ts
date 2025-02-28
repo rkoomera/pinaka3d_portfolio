@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { createUser, updateUser, deleteUser, getCurrentUser } from '@/lib/services/auth';
 
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: Request) {
   try {
     // Check if the current user is an admin

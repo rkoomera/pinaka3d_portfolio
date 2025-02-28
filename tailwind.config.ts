@@ -11,9 +11,9 @@ export default {
     extend: {
       colors: {
         dark: {
-          DEFAULT: '#000000',
-          secondary: '#121212',
-          card: '#1a1a1a',
+          DEFAULT: '#121212',
+          secondary: '#1a1a1a',
+          card: '#1e1e1e',
           border: '#2a2a2a',
           hover: '#333333',
         },
@@ -26,16 +26,22 @@ export default {
         },
         accent: {
           DEFAULT: '#c6fb50',
+          dark: '#a8e030',
         },
         brand: {
           DEFAULT: '#7645fc',
+          light: '#9670ff',
+          dark: '#5f35d9',
         },
         primary: {
           DEFAULT: '#7645fc',
+          light: '#9670ff',
+          dark: '#5f35d9',
         },
         text: {
-          DEFAULT: '#000000',
+          DEFAULT: '#1a1a1a',
           light: '#585254',
+          dark: '#e0e0e0',
         },
       },
       spacing: {

@@ -35,7 +35,7 @@ export function DashboardCard({
   return (
     <Link 
       href={href}
-      className="flex flex-col h-full bg-light dark:bg-dark-card border border-light-border dark:border-dark-border rounded-lg shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden"
+      className="flex flex-col h-full bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden"
     >
       <div className="p-6 flex-grow">
         <div className="flex items-start justify-between mb-4">
@@ -44,22 +44,22 @@ export function DashboardCard({
           </div>
           {count !== undefined && (
             <div className="text-right">
-              <p className="text-3xl font-bold text-dark dark:text-light">{count}</p>
-              <p className="text-text-light dark:text-light-secondary text-sm">{countLabel}</p>
+              <p className="text-3xl font-bold text-gray-900 dark:text-white">{count}</p>
+              <p className="text-gray-700 dark:text-gray-300 text-sm">{countLabel}</p>
             </div>
           )}
         </div>
         
-        <h2 className="text-xl font-semibold text-dark dark:text-light mb-2 transition-colors duration-200">
+        <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2 transition-colors duration-200">
           {title}
         </h2>
         
-        <div className="text-text-light dark:text-light-secondary transition-colors duration-200">
+        <div className="text-gray-700 dark:text-gray-300 transition-colors duration-200">
           {description}
         </div>
       </div>
       
-      <div className="px-6 py-3 bg-light-secondary dark:bg-dark-secondary border-t border-light-border dark:border-dark-border mt-auto">
+      <div className="px-6 py-3 bg-gray-100 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-auto">
         <span className="text-sm font-medium text-brand flex items-center">
           View Details
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">

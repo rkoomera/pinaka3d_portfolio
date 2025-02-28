@@ -4,6 +4,8 @@ import { Container } from '@/components/ui/Container';
 import { getAllUsers, requireAdmin } from '@/lib/services/auth';
 import { UsersList } from '@/components/admin/UsersList';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'User Management',
   description: 'Manage user accounts and permissions',
@@ -17,13 +19,13 @@ export default async function UsersPage() {
   const users = await getAllUsers();
   
   return (
-    <Section>
+    <Section background="white" className="dark:bg-gray-950">
       <Container>
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-dark dark:text-light transition-colors duration-200">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white transition-colors duration-200">
             User Management
           </h1>
-          <div className="text-sm text-dark-secondary dark:text-light-secondary">
+          <div className="text-sm text-gray-700 dark:text-gray-300">
             {users.length} user{users.length !== 1 ? 's' : ''}
           </div>
         </div>

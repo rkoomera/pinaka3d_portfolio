@@ -1,13 +1,11 @@
-import { createClient } from '@supabase/supabase-js';
 import { ContactMessage } from '@/lib/types';
-import { createDirectClient, createServerClient } from '@/lib/supabase/serverClient';
+import { createServerClient } from '@/lib/supabase/serverClient';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 import { createServiceClient } from '@/lib/supabase/serviceClient';
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function submitContactForm(formData: {
   name: string;
@@ -40,6 +38,11 @@ export async function submitContactForm(formData: {
     // Try using the service client first (bypasses RLS)
     console.log('Trying with service client to bypass RLS');
     const serviceClient = await createServiceClient();
+    
+    if (!serviceClient) {
+      console.error('Failed to create service client');
+      throw new Error('Database connection error: Unable to create service client');
+    }
     
     const { data, error } = await serviceClient
       .from('contact_messages')
@@ -81,6 +84,11 @@ export async function getContactMessages(): Promise<ContactMessage[]> {
   try {
     const supabaseServer = await createServerSupabaseClient();
     
+    if (!supabaseServer) {
+      console.error('Failed to create server client');
+      throw new Error('Database connection error: Unable to create server client');
+    }
+    
     const { data, error } = await supabaseServer
       .from('contact_messages')
       .select('*')
@@ -103,6 +111,11 @@ export async function getUnreadCount(): Promise<number> {
   try {
     const supabase = await createServerClient();
     
+    if (!supabase) {
+      console.error('Failed to create server client');
+      return 0;
+    }
+    
     const { count, error } = await supabase
       .from('contact_messages')
       .select('*', { count: 'exact', head: true })
@@ -124,6 +137,11 @@ export async function markAsRead(id: string): Promise<void> {
   try {
     const supabaseServer = await createServerSupabaseClient();
     
+    if (!supabaseServer) {
+      console.error('Failed to create server client');
+      throw new Error('Database connection error: Unable to create server client');
+    }
+    
     const { error } = await supabaseServer
       .from('contact_messages')
       .update({ read: true })
@@ -142,6 +160,11 @@ export async function markAsRead(id: string): Promise<void> {
 export async function markAllAsRead(): Promise<void> {
   try {
     const supabaseServer = await createServerSupabaseClient();
+    
+    if (!supabaseServer) {
+      console.error('Failed to create server client');
+      throw new Error('Database connection error: Unable to create server client');
+    }
     
     const { error } = await supabaseServer
       .from('contact_messages')

@@ -7,7 +7,9 @@ import { Button } from '@/components/ui/Button';
 import { Container } from '@/components/ui/Container';
 import ClientVideoSection from '@/components/project/ClientVideoSection';
 import { RichTextContent } from '@/components/project/RichTextContent';
-import { getProjectBySlug, getAllProjects } from '@/lib/services/projects';
+import { FeaturedProjects } from '@/components/portfolio/FeaturedProjects';
+import { getProjectBySlug, getAllProjects, getRelatedProjects } from '@/lib/services/projects';
+import { Project } from '@/types';
 
 type Props = {
   params: {
@@ -47,9 +49,35 @@ export default async function Page({ params }: Props) {
     notFound();
   }
   
+  // Get related projects only if we have a valid project ID
+  let relatedProjects: Project[] = [];
+  if (project.id) {
+    console.log('Fetching related projects for project ID:', project.id);
+    relatedProjects = await getRelatedProjects(String(project.id), 8);
+    console.log('Related projects found:', relatedProjects.length);
+    console.log('Related projects:', JSON.stringify(relatedProjects.map(p => ({ id: p.id, title: p.title }))));
+    
+    // Ensure we have exactly 4 projects
+    if (relatedProjects.length < 4) {
+      // Get all projects to fill in the gaps
+      const allProjects = await getAllProjects();
+      const additionalProjects = allProjects
+        .filter(p => p.id !== project.id && !relatedProjects.some(rp => rp.id === p.id))
+        .slice(0, 4 - relatedProjects.length);
+      
+      relatedProjects = [...relatedProjects, ...additionalProjects];
+    }
+    
+    // Limit to exactly 4 projects
+    relatedProjects = relatedProjects.slice(0, 4);
+  } else {
+    console.log('No project ID available to fetch related projects');
+  }
+  
   // Debug project video URLs
   console.log('Project data:', {
     slug: project.slug,
+    id: project.id,
     background_video_url: project.background_video_url,
     project_video_url: project.project_video_url
   });
@@ -190,6 +218,37 @@ export default async function Page({ params }: Props) {
           </div>
         </Container>
       </Section>
+      
+      {/* Related Projects Section */}
+      {relatedProjects.length > 0 && (
+        <Section background="projects" containerSize="full">
+          <FeaturedProjects 
+            projects={relatedProjects}
+            layout="fourCol"
+            showLayoutToggle={false}
+            showViewAllButton={false}
+            showHeading={true}
+            useSection={false}
+            limit={4}
+            title="Related Projects"
+            subtitle={`Explore more projects in the ${project.category || 'same'} category`}
+            showSubtitle={false}
+            alignHeadingLeft={true}
+          />
+        </Section>
+      )}
+      
+      {/* Fallback when no related projects */}
+      {relatedProjects.length === 0 && (
+        <Section className="!pt-12 !pb-16 bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
+          <Container size="lg" className="text-center">
+            <h2 className="text-2xl font-semibold text-dark dark:text-light mb-4 transition-colors duration-200">Explore More Projects</h2>
+            <Button href="/projects" variant="outline" size="lg">
+              View All Projects
+            </Button>
+          </Container>
+        </Section>
+      )}
     </>
   );
 }

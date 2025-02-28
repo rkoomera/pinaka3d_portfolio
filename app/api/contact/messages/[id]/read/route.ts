@@ -1,46 +1,29 @@
 import { NextResponse } from 'next/server';
-import { createServiceClient } from '@/lib/supabase/serviceClient';
+import { markAsRead } from '@/lib/services/contact';
+
+export const dynamic = 'force-dynamic';
 
 export async function POST(
   request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = params;
-    console.log(`Marking message ${id} as read`);
+    const id = params.id;
     
-    // Use the service client which has better error handling
-    const supabase = await createServiceClient();
-    
-    if (!supabase) {
-      console.error('Failed to create Supabase client - service client returned null');
+    if (!id) {
       return NextResponse.json(
-        { error: 'Failed to create database client' },
-        { status: 500 }
+        { error: 'Message ID is required' },
+        { status: 400 }
       );
     }
     
-    const { error } = await supabase
-      .from('contact_messages')
-      .update({ read: true })
-      .eq('id', id);
+    await markAsRead(id);
     
-    if (error) {
-      console.error('Error marking message as read:', error);
-      return NextResponse.json(
-        { error: 'Failed to mark message as read', details: error },
-        { status: 500 }
-      );
-    }
-    
-    return NextResponse.json({ 
-      success: true,
-      timestamp: new Date().toISOString()
-    });
+    return NextResponse.json({ success: true });
   } catch (error) {
-    console.error('Unexpected error marking message as read:', error);
+    console.error('Error marking message as read:', error);
     return NextResponse.json(
-      { error: 'An unexpected error occurred', details: error },
+      { error: 'Failed to mark message as read' },
       { status: 500 }
     );
   }

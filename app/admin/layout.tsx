@@ -19,7 +19,7 @@ export default async function AdminLayout({
   const user = await getCurrentUser();
   
   return (
-    <div className="admin-page min-h-screen flex flex-col bg-light-card dark:bg-dark transition-colors duration-200">
+    <div className="admin-page min-h-screen flex flex-col bg-white dark:bg-gray-950 transition-colors duration-200">
       {user && <AdminNav user={user} />}
       <main className="flex-grow">
         {children}

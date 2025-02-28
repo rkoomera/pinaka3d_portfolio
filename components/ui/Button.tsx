@@ -29,18 +29,18 @@ export function Button({
   const baseClasses = 'inline-flex items-center justify-center font-normal rounded-full transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-offset-2 relative overflow-hidden transform hover:scale-[1.02] hover:shadow-md';
   
   const variantClasses = {
-    primary: 'bg-dark dark:bg-light text-light dark:text-dark hover:bg-dark-secondary dark:hover:bg-light-secondary hover:text-light dark:hover:text-dark focus:ring-dark dark:focus:ring-light',
-    secondary: 'bg-light-secondary dark:bg-dark-secondary text-dark dark:text-light hover:bg-light dark:hover:bg-dark hover:text-dark-secondary dark:hover:text-light-secondary focus:ring-light-secondary dark:focus:ring-dark-secondary',
-    outline: 'border border-dark-secondary dark:border-light-secondary text-dark dark:text-light hover:border-dark dark:hover:border-light hover:bg-light-secondary dark:hover:bg-dark-secondary hover:text-dark dark:hover:text-light focus:ring-dark-secondary dark:focus:ring-light-secondary',
-    success: 'bg-green-600 text-light hover:bg-green-700 hover:text-light focus:ring-green-500',
-    accent: 'bg-accent text-dark hover:bg-opacity-90 hover:text-dark focus:ring-accent',
-    brand: 'bg-brand text-light hover:bg-opacity-90 hover:text-light focus:ring-brand',
+    primary: 'bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-800 dark:hover:bg-gray-100 focus:ring-gray-900 dark:focus:ring-white',
+    secondary: 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600 focus:ring-gray-300 dark:focus:ring-gray-600',
+    outline: 'border-2 border-gray-500 dark:border-gray-600 text-gray-800 dark:text-white hover:border-gray-700 dark:hover:border-gray-500 hover:bg-gray-50 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-white focus:ring-gray-500 dark:focus:ring-gray-500',
+    success: 'bg-green-600 text-white hover:bg-green-700 hover:text-white focus:ring-green-500',
+    accent: 'bg-accent text-gray-900 hover:bg-accent-dark hover:text-gray-900 focus:ring-accent',
+    brand: 'bg-brand text-white hover:bg-brand-dark hover:text-white focus:ring-brand',
   };
   
   const sizeClasses = {
-    sm: 'text-sm px-6 py-1.5',
-    md: 'text-base px-8 py-2',
-    lg: 'text-lg px-10 py-3',
+    sm: 'text-xs px-5 py-1.5',
+    md: 'text-sm px-6 py-2',
+    lg: 'text-base px-8 py-2.5',
   };
   
   const classes = cn(

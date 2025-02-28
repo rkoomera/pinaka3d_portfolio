@@ -93,7 +93,7 @@ export function ContactForm() {
       <div className="space-y-6">
         <div className="rounded-md bg-green-50 dark:bg-green-900/30 p-6 text-green-700 dark:text-green-300 transition-colors duration-200">
           <h3 className="text-lg font-medium mb-2">Thank you for your message!</h3>
-          <p className="mb-4">I'll get back to you as soon as possible.</p>
+          <p className="mb-4">I&apos;ll get back to you as soon as possible.</p>
           <Button 
             onClick={handleReset}
             className="px-6 py-3 text-base"

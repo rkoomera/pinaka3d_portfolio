@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/Button';
 import { createBrowserClient } from '@supabase/ssr';
 import { Database } from '@/types/supabase';
 
+export const dynamic = 'force-dynamic';
+
 // Separate component that uses useSearchParams
 function LoginForm() {
   const [email, setEmail] = useState('');
@@ -103,12 +105,12 @@ function LoginForm() {
   }
   
   return (
-    <div className="bg-white dark:bg-dark-card rounded-lg shadow-lg p-8 transition-colors duration-200">
+    <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-8 transition-colors duration-200">
       <div className="text-center mb-8">
-        <h1 className="text-2xl font-bold text-dark dark:text-light mb-2 transition-colors duration-200">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 transition-colors duration-200">
           Admin Login
         </h1>
-        <p className="text-dark-secondary dark:text-light-secondary transition-colors duration-200">
+        <p className="text-gray-700 dark:text-gray-300 transition-colors duration-200">
           Sign in to access the admin dashboard
         </p>
       </div>
@@ -123,7 +125,7 @@ function LoginForm() {
         <div>
           <label 
             htmlFor="email" 
-            className="block text-sm font-medium text-dark dark:text-light mb-2 transition-colors duration-200"
+            className="block text-sm font-medium text-gray-900 dark:text-white mb-2 transition-colors duration-200"
           >
             Email
           </label>
@@ -133,7 +135,7 @@ function LoginForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full px-4 py-3 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-dark shadow-sm focus:border-brand focus:ring-brand focus:ring-2 focus:outline-none text-dark dark:text-light transition-colors duration-200"
+            className="w-full px-4 py-3 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 shadow-sm focus:border-brand focus:ring-brand focus:ring-2 focus:outline-none text-gray-900 dark:text-white transition-colors duration-200"
             placeholder="your.email@example.com"
           />
         </div>
@@ -141,7 +143,7 @@ function LoginForm() {
         <div>
           <label 
             htmlFor="password" 
-            className="block text-sm font-medium text-dark dark:text-light mb-2 transition-colors duration-200"
+            className="block text-sm font-medium text-gray-900 dark:text-white mb-2 transition-colors duration-200"
           >
             Password
           </label>
@@ -151,7 +153,7 @@ function LoginForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="w-full px-4 py-3 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-dark shadow-sm focus:border-brand focus:ring-brand focus:ring-2 focus:outline-none text-dark dark:text-light transition-colors duration-200"
+            className="w-full px-4 py-3 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-950 shadow-sm focus:border-brand focus:ring-brand focus:ring-2 focus:outline-none text-gray-900 dark:text-white transition-colors duration-200"
             placeholder="••••••••"
           />
         </div>
@@ -171,12 +173,12 @@ function LoginForm() {
 // Loading fallback for Suspense
 function LoginFormLoading() {
   return (
-    <div className="bg-white dark:bg-dark-card rounded-lg shadow-lg p-8 transition-colors duration-200">
+    <div className="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-8 transition-colors duration-200">
       <div className="text-center mb-8">
-        <h1 className="text-2xl font-bold text-dark dark:text-light mb-2 transition-colors duration-200">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2 transition-colors duration-200">
           Admin Login
         </h1>
-        <p className="text-dark-secondary dark:text-light-secondary transition-colors duration-200">
+        <p className="text-gray-700 dark:text-gray-300 transition-colors duration-200">
           Loading...
         </p>
       </div>
@@ -186,7 +188,7 @@ function LoginFormLoading() {
 
 export default function LoginPage() {
   return (
-    <Section className="flex items-center justify-center min-h-screen bg-light dark:bg-dark transition-colors duration-200">
+    <Section className="flex items-center justify-center min-h-screen dark:bg-gray-950" background="white">
       <Container size="sm">
         <Suspense fallback={<LoginFormLoading />}>
           <LoginForm />
