@@ -234,6 +234,7 @@ export default async function Page({ params }: Props) {
             subtitle={`Explore more projects in the ${project.category || 'same'} category`}
             showSubtitle={false}
             alignHeadingLeft={true}
+            useSwiperOnFourCol={false}
           />
         </Section>
       )}

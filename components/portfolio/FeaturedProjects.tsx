@@ -7,6 +7,154 @@ import { Button } from '@/components/ui/Button';
 import { Project } from '@/types';
 import Link from 'next/link';
 import { useState, useRef, useEffect } from 'react';
+import { motion, AnimatePresence, PanInfo } from 'framer-motion';
+// Import Swiper and required modules
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, A11y, Grid } from 'swiper/modules';
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/navigation';
+import 'swiper/css/grid';
+
+// Custom styles for Swiper
+const swiperStyles = `
+  .swiper-container {
+    position: relative;
+    padding-bottom: 30px;
+    width: 100vw !important;
+    margin-left: calc(-50vw + 50%) !important;
+    left: 0 !important;
+    right: 0 !important;
+    padding-left: 24px !important;
+    padding-right: 0 !important;
+  }
+  
+  .swiper {
+    padding: 0 !important; /* Remove padding from swiper */
+    overflow: visible !important; /* Make sure overflow is visible to show partial slides */
+  }
+  
+  .swiper-wrapper {
+    overflow: visible !important; /* Make sure overflow is visible to show partial slides */
+  }
+  
+  /* Override any container padding */
+  .swiper-container-wrapper {
+    margin-left: -2rem !important;
+    margin-right: -2rem !important;
+    width: calc(100% + 4rem) !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+  
+  @media (min-width: 640px) {
+    .swiper-container-wrapper {
+      margin-left: -3rem !important;
+      margin-right: -3rem !important;
+      width: calc(100% + 6rem) !important;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .swiper-container-wrapper {
+      margin-left: -4rem !important;
+      margin-right: -4rem !important;
+      width: calc(100% + 8rem) !important;
+    }
+  }
+  
+  /* Add responsive padding for the first slide */
+  @media (min-width: 640px) {
+    .swiper-container {
+      padding-left: 24px !important;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .swiper-container {
+      padding-left: 24px !important;
+    }
+  }
+  
+  /* Prevent horizontal scrollbar */
+  body {
+    overflow-x: hidden;
+  }
+  
+  .swiper-pagination {
+    position: relative;
+    bottom: 0;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin-top: 0;
+    width: auto !important;
+    height: 16px;
+  }
+  
+  .swiper-pagination-bullet {
+    width: 10px;
+    height: 10px;
+    background-color: rgba(180, 180, 180, 0.5);
+    opacity: 0.5;
+    transition: all 0.3s ease;
+    margin: 0 2px;
+  }
+  
+  .swiper-pagination-bullet-active {
+    opacity: 1;
+    background-color: #fff;
+    transform: scale(1.2);
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+  }
+  
+  .dark .swiper-pagination-bullet {
+    background-color: rgba(100, 100, 100, 0.5);
+  }
+  
+  .dark .swiper-pagination-bullet-active {
+    background-color: #fff;
+  }
+  
+  .swiper-button-prev,
+  .swiper-button-next {
+    position: relative;
+    width: auto;
+    height: auto;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Override Swiper's default button styles completely */
+  .swiper-container .swiper-button-prev,
+  .swiper-container .swiper-button-next {
+    position: static !important;
+    margin: 0 !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+  }
+  
+  .swiper-button-prev::after,
+  .swiper-button-next::after {
+    display: none;
+  }
+  
+  /* Custom styles for the navigation arrows */
+  .swiper-button-prev svg path,
+  .swiper-button-next svg path {
+    stroke: #7645fc !important; /* Brand color for light mode */
+  }
+  
+  .dark .swiper-button-prev svg path,
+  .dark .swiper-button-next svg path {
+    stroke: #5f35d9 !important; /* Brand dark color for dark mode */
+  }
+`;
 
 // Fallback video URL in case a project doesn't have a background video
 const FALLBACK_VIDEO_URL = "https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-videos//demo-reel-bg.mp4";
@@ -31,6 +179,7 @@ interface FeaturedProjectsProps {
   subtitle?: string;
   showSubtitle?: boolean;
   alignHeadingLeft?: boolean;
+  useSwiperOnFourCol?: boolean;
 }
 
 export function FeaturedProjects({ 
@@ -45,10 +194,15 @@ export function FeaturedProjects({
   title = "Featured Projects",
   subtitle = "A selection of my recent work",
   showSubtitle = true,
-  alignHeadingLeft = false
+  alignHeadingLeft = false,
+  useSwiperOnFourCol = false
 }: FeaturedProjectsProps) {
   const [layout, setLayout] = useState<'twoCol' | 'fourCol'>(initialLayout);
   const [isMobile, setIsMobile] = useState(false);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const sliderRef = useRef<HTMLDivElement>(null);
+  const swiperRef = useRef<any>(null);
   
   // Check if device is mobile
   useEffect(() => {
@@ -79,8 +233,23 @@ export function FeaturedProjects({
   // Apply limit if specified
   const displayedProjects = limit ? projects.slice(0, limit) : projects;
 
+  // Calculate the number of slides for the slider
+  // For 4-column layout, we determine how many slides we need based on screen size
+  const getVisibleCards = () => {
+    if (typeof window === 'undefined') return 4; // Default for SSR
+    if (window.innerWidth >= 1024) return 4; // lg screens
+    if (window.innerWidth >= 768) return 3; // md screens
+    if (window.innerWidth >= 640) return 2; // sm screens
+    return 1; // xs screens
+  };
+  
+  const visibleCards = getVisibleCards();
+
   const content = (
-    <div className="w-full">
+    <div className="w-full px-0 mx-0">
+      {/* Add style tag for Swiper custom styles */}
+      <style jsx global>{swiperStyles}</style>
+      
       {/* Header section with conditional rendering based on device type */}
       {isMobile ? (
         // Mobile layout - no toggle, centered heading
@@ -142,19 +311,94 @@ export function FeaturedProjects({
       )}
       
       {/* Projects grid/list */}
-      <div className={`px-4 sm:px-6 md:px-8 ${
-        layout === 'twoCol' 
-          ? 'grid grid-cols-1 md:grid-cols-2 gap-8 auto-rows-fr' 
-          : 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'
-      }`}>
-        {displayedProjects.map((project) => (
-          <ProjectCard 
-            key={project.id} 
-            project={project} 
-            layout={layout}
-          />
-        ))}
-      </div>
+      {layout === 'twoCol' || !useSwiperOnFourCol ? (
+        // Two column layout or four column grid (when not using Swiper)
+        <div className={`px-4 sm:px-6 md:px-8 grid grid-cols-1 ${layout === 'twoCol' ? 'md:grid-cols-2' : 'sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'} gap-8 auto-rows-fr`}>
+          {displayedProjects.map((project) => (
+            <ProjectCard 
+              key={project.id} 
+              project={project} 
+              layout={layout}
+            />
+          ))}
+        </div>
+      ) : (
+        // Four column layout with Swiper (only on Projects page)
+        <div className="relative overflow-hidden w-full px-0 mx-0 swiper-container-wrapper">
+          <div className="swiper-container">
+            <Swiper
+              onSwiper={(swiper) => {
+                swiperRef.current = swiper;
+              }}
+              modules={[Navigation, A11y, Grid]}
+              spaceBetween={24}
+              slidesPerView={1}
+              navigation={{
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+              }}
+              breakpoints={{
+                640: {
+                  slidesPerView: 1.5,
+                  grid: {
+                    rows: 1,
+                    fill: 'row'
+                  }
+                },
+                768: {
+                  slidesPerView: 2.5,
+                  grid: {
+                    rows: 1,
+                    fill: 'row'
+                  }
+                },
+                1024: {
+                  slidesPerView: 3.5,
+                  grid: {
+                    rows: 1,
+                    fill: 'row'
+                  }
+                }
+              }}
+              loop={true}
+              grabCursor={true}
+              onSlideChange={(swiper) => {
+                setCurrentSlide(swiper.activeIndex);
+              }}
+              className="mySwiper"
+            >
+              {displayedProjects.map((project) => (
+                <SwiperSlide key={project.id} className="h-auto">
+                  <div className="h-full">
+                    <ProjectCard 
+                      project={project} 
+                      layout={layout}
+                      isDraggingParent={isDragging}
+                    />
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+            
+            {/* Custom navigation buttons - made smaller */}
+            <div className="flex justify-end items-center gap-3 mt-16 px-4 sm:px-6 md:px-8">
+              <div className="flex items-center gap-3">
+                <button className="swiper-button-prev p-2 rounded-full bg-white dark:bg-white text-gray-700 dark:text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-100 transition-colors shadow-sm flex items-center justify-center" style={{ width: '46px', height: '46px', minWidth: '46px', minHeight: '46px' }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                
+                <button className="swiper-button-next p-2 rounded-full bg-white dark:bg-white text-gray-700 dark:text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-100 transition-colors shadow-sm flex items-center justify-center" style={{ width: '46px', height: '46px', minWidth: '46px', minHeight: '46px' }}>
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       
       {/* View all button */}
       {showViewAllButton && projects.length > 0 && (
@@ -178,12 +422,13 @@ export function FeaturedProjects({
 interface ProjectCardProps {
   project: Project;
   layout?: 'twoCol' | 'fourCol';
+  isDraggingParent?: boolean;
 }
 
-export function ProjectCard({ project, layout = 'twoCol' }: ProjectCardProps) {
+export function ProjectCard({ project, layout = 'twoCol', isDraggingParent = false }: ProjectCardProps) {
   // fourCol layout rendering
   if (layout === 'fourCol') {
-    return <FourColProjectCard project={project} />;
+    return <FourColProjectCard project={project} isDraggingParent={isDraggingParent} />;
   }
   
   // twoCol layout rendering
@@ -191,7 +436,7 @@ export function ProjectCard({ project, layout = 'twoCol' }: ProjectCardProps) {
 }
 
 // Component for fourCol layout
-function FourColProjectCard({ project }: { project: Project }) {
+function FourColProjectCard({ project, isDraggingParent = false }: { project: Project; isDraggingParent?: boolean }) {
   const [isHovering, setIsHovering] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isVideoVisible, setIsVideoVisible] = useState(false);
@@ -201,7 +446,7 @@ function FourColProjectCard({ project }: { project: Project }) {
   const videoUrl = project.background_video_url || FALLBACK_VIDEO_URL;
   
   const handleMouseEnter = () => {
-    if (!isMobile) {
+    if (!isMobile && !isDraggingParent) {
       setIsHovering(true);
     }
   };
@@ -260,9 +505,14 @@ function FourColProjectCard({ project }: { project: Project }) {
   return (
     <Link 
       href={`/projects/${project.slug}`}
-      className="group relative bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md block h-full"
+      className={`group relative bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md block h-full ${isDraggingParent ? 'pointer-events-none' : ''}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onClick={(e) => {
+        if (isDraggingParent) {
+          e.preventDefault();
+        }
+      }}
     >
       <div className="flex flex-col h-full">
         <div className="relative w-full aspect-[2/3]">

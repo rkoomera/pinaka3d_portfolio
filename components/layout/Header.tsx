@@ -25,7 +25,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 transition-colors duration-200">
-      <Container>
+      <Container size="full">
         <div className="flex items-center justify-between py-4">
           <Link href="/" className="flex items-center">
             <Image 
@@ -75,7 +75,7 @@ export function Header() {
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 bg-white dark:bg-gray-900 z-50 md:hidden transition-colors duration-200">
-          <Container>
+          <Container size="full">
             <div className="flex justify-end py-4">
               <button 
                 onClick={() => setIsMobileMenuOpen(false)}

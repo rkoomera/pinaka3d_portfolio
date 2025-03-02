@@ -30,6 +30,7 @@ export default async function HomePage() {
         background="projects"
         layout="twoCol"
         showLayoutToggle={true}
+        useSwiperOnFourCol={false}
       />
       
       <ContactCTA />

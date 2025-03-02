@@ -1,15 +1,11 @@
 // app/contact/page.tsx
-import { Metadata } from 'next';
+'use client';
+
 import { Section } from '@/components/ui/Section';
 import { Container } from '@/components/ui/Container';
 import { ContactForm } from '@/components/portfolio/ContactForm';
 
-export const metadata: Metadata = {
-  title: 'Contact - Ravi Koomera',
-  description: 'Get in touch with Ravi Koomera for project inquiries or collaboration opportunities.',
-};
-
-export default async function ContactPage() {
+export default function ContactPage() {
   return (
     <Section className="pt-24 md:pt-32" background="white">
       <Container size="lg">

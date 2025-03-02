@@ -36,6 +36,7 @@ export default async function ProjectsPage() {
             background="projects"
             layout="twoCol"
             showLayoutToggle={true}
+            useSwiperOnFourCol={true}
           />
         </div>
         

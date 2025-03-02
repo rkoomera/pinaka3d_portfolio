@@ -14,50 +14,39 @@ export function Footer() {
     : "https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-images//pinaka_logo.svg";
 
   return (
-    <footer className="bg-white dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800 py-12 transition-colors duration-200">
-      <Container>
-        <div className="grid grid-cols-1 gap-16 md:grid-cols-3">
-          <div>
-            <Link href="/" className="mb-4 inline-block">
-              <Image 
-                src={logoSrc} 
-                alt="Pinaka" 
-                width={50} 
-                height={40} 
-                style={{ height: 'auto' }}
-                priority
-              />
-            </Link>
-            <h3 className="text-gray-800 dark:text-gray-200 mb-4 text-4xl font-medium">Pinaka</h3>
-            <p className="text-gray-700 dark:text-gray-300 max-w-md">
-              Creating engaging motion design and interactive experiences for brands and products.
-            </p>
+    <footer className="bg-white dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800 py-8 transition-colors duration-200">
+      <Container size="full">
+        <div className="flex flex-col md:flex-row items-center justify-between">
+          {/* Logo and Name - Always at top on mobile, center on desktop */}
+          <div className="flex items-center mb-6 md:mb-0 order-1 md:order-2">
+            <Image 
+              src={logoSrc} 
+              alt="Pinaka" 
+              width={35} 
+              height={32} 
+              style={{ height: 'auto' }}
+              priority
+            />
+            <h3 className="text-gray-800 dark:text-gray-200 ml-3 text-4xl font-medium">Pinaka</h3>
           </div>
           
-          <div>
-            <h4 className="text-gray-900 dark:text-white mb-2 text-2xl">Navigation</h4>
-            <div className="h-0.5 w-20 mb-4 bg-brand"></div>
-            <ul className="space-y-2">
-              <li><Link href="/" className="text-gray-700 dark:text-gray-300 hover:text-brand dark:hover:text-brand-light transition-colors">Home</Link></li>
-              <li><Link href="/projects" className="text-gray-700 dark:text-gray-300 hover:text-brand dark:hover:text-brand-light transition-colors">Projects</Link></li>
-              <li><Link href="/about" className="text-gray-700 dark:text-gray-300 hover:text-brand dark:hover:text-brand-light transition-colors">About</Link></li>
-              <li><Link href="/contact" className="text-gray-700 dark:text-gray-300 hover:text-brand dark:hover:text-brand-light transition-colors">Contact</Link></li>
-            </ul>
+          {/* Social Links - Middle on mobile, right on desktop */}
+          <div className="flex items-center space-x-6 mb-6 md:mb-0 order-2 md:order-3">
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-700 dark:text-gray-300 hover:text-brand dark:hover:text-brand-light transition-colors text-lg">
+              LinkedIn
+            </a>
+            <a href="https://behance.net" target="_blank" rel="noopener noreferrer" className="text-gray-700 dark:text-gray-300 hover:text-brand dark:hover:text-brand-light transition-colors text-lg">
+              Behance
+            </a>
+            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="text-gray-700 dark:text-gray-300 hover:text-brand dark:hover:text-brand-light transition-colors text-lg">
+              YouTube
+            </a>
           </div>
           
-          <div>
-            <h4 className="text-gray-900 dark:text-white mb-2 text-2xl">Social</h4>
-            <div className="h-0.5 w-20 mb-4 bg-brand"></div>
-            <ul className="space-y-2">
-              <li><a href="https://github.com" target="_blank" rel="noopener noreferrer" className="text-gray-700 dark:text-gray-300 hover:text-brand dark:hover:text-brand-light transition-colors">GitHub</a></li>
-              <li><a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-700 dark:text-gray-300 hover:text-brand dark:hover:text-brand-light transition-colors">LinkedIn</a></li>
-              <li><a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-gray-700 dark:text-gray-300 hover:text-brand dark:hover:text-brand-light transition-colors">Twitter</a></li>
-            </ul>
+          {/* Copyright - Bottom on mobile, left on desktop */}
+          <div className="text-gray-600 dark:text-gray-400 order-3 md:order-1">
+            <p className="text-lg">&copy; {new Date().getFullYear()} Pinaka. All rights reserved.</p>
           </div>
-        </div>
-        
-        <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800 text-center text-gray-600 dark:text-gray-400">
-          <p className="text-sm">&copy; {new Date().getFullYear()} Pinaka. All rights reserved.</p>
         </div>
       </Container>
     </footer>
