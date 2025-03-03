@@ -327,13 +327,18 @@ export function VideoSection({
         </div>
 
         <div className="play-button-container relative z-10 flex items-center justify-center h-full">
-          <div ref={playButtonRef}>
+          <div 
+            ref={playButtonRef} 
+            className="transform-gpu touch-manipulation"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleOpenPopup();
+            }}
+          >
             <PlayButton 
-              onClick={() => {
-                // Handle click on play button
-                handleOpenPopup();
-              }} 
+              onClick={handleOpenPopup} 
               size="lg"
+              className="touch-manipulation"
             />
           </div>
         </div>

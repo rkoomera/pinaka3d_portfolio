@@ -185,10 +185,10 @@ interface FeaturedProjectsProps {
 export function FeaturedProjects({ 
   projects, 
   showHeading = true, 
-  showViewAllButton = true,
+  showViewAllButton = false,
   background = 'gray-100',
   layout: initialLayout = 'twoCol',
-  limit,
+  limit = undefined,
   showLayoutToggle = false,
   useSection = true,
   title = "Featured Projects",
@@ -231,7 +231,7 @@ export function FeaturedProjects({
   }
 
   // Apply limit if specified
-  const displayedProjects = limit ? projects.slice(0, limit) : projects;
+  const displayedProjects = projects;
 
   // Calculate the number of slides for the slider
   // For 4-column layout, we determine how many slides we need based on screen size
@@ -246,7 +246,7 @@ export function FeaturedProjects({
   const visibleCards = getVisibleCards();
 
   const content = (
-    <div className="w-full px-0 mx-0">
+    <div className="w-full">
       {/* Add style tag for Swiper custom styles */}
       <style jsx global>{swiperStyles}</style>
       
@@ -254,7 +254,7 @@ export function FeaturedProjects({
       {isMobile ? (
         // Mobile layout - no toggle, centered heading
         showHeading && (
-          <div className="mb-8 px-4 sm:px-6 md:px-8">
+          <div className="mb-12">
             <SectionHeading
               title={title}
               subtitle={showSubtitle ? subtitle : undefined}
@@ -265,7 +265,7 @@ export function FeaturedProjects({
         )
       ) : (
         // Desktop layout - with toggle if enabled
-        <div className="flex justify-between items-center mb-8 px-4 sm:px-6 md:px-8">
+        <div className="flex justify-between items-center mb-12">
           {showHeading && (
             <SectionHeading
               title={title}
@@ -313,18 +313,32 @@ export function FeaturedProjects({
       {/* Projects grid/list */}
       {layout === 'twoCol' || !useSwiperOnFourCol ? (
         // Two column layout or four column grid (when not using Swiper)
-        <div className={`px-4 sm:px-6 md:px-8 grid grid-cols-1 ${layout === 'twoCol' ? 'md:grid-cols-2' : 'sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4'} gap-8 auto-rows-fr`}>
-          {displayedProjects.map((project) => (
-            <ProjectCard 
+        <div className={`${layout === 'twoCol' 
+          ? 'columns-1 md:columns-2 gap-16 space-y-24' 
+          : 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12 auto-rows-fr'}`}>
+          {displayedProjects.map((project, index) => (
+            <div 
               key={project.id} 
-              project={project} 
-              layout={layout}
-            />
+              className={layout === 'twoCol' 
+                ? 'break-inside-avoid mb-24'
+                : ''
+              }
+            >
+              <ProjectCard 
+                project={project} 
+                layout={layout}
+                aspectRatio={layout === 'twoCol' ? 
+                  index % 4 === 0 ? 'aspect-[4/3]' : 
+                  index % 4 === 1 ? 'aspect-[16/9]' : 
+                  index % 4 === 2 ? 'aspect-square' :
+                  'aspect-[3/2]' : undefined}
+              />
+            </div>
           ))}
         </div>
       ) : (
         // Four column layout with Swiper (only on Projects page)
-        <div className="relative overflow-hidden w-full px-0 mx-0 swiper-container-wrapper">
+        <div className="relative overflow-hidden w-full swiper-container-wrapper">
           <div className="swiper-container">
             <Swiper
               onSwiper={(swiper) => {
@@ -400,9 +414,9 @@ export function FeaturedProjects({
         </div>
       )}
       
-      {/* View all button */}
+      {/* View all button - conditionally rendered */}
       {showViewAllButton && projects.length > 0 && (
-        <div className="mt-12 text-center">
+        <div className="mt-16 text-center">
           <Button href="/projects" variant="outline" size="lg">
             View All Projects
           </Button>
@@ -418,21 +432,24 @@ export function FeaturedProjects({
   ) : content;
 }
 
-// Component for project cards
+// Update the ProjectCardProps interface to include aspectRatio
 interface ProjectCardProps {
   project: Project;
   layout?: 'twoCol' | 'fourCol';
   isDraggingParent?: boolean;
+  isLarge?: boolean;
+  aspectRatio?: string;
 }
 
-export function ProjectCard({ project, layout = 'twoCol', isDraggingParent = false }: ProjectCardProps) {
+// Update the ProjectCard component to pass aspectRatio to TwoColProjectCard
+export function ProjectCard({ project, layout = 'twoCol', isDraggingParent = false, isLarge = false, aspectRatio }: ProjectCardProps) {
   // fourCol layout rendering
   if (layout === 'fourCol') {
     return <FourColProjectCard project={project} isDraggingParent={isDraggingParent} />;
   }
   
   // twoCol layout rendering
-  return <TwoColProjectCard project={project} />;
+  return <TwoColProjectCard project={project} isLarge={isLarge} aspectRatio={aspectRatio} />;
 }
 
 // Component for fourCol layout
@@ -560,7 +577,7 @@ function FourColProjectCard({ project, isDraggingParent = false }: { project: Pr
 }
 
 // Component for twoCol layout
-function TwoColProjectCard({ project }: { project: Project }) {
+function TwoColProjectCard({ project, isLarge = false, aspectRatio = 'aspect-video' }: { project: Project; isLarge?: boolean; aspectRatio?: string }) {
   const [isHovering, setIsHovering] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isVideoVisible, setIsVideoVisible] = useState(false);
@@ -630,11 +647,11 @@ function TwoColProjectCard({ project }: { project: Project }) {
   return (
     <Link 
       href={`/projects/${project.slug}`}
-      className="group relative bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md block h-full"
+      className="group relative overflow-hidden block transition-transform duration-300 hover:scale-[1.02]"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <div className="relative aspect-video w-full">
+      <div className={`relative w-full ${aspectRatio} max-h-[70vh]`}>
         {/* Video */}
         <video
           ref={videoRef}
@@ -658,19 +675,26 @@ function TwoColProjectCard({ project }: { project: Project }) {
             }}
           />
         ) : (
-          <div className="absolute inset-0 bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-            <span className="text-gray-500 dark:text-gray-400">No image</span>
+          <div className="absolute inset-0 bg-gray-800 flex items-center justify-center">
+            <span className="text-gray-400">No image</span>
           </div>
         )}
         
-        {/* Overlay gradient - always visible on mobile, only on hover for desktop */}
-        <div className={`absolute inset-0 bg-gradient-to-t from-black/70 to-transparent transition-opacity duration-300 ${isMobile ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}></div>
+        {/* Overlay gradient - always visible but more intense on hover */}
+        <div className={`absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent transition-opacity duration-300 ${isHovering ? 'opacity-100' : 'opacity-70'}`}></div>
         
-        {/* Text container - always at bottom for mobile, animated for desktop */}
-        <div className={`absolute inset-x-0 bottom-0 p-6 transition-transform duration-300 ease-in-out ${isMobile ? 'transform-none' : 'transform translate-y-full group-hover:translate-y-0'}`}>
-          <h3 className={`font-bold text-white ${isMobile ? 'text-xl' : 'text-2xl md:text-3xl'}`}>
-            {project.title}
-          </h3>
+        {/* Text container - always visible but transforms on hover */}
+        <div className="absolute inset-x-0 bottom-0 p-8 transition-all duration-300 ease-in-out transform group-hover:translate-y-0">
+          <div className="transform transition-transform duration-300 group-hover:translate-y-0 group-hover:scale-105">
+            <h3 className="font-bold text-white text-xl md:text-2xl">
+              {project.title}
+            </h3>
+            {project.category && (
+              <p className="text-gray-300 mt-3 text-sm md:text-base opacity-80">
+                {project.category.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+              </p>
+            )}
+          </div>
         </div>
       </div>
     </Link>
