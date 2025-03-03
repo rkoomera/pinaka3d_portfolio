@@ -117,7 +117,7 @@ export function ContactForm() {
       )}
       
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-dark dark:text-light mb-2 transition-colors duration-200">
+        <label htmlFor="name" className="block text-sm font-medium text-gray-900 dark:text-white mb-2 transition-colors duration-200">
           Name
         </label>
         <input
@@ -128,12 +128,12 @@ export function ContactForm() {
           onChange={handleChange}
           required
           placeholder="Your name"
-          className="mt-1 block w-full px-4 py-3 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-dark shadow-sm focus:border-brand focus:ring-brand focus:ring-2 focus:outline-none text-dark dark:text-light transition-colors duration-200"
+          className="mt-1 block w-full px-4 py-3 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm focus:border-brand focus:ring-brand focus:ring-2 focus:outline-none text-gray-900 dark:text-white transition-colors duration-200"
         />
       </div>
       
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-dark dark:text-light mb-2 transition-colors duration-200">
+        <label htmlFor="email" className="block text-sm font-medium text-gray-900 dark:text-white mb-2 transition-colors duration-200">
           Email
         </label>
         <input
@@ -144,12 +144,12 @@ export function ContactForm() {
           onChange={handleChange}
           required
           placeholder="your.email@example.com"
-          className="mt-1 block w-full px-4 py-3 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-dark shadow-sm focus:border-brand focus:ring-brand focus:ring-2 focus:outline-none text-dark dark:text-light transition-colors duration-200"
+          className="mt-1 block w-full px-4 py-3 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm focus:border-brand focus:ring-brand focus:ring-2 focus:outline-none text-gray-900 dark:text-white transition-colors duration-200"
         />
       </div>
       
       <div>
-        <label htmlFor="subject" className="block text-sm font-medium text-dark dark:text-light mb-2 transition-colors duration-200">
+        <label htmlFor="subject" className="block text-sm font-medium text-gray-900 dark:text-white mb-2 transition-colors duration-200">
           Subject
         </label>
         <input
@@ -160,12 +160,12 @@ export function ContactForm() {
           onChange={handleChange}
           required
           placeholder="What's this about?"
-          className="mt-1 block w-full px-4 py-3 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-dark shadow-sm focus:border-brand focus:ring-brand focus:ring-2 focus:outline-none text-dark dark:text-light transition-colors duration-200"
+          className="mt-1 block w-full px-4 py-3 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm focus:border-brand focus:ring-brand focus:ring-2 focus:outline-none text-gray-900 dark:text-white transition-colors duration-200"
         />
       </div>
       
       <div>
-        <label htmlFor="message" className="block text-sm font-medium text-dark dark:text-light mb-2 transition-colors duration-200">
+        <label htmlFor="message" className="block text-sm font-medium text-gray-900 dark:text-white mb-2 transition-colors duration-200">
           Message
         </label>
         <textarea
@@ -176,7 +176,7 @@ export function ContactForm() {
           required
           placeholder="Your message"
           rows={7}
-          className="mt-1 block w-full px-4 py-3 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-dark shadow-sm focus:border-brand focus:ring-brand focus:ring-2 focus:outline-none text-dark dark:text-light transition-colors duration-200 resize-y"
+          className="mt-1 block w-full px-4 py-3 rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm focus:border-brand focus:ring-brand focus:ring-2 focus:outline-none text-gray-900 dark:text-white transition-colors duration-200 resize-y"
         />
       </div>
       

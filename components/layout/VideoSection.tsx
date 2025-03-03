@@ -2,6 +2,8 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { PlayButton } from '@/components/ui/PlayButton';
+import gsap from 'gsap';
+import { createPortal } from 'react-dom';
 
 interface VideoSectionProps {
   backgroundVideoUrl?: string;
@@ -53,11 +55,12 @@ export function VideoSection({
   console.log('VideoSection - backgroundVideoUrl:', backgroundVideoUrl);
   console.log('VideoSection - popupVideoUrl:', popupVideoUrl);
   
+  const [isMounted, setIsMounted] = useState(false);
   const [showVideoPopup, setShowVideoPopup] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const popupVideoRef = useRef<HTMLVideoElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const playButtonRef = useRef<HTMLDivElement>(null);
   const popupRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const videoContainerRef = useRef<HTMLDivElement>(null);
@@ -101,25 +104,93 @@ export function VideoSection({
     };
   }, [showVideoPopup, isMounted]);
 
+  // Handle cursor following effect for play button
+  useEffect(() => {
+    if (!isMounted || !playButtonRef.current || !sectionRef.current) return;
+    
+    const playButton = playButtonRef.current;
+    const section = sectionRef.current;
+    
+    // Set initial position
+    playButton.style.transform = 'translate(0px, 0px)';
+    playButton.style.transition = 'transform 0.3s linear';
+    
+    // Current position of the button
+    let currentX = 0;
+    let currentY = 0;
+    
+    // Target position (where the cursor is)
+    let targetX = 0;
+    let targetY = 0;
+    
+    // Drag factor (lower = more drag, higher = less drag)
+    const dragFactor = 0.15;
+    
+    const handleMouseMove = (e: MouseEvent) => {
+      // Get section's bounding rectangle
+      const rect = section.getBoundingClientRect();
+      
+      // Calculate mouse position relative to the center of the section
+      targetX = e.clientX - rect.left - rect.width / 2;
+      targetY = e.clientY - rect.top - rect.height / 2 + 20; // 20px offset below cursor
+    };
+    
+    // Reset position when mouse leaves
+    const handleMouseLeave = () => {
+      targetX = 0;
+      targetY = 0;
+    };
+    
+    // Animation loop for smooth following with drag
+    const animatePosition = () => {
+      // Calculate the distance between current and target positions
+      const dx = targetX - currentX;
+      const dy = targetY - currentY;
+      
+      // Move current position a percentage of the way to the target (creates drag effect)
+      currentX += dx * dragFactor;
+      currentY += dy * dragFactor;
+      
+      // Apply the new position
+      playButton.style.transform = `translate(${currentX}px, ${currentY}px)`;
+      
+      // Continue the animation loop
+      requestAnimationFrame(animatePosition);
+    };
+    
+    // Start the animation loop
+    const animationId = requestAnimationFrame(animatePosition);
+    
+    // Add event listeners
+    section.addEventListener('mousemove', handleMouseMove);
+    section.addEventListener('mouseleave', handleMouseLeave);
+    
+    // Cleanup
+    return () => {
+      section.removeEventListener('mousemove', handleMouseMove);
+      section.removeEventListener('mouseleave', handleMouseLeave);
+      cancelAnimationFrame(animationId);
+    };
+  }, [isMounted]);
+
   // Handle opening the popup
   const handleOpenPopup = () => {
-    setIsClosing(false);
+    document.body.style.overflow = 'hidden'; // Prevent scrolling when popup is open
     setShowVideoPopup(true);
   };
 
   // Handle closing the popup with animation
   const handleClosePopup = () => {
-    if (popupVideoRef.current) {
-      popupVideoRef.current.pause();
-    }
-    
+    // Start the closing animation
     setIsClosing(true);
     
-    // Wait for animation to complete before hiding the popup
+    // Wait for the animation to complete before hiding the popup
     setTimeout(() => {
+      // Only remove from DOM after animation completes
       setShowVideoPopup(false);
       setIsClosing(false);
-    }, 400); // Match this with the animation duration
+      document.body.style.overflow = ''; // Re-enable scrolling
+    }, 600); // Slightly longer than animation duration to ensure it completes
   };
 
   // Handle escape key to close popup
@@ -142,9 +213,9 @@ export function VideoSection({
   // If not mounted yet (server-side), render a placeholder
   if (!isMounted) {
     return (
-      <section className={`relative w-full ${height} bg-black dark:bg-black overflow-hidden ${className} transition-colors duration-200`}>
+      <section className={`relative w-full ${height} bg-gray-100 dark:bg-gray-900 overflow-hidden ${className} transition-colors duration-300`}>
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="h-16 w-16 animate-pulse rounded-full bg-white/20"></div>
+          <div className="h-16 w-16 animate-pulse rounded-full bg-gray-300 dark:bg-gray-700 transition-colors duration-300"></div>
         </div>
       </section>
     );
@@ -163,73 +234,65 @@ export function VideoSection({
     embedUrl = getVimeoEmbedUrl(popupVideoUrl);
   }
 
-  return (
-    <section className={`relative w-full ${height} bg-black dark:bg-black overflow-hidden ${className} transition-colors duration-200`}>
-      {/* Background video */}
-      <video 
-        ref={videoRef}
-        className="absolute top-0 left-0 w-full h-full object-cover" 
-        autoPlay 
-        loop 
-        muted
-        playsInline
+  // Render the popup using a portal to ensure it's positioned relative to the viewport
+  const renderVideoPopup = () => {
+    if (!showVideoPopup || !isMounted) return null;
+    
+    return createPortal(
+      <div 
+        ref={popupRef}
+        className={`fixed inset-0 z-50 flex items-center justify-center ${
+          isClosing ? 'animate-fadeOut' : 'animate-fadeIn'
+        }`}
+        style={{
+          backgroundColor: 'rgba(0, 0, 0, 0.9)',
+          visibility: isClosing ? 'visible' : 'visible'
+        }}
+        onClick={(e) => {
+          // Only close if clicking the background, not the video itself
+          if (e.target === e.currentTarget) {
+            handleClosePopup();
+          }
+        }}
       >
-        <source src={backgroundVideoUrl} type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
-      
-      {/* Gradient overlay - lighter for better visibility */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/5 to-transparent z-10"></div>
-      
-      {/* Content container */}
-      <div className="absolute inset-0 flex flex-col items-center justify-center z-20 px-4 text-center">
-        {/* Play button */}
-        <PlayButton onClick={handleOpenPopup} size="md" />
-      </div>
-
-      {/* Video popup with CSS transitions */}
-      {showVideoPopup && (
         <div 
-          ref={popupRef}
-          className={`fixed inset-0 bg-black/80 dark:bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 ${isClosing ? 'animate-fadeOut' : 'animate-fadeIn'} transition-colors duration-200`}
-          onClick={handleClosePopup}
+          className={`relative w-full max-w-5xl mx-auto aspect-video px-4 sm:px-6 md:px-8 ${
+            isClosing ? 'animate-scaleOut' : 'animate-scaleIn'
+          }`}
         >
           {/* Close button */}
-          <button
-            ref={closeButtonRef}
-            className={`absolute top-6 right-6 text-white bg-black/80 hover:bg-black/90 rounded-full p-3 z-50 transition-colors shadow-lg ${isClosing ? 'animate-fadeOut' : 'animate-fadeIn'}`}
+          <button 
+            className="absolute -top-12 right-2 text-white hover:text-gray-300 transition-colors z-10"
             onClick={handleClosePopup}
-            aria-label="Close video"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
-          
-          <div 
-            ref={videoContainerRef}
-            className={`bg-black dark:bg-black relative max-w-5xl w-full mx-4 shadow-2xl ${isClosing ? 'animate-scaleOut' : 'animate-scaleIn'} transition-colors duration-200`}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {isEmbedVideo ? (
-              // Embedded iframe for YouTube or Vimeo
-              <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
-                <iframe
-                  className="absolute top-0 left-0 w-full h-full"
-                  src={embedUrl}
-                  title="Video Player"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                ></iframe>
-              </div>
+
+          {/* Video content */}
+          <div className="w-full h-full overflow-hidden rounded-lg shadow-2xl">
+            {isYouTubeUrl(popupVideoUrl) ? (
+              <iframe
+                src={getYouTubeEmbedUrl(popupVideoUrl)}
+                className="w-full h-full"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              ></iframe>
+            ) : isVimeoUrl(popupVideoUrl) ? (
+              <iframe
+                src={getVimeoEmbedUrl(popupVideoUrl)}
+                className="w-full h-full"
+                frameBorder="0"
+                allow="autoplay; fullscreen; picture-in-picture"
+                allowFullScreen
+              ></iframe>
             ) : (
-              // Direct video file
-              <video 
-                ref={popupVideoRef}
-                controls 
-                autoPlay 
-                className="w-full h-auto"
+              <video
+                className="w-full h-full"
+                controls
+                autoPlay
               >
                 <source src={popupVideoUrl} type="video/mp4" />
                 Your browser does not support the video tag.
@@ -237,7 +300,47 @@ export function VideoSection({
             )}
           </div>
         </div>
-      )}
-    </section>
+      </div>,
+      document.body
+    );
+  };
+
+  return (
+    <>
+      <section 
+        ref={sectionRef}
+        className={`relative overflow-hidden ${height} ${className} cursor-pointer`}
+        onClick={handleOpenPopup}
+      >
+        <div className="absolute inset-0 w-full h-full">
+          <video
+            ref={videoRef}
+            autoPlay
+            muted
+            loop
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover"
+          >
+            <source src={backgroundVideoUrl} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+
+        <div className="play-button-container relative z-10 flex items-center justify-center h-full">
+          <div ref={playButtonRef}>
+            <PlayButton 
+              onClick={() => {
+                // Handle click on play button
+                handleOpenPopup();
+              }} 
+              size="lg"
+            />
+          </div>
+        </div>
+      </section>
+      
+      {/* Render popup using portal */}
+      {renderVideoPopup()}
+    </>
   );
 } 

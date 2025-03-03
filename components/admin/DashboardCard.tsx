@@ -39,13 +39,13 @@ export function DashboardCard({
     >
       <div className="p-6 flex-grow">
         <div className="flex items-start justify-between mb-4">
-          <div className={`p-3 rounded-lg ${iconColorClass}`}>
+          <div className={`p-3 rounded-lg ${iconColorClass} transition-colors duration-200`}>
             {icon}
           </div>
           {count !== undefined && (
             <div className="text-right">
-              <p className="text-3xl font-bold text-gray-900 dark:text-white">{count}</p>
-              <p className="text-gray-700 dark:text-gray-300 text-sm">{countLabel}</p>
+              <p className="text-3xl font-bold text-gray-900 dark:text-white transition-colors duration-200">{count}</p>
+              <p className="text-gray-700 dark:text-gray-300 text-sm transition-colors duration-200">{countLabel}</p>
             </div>
           )}
         </div>
@@ -59,7 +59,7 @@ export function DashboardCard({
         </div>
       </div>
       
-      <div className="px-6 py-3 bg-gray-100 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-auto">
+      <div className="px-6 py-3 bg-gray-100 dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 mt-auto transition-colors duration-200">
         <span className="text-sm font-medium text-brand flex items-center">
           View Details
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" viewBox="0 0 20 20" fill="currentColor">

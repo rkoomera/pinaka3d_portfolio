@@ -88,12 +88,12 @@ export default async function Page({ params }: Props) {
       <Section className="pt-24 md:pt-32 !pb-0">
         <Container size="lg">
           <div className="max-w-3xl mx-auto text-center pb-16">
-            <h1 className="text-3xl font-bold text-dark dark:text-light sm:text-4xl mb-3 transition-colors duration-200">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl mb-3 transition-colors duration-200">
               {project.title}
             </h1>
             
             {project.subtitle && (
-              <p className="text-xl text-dark-secondary dark:text-light-secondary transition-colors duration-200">{project.subtitle}</p>
+              <p className="text-xl text-gray-700 dark:text-gray-300 transition-colors duration-200">{project.subtitle}</p>
             )}
           </div>
         </Container>
@@ -130,9 +130,9 @@ export default async function Page({ params }: Props) {
         <Container size="lg">
           {/* Project Overview */}
           <div className="mb-16">
-            <h2 className="text-2xl font-semibold text-dark dark:text-light mb-6 inline-block pb-2 border-b-2 border-brand transition-colors duration-200">Overview</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6 inline-block pb-2 border-b-2 border-brand transition-colors duration-200">Overview</h2>
             <div className="prose prose-lg max-w-none dark:prose-invert transition-colors duration-200">
-              {project.summary && <p className="text-lg text-dark-secondary dark:text-light-secondary leading-relaxed transition-colors duration-200">{project.summary}</p>}
+              {project.summary && <p className="text-lg text-gray-700 dark:text-gray-300 leading-relaxed transition-colors duration-200">{project.summary}</p>}
               
               {project.content && (
                 <div className="mt-6">
@@ -144,33 +144,33 @@ export default async function Page({ params }: Props) {
           
           {/* Project Details */}
           <div className="mb-16">
-            <h2 className="text-2xl font-semibold text-dark dark:text-light mb-6 inline-block pb-2 border-b-2 border-brand transition-colors duration-200">Project Details</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-6 inline-block pb-2 border-b-2 border-brand transition-colors duration-200">Project Details</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="space-y-6">
                 {project.client_name && (
                   <div>
-                    <h3 className="text-sm uppercase tracking-wider text-dark-secondary dark:text-light-secondary mb-2 transition-colors duration-200">Client</h3>
-                    <p className="font-medium text-dark dark:text-light transition-colors duration-200">{project.client_name}</p>
+                    <h3 className="text-sm uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-200">Client</h3>
+                    <p className="font-medium text-gray-900 dark:text-white transition-colors duration-200">{project.client_name}</p>
                   </div>
                 )}
                 
                 {project.duration && (
                   <div>
-                    <h3 className="text-sm uppercase tracking-wider text-dark-secondary dark:text-light-secondary mb-2 transition-colors duration-200">Duration</h3>
-                    <p className="font-medium text-dark dark:text-light transition-colors duration-200">{project.duration}</p>
+                    <h3 className="text-sm uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-200">Duration</h3>
+                    <p className="font-medium text-gray-900 dark:text-white transition-colors duration-200">{project.duration}</p>
                   </div>
                 )}
                 
                 {project.role && (
                   <div>
-                    <h3 className="text-sm uppercase tracking-wider text-dark-secondary dark:text-light-secondary mb-2 transition-colors duration-200">My Role</h3>
-                    <p className="font-medium text-dark dark:text-light transition-colors duration-200">{project.role}</p>
+                    <h3 className="text-sm uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-200">My Role</h3>
+                    <p className="font-medium text-gray-900 dark:text-white transition-colors duration-200">{project.role}</p>
                   </div>
                 )}
                 
                 {project.client_website && (
                   <div>
-                    <h3 className="text-sm uppercase tracking-wider text-dark-secondary dark:text-light-secondary mb-2 transition-colors duration-200">Website</h3>
+                    <h3 className="text-sm uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-200">Website</h3>
                     <a 
                       href={project.client_website} 
                       target="_blank" 
@@ -193,12 +193,12 @@ export default async function Page({ params }: Props) {
               <div>
                 {project.tech_stack && project.tech_stack.length > 0 && (
                   <div>
-                    <h3 className="text-sm uppercase tracking-wider text-dark-secondary dark:text-light-secondary mb-2 transition-colors duration-200">Technologies</h3>
+                    <h3 className="text-sm uppercase tracking-wider text-gray-700 dark:text-gray-300 mb-2 transition-colors duration-200">Technologies</h3>
                     <div className="flex flex-wrap gap-2">
                       {project.tech_stack.map((tech) => (
                         <span 
                           key={tech}
-                          className="px-3 py-1 bg-white dark:bg-dark border border-light-secondary dark:border-light rounded-md text-sm shadow-sm transition-colors duration-200 text-dark dark:text-light"
+                          className="px-3 py-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md text-sm shadow-sm transition-colors duration-200 text-gray-900 dark:text-white"
                         >
                           {tech}
                         </span>
@@ -243,7 +243,7 @@ export default async function Page({ params }: Props) {
       {relatedProjects.length === 0 && (
         <Section className="!pt-12 !pb-16 bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
           <Container size="lg" className="text-center">
-            <h2 className="text-2xl font-semibold text-dark dark:text-light mb-4 transition-colors duration-200">Explore More Projects</h2>
+            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4 transition-colors duration-200">Explore More Projects</h2>
             <Button href="/projects" variant="outline" size="lg">
               View All Projects
             </Button>

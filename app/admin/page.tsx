@@ -24,13 +24,13 @@ export default async function AdminDashboardPage() {
   const userCount = users.length;
   
   return (
-    <Section background="white" className="dark:bg-gray-950">
+    <Section background="gray-100" className="transition-colors duration-200">
       <Container>
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white transition-colors duration-200">
             Admin Dashboard
           </h1>
-          <div className="text-sm text-gray-700 dark:text-gray-300">
+          <div className="text-sm text-gray-700 dark:text-gray-300 transition-colors duration-200">
             Last updated: {new Date().toLocaleString()}
           </div>
         </div>

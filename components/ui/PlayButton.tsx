@@ -32,12 +32,10 @@ export function PlayButton({ onClick, size = 'md', className = '' }: PlayButtonP
 
   return (
     <button
-      className={`group relative bg-brand/80 backdrop-blur-sm text-white dark:text-white ${button} rounded-full shadow-lg flex items-center justify-center hover:bg-brand transition-all duration-300 border-2 border-accent/40 hover:scale-105 ${className}`}
+      className={`group relative bg-brand text-white dark:text-white ${button} rounded-full shadow-lg flex items-center justify-center hover:bg-brand transition-all duration-300 hover:scale-105 ${className}`}
       onClick={onClick}
       aria-label="Play video"
     >
-      {/* Outer glow effect */}
-      <div className="absolute inset-0 rounded-full bg-accent/20 dark:bg-accent/20 blur-md transform scale-110 group-hover:scale-125 transition-transform duration-300"></div>
       
       {/* Simple triangle play icon */}
       <div className="relative z-10 flex items-center justify-center">

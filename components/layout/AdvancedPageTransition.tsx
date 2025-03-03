@@ -23,32 +23,30 @@ export function AdvancedPageTransition({
   
   // Create variants based on the current theme to prevent flashing
   const getVariants = () => {
-    const isDark = theme === 'dark';
-    
     const variants = {
       fade: {
         initial: { opacity: 0 },
         animate: { opacity: 1 },
         exit: { opacity: 0 },
-        transition: { duration: 0.5, ease: "easeInOut" }
+        transition: { duration: 0.4, ease: "easeInOut" }
       },
       slide: {
-        initial: { opacity: 0, y: 30 },
+        initial: { opacity: 0, y: 20 },
         animate: { opacity: 1, y: 0 },
-        exit: { opacity: 0, y: -30 },
-        transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } // Custom cubic-bezier for elegant motion
+        exit: { opacity: 0, y: -20 },
+        transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } // Custom cubic-bezier for elegant motion
       },
       zoom: {
-        initial: { opacity: 0, scale: 0.95 },
+        initial: { opacity: 0, scale: 0.98 },
         animate: { opacity: 1, scale: 1 },
-        exit: { opacity: 0, scale: 1.05 },
-        transition: { duration: 0.5, ease: "easeInOut" }
+        exit: { opacity: 0, scale: 1.02 },
+        transition: { duration: 0.4, ease: "easeInOut" }
       },
       flip: {
-        initial: { opacity: 0, rotateX: 15 },
+        initial: { opacity: 0, rotateX: 10 },
         animate: { opacity: 1, rotateX: 0 },
-        exit: { opacity: 0, rotateX: -15 },
-        transition: { duration: 0.5, ease: "easeInOut" }
+        exit: { opacity: 0, rotateX: -10 },
+        transition: { duration: 0.4, ease: "easeInOut" }
       },
       none: {
         initial: {},
@@ -76,15 +74,15 @@ export function AdvancedPageTransition({
       gsap.fromTo(
         elements,
         { 
-          y: transitionType === 'slide' ? 20 : 10, 
+          y: transitionType === 'slide' ? 15 : 8, 
           opacity: 0 
         },
         { 
           y: 0, 
           opacity: 1, 
-          stagger: 0.05, 
-          duration: 0.5,
-          delay: transitionType === 'slide' ? 0.3 : 0.2, // Slightly longer delay for slide to let the main transition complete
+          stagger: 0.03, 
+          duration: 0.4,
+          delay: transitionType === 'slide' ? 0.2 : 0.15, // Slightly longer delay for slide to let the main transition complete
           ease: "power2.out"
         }
       );
@@ -99,24 +97,16 @@ export function AdvancedPageTransition({
   // Get the appropriate variants
   const currentVariants = getVariants();
   
-  // Apply background color based on theme to prevent flashing
-  const bgClass = theme === 'dark' ? 'bg-gray-950' : 'bg-white';
-  
   return (
-    <>
-      {/* Add a fixed background that matches the theme */}
-      <div className={`fixed inset-0 ${bgClass} z-[-1]`} />
-      
-      <motion.div
-        ref={containerRef}
-        initial={currentVariants.initial}
-        animate={currentVariants.animate}
-        exit={currentVariants.exit}
-        transition={currentVariants.transition}
-        className={`w-full ${bgClass}`}
-      >
-        {children}
-      </motion.div>
-    </>
+    <motion.div
+      ref={containerRef}
+      initial={currentVariants.initial}
+      animate={currentVariants.animate}
+      exit={currentVariants.exit}
+      transition={currentVariants.transition}
+      className="w-full"
+    >
+      {children}
+    </motion.div>
   );
 } 
