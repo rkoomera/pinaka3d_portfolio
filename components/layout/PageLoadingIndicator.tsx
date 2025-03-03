@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useRouter } from 'next/navigation';
 
-export function PageLoadingIndicator() {
+// Separate component that uses useSearchParams
+function LoadingIndicatorContent() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
@@ -87,5 +87,18 @@ export function PageLoadingIndicator() {
         />
       )}
     </AnimatePresence>
+  );
+}
+
+// Loading fallback for Suspense
+function LoadingIndicatorFallback() {
+  return null; // Empty fallback since we don't want to show anything while loading
+}
+
+export function PageLoadingIndicator() {
+  return (
+    <Suspense fallback={<LoadingIndicatorFallback />}>
+      <LoadingIndicatorContent />
+    </Suspense>
   );
 } 

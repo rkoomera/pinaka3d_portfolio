@@ -1,6 +1,5 @@
 // app/not-found.tsx
-'use client';
-
+// This is a server component
 import { Section } from '@/components/ui/Section';
 import { Container } from '@/components/ui/Container';
 import { Button } from '@/components/ui/Button';

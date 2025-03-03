@@ -18,8 +18,24 @@ export default async function HomePage() {
   return (
     <>
       <HeroSection
-        title="Hi, I'm Ravi!"
-        subtitle="Motion Designer producing high-quality video content. Based in Frankfurt, Germany."
+        titleLines={[
+          { 
+            text: "I'm Ravi aka Pinaka", 
+            className: "font-normal text-4xl text-brand dark:text-white sm:text-4xl" 
+          },
+          { 
+            text: "Motion Designer and Developer", 
+            className: "font-normal text-3xl text-gray-900 dark:text-white italic sm:text-3xl" 
+          },
+          { 
+            text: "based in Frankfurt, Germany.", 
+            className: "font-normal text-3xl text-gray-900 dark:text-white italic sm:text-3xl" 
+          }
+        ]}
+        imageUrl="https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-images//3d-portrait.jpg?text=Ravi+Koomera"
+        imageAlt="Ravi Koomera - Motion Designer & Developer"
+        imageSize={400}
+        imageHeight={350}
       />
       
       <VideoSection />
