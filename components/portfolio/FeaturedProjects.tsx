@@ -15,12 +15,13 @@ import { Navigation, A11y, Grid } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/grid';
+import 'swiper/css/pagination';
 
 // Custom styles for Swiper
 const swiperStyles = `
   .swiper-container {
     position: relative;
-    padding-bottom: 30px;
+    padding-bottom: 0;
     width: 100vw !important;
     margin-left: calc(-50vw + 50%) !important;
     left: 0 !important;
@@ -81,39 +82,37 @@ const swiperStyles = `
     overflow-x: hidden;
   }
   
+  /* Custom pagination styles */
   .swiper-pagination {
-    position: relative;
-    bottom: 0;
+    position: static !important;
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     align-items: center;
-    margin-top: 0;
+    margin: 0 10px;
     width: auto !important;
-    height: 16px;
   }
   
   .swiper-pagination-bullet {
-    width: 10px;
-    height: 10px;
-    background-color: rgba(180, 180, 180, 0.5);
-    opacity: 0.5;
-    transition: all 0.3s ease;
-    margin: 0 2px;
+    width: 10px !important;
+    height: 10px !important;
+    background-color: rgba(180, 180, 180, 0.5) !important;
+    opacity: 0.5 !important;
+    transition: all 0.3s ease !important;
+    margin: 0 4px !important;
   }
   
   .swiper-pagination-bullet-active {
-    opacity: 1;
-    background-color: #fff;
-    transform: scale(1.2);
-    box-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+    opacity: 1 !important;
+    background-color: #7645fc !important;
+    transform: scale(1.2) !important;
   }
   
   .dark .swiper-pagination-bullet {
-    background-color: rgba(100, 100, 100, 0.5);
+    background-color: rgba(100, 100, 100, 0.5) !important;
   }
   
   .dark .swiper-pagination-bullet-active {
-    background-color: #fff;
+    background-color: #5f35d9 !important;
   }
   
   .swiper-button-prev,
@@ -200,9 +199,15 @@ export function FeaturedProjects({
   const [layout, setLayout] = useState<'twoCol' | 'fourCol'>(initialLayout);
   const [isMobile, setIsMobile] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [realIndex, setRealIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [showNavigation, setShowNavigation] = useState(true);
+  const [swiperProgress, setSwiperProgress] = useState(0);
   const sliderRef = useRef<HTMLDivElement>(null);
   const swiperRef = useRef<any>(null);
+  const swiperContainerRef = useRef<HTMLDivElement>(null);
+  const leftArrowRef = useRef<HTMLDivElement>(null);
+  const rightArrowRef = useRef<HTMLDivElement>(null);
   
   // Check if device is mobile
   useEffect(() => {
@@ -221,9 +226,11 @@ export function FeaturedProjects({
   
   // Force twoCol layout on mobile devices
   useEffect(() => {
-    if (isMobile && layout === 'fourCol') {
-      setLayout('twoCol');
-    }
+    // Remove the automatic layout change for mobile
+    // This allows users to toggle between layouts on mobile
+    // if (isMobile && layout === 'fourCol') {
+    //   setLayout('twoCol');
+    // }
   }, [isMobile, layout]);
   
   if (!projects || projects.length === 0) {
@@ -231,7 +238,7 @@ export function FeaturedProjects({
   }
 
   // Apply limit if specified
-  const displayedProjects = projects;
+  const displayedProjects = limit ? projects.slice(0, limit) : projects;
 
   // Calculate the number of slides for the slider
   // For 4-column layout, we determine how many slides we need based on screen size
@@ -245,6 +252,174 @@ export function FeaturedProjects({
   
   const visibleCards = getVisibleCards();
 
+  // Handle navigation visibility - modify to make it always visible with a fade effect
+  useEffect(() => {
+    if (!swiperContainerRef.current) return;
+    
+    const container = swiperContainerRef.current;
+    
+    // Set navigation to be visible by default
+    setShowNavigation(true);
+    
+    const handleMouseEnter = () => {
+      setShowNavigation(true);
+    };
+    
+    const handleMouseLeave = () => {
+      // Only hide navigation on desktop, keep visible on mobile
+      if (!isMobile) {
+        setShowNavigation(false);
+      }
+    };
+    
+    // Add event listeners
+    container.addEventListener('mouseenter', handleMouseEnter);
+    container.addEventListener('mouseleave', handleMouseLeave);
+    
+    // Cleanup
+    return () => {
+      container.removeEventListener('mouseenter', handleMouseEnter);
+      container.removeEventListener('mouseleave', handleMouseLeave);
+    };
+  }, [isMobile]);
+  
+  // Simplified active dot index calculation
+  const getActiveDotIndex = (realIndex: number, totalSlides: number) => {
+    // Simply use modulo to get the correct index within the available dots
+    return realIndex % Math.min(5, totalSlides);
+  };
+  
+  const renderSwiper = () => (
+    <div 
+      className="relative overflow-hidden w-full swiper-container-wrapper"
+      onMouseEnter={() => setShowNavigation(true)}
+      onMouseLeave={() => isMobile ? setShowNavigation(true) : setShowNavigation(false)}
+    >
+      <div className="swiper-container relative" ref={swiperContainerRef}>
+        <Swiper
+          onSwiper={(swiper) => {
+            swiperRef.current = swiper;
+            // Initialize the real index
+            setRealIndex(0);
+          }}
+          modules={[Navigation, A11y, Grid]}
+          spaceBetween={24}
+          slidesPerView={1.5}
+          navigation={false}
+          breakpoints={{
+            640: {
+              slidesPerView: 1.5,
+              grid: {
+                rows: 1,
+                fill: 'row'
+              }
+            },
+            768: {
+              slidesPerView: 2.5,
+              grid: {
+                rows: 1,
+                fill: 'row'
+              }
+            },
+            1024: {
+              slidesPerView: 4.5,
+              grid: {
+                rows: 1,
+                fill: 'row'
+              }
+            }
+          }}
+          loop={true}
+          grabCursor={true}
+          onSlideChange={(swiper) => {
+            setCurrentSlide(swiper.activeIndex);
+            
+            // Calculate the real index based on the active index and total slides
+            // For looped sliders, we need to account for the cloned slides
+            const totalSlides = Math.min(5, displayedProjects.length);
+            const realSlideIndex = swiper.realIndex % totalSlides;
+            setRealIndex(realSlideIndex);
+            
+            // Update progress
+            setSwiperProgress(swiper.progress);
+          }}
+          onProgress={(swiper) => {
+            setSwiperProgress(swiper.progress);
+          }}
+          className="mySwiper"
+        >
+          {displayedProjects.map((project, index) => (
+            <SwiperSlide key={`swiper-project-${project.id}-${index}`} className="h-auto">
+              <div className="h-full">
+                <ProjectCard 
+                  project={project} 
+                  layout={layout}
+                  isDraggingParent={isDragging}
+                />
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+        
+        {/* Capsule-style navigation buttons - positioned below the slider */}
+        <div 
+          className="flex justify-center mt-6 mb-4 transition-opacity duration-300 ease-in-out"
+          style={{ opacity: isMobile ? 1 : (showNavigation ? 1 : 0) }}
+        >
+          <div 
+            className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-full px-5 py-3 shadow-sm"
+            style={{ backdropFilter: 'blur(5px)', WebkitBackdropFilter: 'blur(5px)' }}
+          >
+            {/* Previous button */}
+            <button 
+              onClick={() => swiperRef.current?.slidePrev()}
+              className="text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors flex items-center justify-center mr-4"
+              aria-label="Previous slide"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 md:h-7 md:w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+            
+            {/* Swiper pagination will be rendered here automatically */}
+            <div className="mx-4 min-w-[100px] flex items-center justify-center">
+              {/* Custom pagination dots */}
+              {Array.from({ length: Math.min(5, displayedProjects.length) }).map((_, index) => (
+                <button
+                  key={`pagination-dot-${index}`}
+                  className={`h-3 rounded-full transition-all duration-300 ${
+                    realIndex === index 
+                      ? 'w-16 bg-brand mx-2' 
+                      : 'w-3 bg-gray-400 dark:bg-gray-600 opacity-50 mx-1.5'
+                  }`}
+                  onClick={() => {
+                    if (swiperRef.current) {
+                      // Use Swiper's slideTo method to go to the correct slide
+                      // The third parameter (runCallbacks) ensures onSlideChange is triggered
+                      swiperRef.current.slideTo(index, 300, true);
+                    }
+                  }}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
+            </div>
+            
+            {/* Next button */}
+            <button 
+              onClick={() => swiperRef.current?.slideNext()}
+              className="text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors flex items-center justify-center ml-4"
+              aria-label="Next slide"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 md:h-7 md:w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+  
   const content = (
     <div className="w-full">
       {/* Add style tag for Swiper custom styles */}
@@ -252,166 +427,155 @@ export function FeaturedProjects({
       
       {/* Header section with conditional rendering based on device type */}
       {isMobile ? (
-        // Mobile layout - no toggle, centered heading
-        showHeading && (
+        // Mobile layout - with toggle if enabled
+        (showHeading || showLayoutToggle) && (
           <div className="mb-12">
-            <SectionHeading
-              title={title}
-              subtitle={showSubtitle ? subtitle : undefined}
-              centered
-              className="mb-4"
-            />
+            {showHeading && (
+              <SectionHeading
+                title={title}
+                subtitle={showSubtitle ? subtitle : undefined}
+                centered={false}
+                className="text-left mb-6"
+              />
+            )}
+            
+            {showLayoutToggle && (
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => setLayout('twoCol')}
+                  className={`p-2 rounded-md transition-colors ${
+                    layout === 'twoCol'
+                      ? 'bg-brand text-white'
+                      : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
+                  }`}
+                  aria-label="2-Column Grid"
+                  title="2-Column Grid"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => setLayout('fourCol')}
+                  className={`p-2 rounded-md transition-colors ${
+                    layout === 'fourCol'
+                      ? 'bg-brand text-white'
+                      : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
+                  }`}
+                  aria-label="4-Column Grid"
+                  title="4-Column Grid"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                  </svg>
+                </button>
+              </div>
+            )}
           </div>
         )
       ) : (
         // Desktop layout - with toggle if enabled
-        <div className="flex justify-between items-center mb-12">
-          {showHeading && (
-            <SectionHeading
-              title={title}
-              subtitle={showSubtitle ? subtitle : undefined}
-              centered={!alignHeadingLeft && !showLayoutToggle}
-              className={`${showLayoutToggle ? 'mb-0' : 'mb-4'} ${!showLayoutToggle ? 'w-full' : ''}`}
-            />
-          )}
-          
-          {showLayoutToggle && (
-            <div className="flex items-center space-x-2 ml-auto">
-              <button
-                onClick={() => setLayout('twoCol')}
-                className={`p-2 rounded-md transition-colors ${
-                  layout === 'twoCol'
-                    ? 'bg-brand text-white'
-                    : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
-                }`}
-                aria-label="2-Column Grid"
-                title="2-Column Grid"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
-                </svg>
-              </button>
-              <button
-                onClick={() => setLayout('fourCol')}
-                className={`p-2 rounded-md transition-colors ${
-                  layout === 'fourCol'
-                    ? 'bg-brand text-white'
-                    : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
-                }`}
-                aria-label="4-Column Grid"
-                title="4-Column Grid"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                </svg>
-              </button>
-            </div>
-          )}
-        </div>
+        (showHeading || showLayoutToggle) && (
+          <div className="flex justify-between items-center mb-12">
+            {showHeading && (
+              <SectionHeading
+                title={title}
+                subtitle={showSubtitle ? subtitle : undefined}
+                centered={!alignHeadingLeft && !showLayoutToggle}
+                className={`${showLayoutToggle ? 'mb-0' : 'mb-4'} ${!showLayoutToggle ? 'w-full' : ''}`}
+              />
+            )}
+            
+            {showLayoutToggle && (
+              <div className={`flex items-center space-x-2 ${!showHeading ? 'mx-auto' : 'ml-auto'}`}>
+                <button
+                  onClick={() => setLayout('twoCol')}
+                  className={`p-2 rounded-md transition-colors ${
+                    layout === 'twoCol'
+                      ? 'bg-brand text-white'
+                      : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
+                  }`}
+                  aria-label="2-Column Grid"
+                  title="2-Column Grid"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                  </svg>
+                </button>
+                <button
+                  onClick={() => setLayout('fourCol')}
+                  className={`p-2 rounded-md transition-colors ${
+                    layout === 'fourCol'
+                      ? 'bg-brand text-white'
+                      : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
+                  }`}
+                  aria-label="4-Column Grid"
+                  title="4-Column Grid"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                  </svg>
+                </button>
+              </div>
+            )}
+          </div>
+        )
       )}
       
       {/* Projects grid/list */}
       {layout === 'twoCol' || !useSwiperOnFourCol ? (
         // Two column layout or four column grid (when not using Swiper)
         <div className={`${layout === 'twoCol' 
-          ? 'columns-1 md:columns-2 gap-16 space-y-24' 
-          : 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-12 auto-rows-fr'}`}>
-          {displayedProjects.map((project, index) => (
-            <div 
-              key={project.id} 
-              className={layout === 'twoCol' 
-                ? 'break-inside-avoid mb-24'
-                : ''
+          ? 'columns-1 md:columns-2 gap-16' 
+          : 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8 md:gap-10 lg:gap-12 auto-rows-fr'}`}>
+          {displayedProjects.map((project, index) => {
+            // Calculate aspect ratio based on index for two-column layout
+            let aspectRatioClass;
+            
+            if (layout === 'twoCol') {
+              // Create extreme contrasting heights between adjacent cards
+              // We'll use the modulo of the index to determine which pattern to use
+              const patternIndex = Math.floor(index / 2) % 4; // Group by pairs, cycle through 4 patterns
+              const isSecondColumn = index % 2 === 1;
+              
+              if (patternIndex === 0) {
+                // First pair pattern: very tall + very wide
+                aspectRatioClass = isSecondColumn ? 'aspect-[3/1]' : 'aspect-[1/3]';
+              } else if (patternIndex === 1) {
+                // Second pair pattern: wide + square
+                aspectRatioClass = isSecondColumn ? 'aspect-square' : 'aspect-[2/1]';
+              } else if (patternIndex === 2) {
+                // Third pair pattern: square + tall
+                aspectRatioClass = isSecondColumn ? 'aspect-[2/3]' : 'aspect-[3/2]';
+              } else {
+                // Fourth pair pattern: very wide + very tall
+                aspectRatioClass = isSecondColumn ? 'aspect-[1/2]' : 'aspect-[21/9]';
               }
-            >
-              <ProjectCard 
-                project={project} 
-                layout={layout}
-                aspectRatio={layout === 'twoCol' ? 
-                  index % 4 === 0 ? 'aspect-[4/3]' : 
-                  index % 4 === 1 ? 'aspect-[16/9]' : 
-                  index % 4 === 2 ? 'aspect-square' :
-                  'aspect-[3/2]' : undefined}
-              />
-            </div>
-          ))}
+            } else {
+              aspectRatioClass = undefined;
+            }
+              
+            return (
+              <div 
+                key={`project-${project.id}-${index}`} 
+                className={layout === 'twoCol' 
+                  ? 'break-inside-avoid mb-16 inline-block w-full'
+                  : ''
+                }
+                style={layout === 'twoCol' ? { pageBreakInside: 'avoid', breakInside: 'avoid', maxHeight: '80vh' } : {}}
+              >
+                <ProjectCard 
+                  project={project} 
+                  layout={layout}
+                  aspectRatio={aspectRatioClass}
+                />
+              </div>
+            );
+          })}
         </div>
       ) : (
         // Four column layout with Swiper (only on Projects page)
-        <div className="relative overflow-hidden w-full swiper-container-wrapper">
-          <div className="swiper-container">
-            <Swiper
-              onSwiper={(swiper) => {
-                swiperRef.current = swiper;
-              }}
-              modules={[Navigation, A11y, Grid]}
-              spaceBetween={24}
-              slidesPerView={1}
-              navigation={{
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-              }}
-              breakpoints={{
-                640: {
-                  slidesPerView: 1.5,
-                  grid: {
-                    rows: 1,
-                    fill: 'row'
-                  }
-                },
-                768: {
-                  slidesPerView: 2.5,
-                  grid: {
-                    rows: 1,
-                    fill: 'row'
-                  }
-                },
-                1024: {
-                  slidesPerView: 3.5,
-                  grid: {
-                    rows: 1,
-                    fill: 'row'
-                  }
-                }
-              }}
-              loop={true}
-              grabCursor={true}
-              onSlideChange={(swiper) => {
-                setCurrentSlide(swiper.activeIndex);
-              }}
-              className="mySwiper"
-            >
-              {displayedProjects.map((project) => (
-                <SwiperSlide key={project.id} className="h-auto">
-                  <div className="h-full">
-                    <ProjectCard 
-                      project={project} 
-                      layout={layout}
-                      isDraggingParent={isDragging}
-                    />
-                  </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-            
-            {/* Custom navigation buttons - made smaller */}
-            <div className="flex justify-end items-center gap-3 mt-16 px-4 sm:px-6 md:px-8">
-              <div className="flex items-center gap-3">
-                <button className="swiper-button-prev p-2 rounded-full bg-white dark:bg-white text-gray-700 dark:text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-100 transition-colors shadow-sm flex items-center justify-center" style={{ width: '46px', height: '46px', minWidth: '46px', minHeight: '46px' }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                  </svg>
-                </button>
-                
-                <button className="swiper-button-next p-2 rounded-full bg-white dark:bg-white text-gray-700 dark:text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-100 transition-colors shadow-sm flex items-center justify-center" style={{ width: '46px', height: '46px', minWidth: '46px', minHeight: '46px' }}>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        renderSwiper()
       )}
       
       {/* View all button - conditionally rendered */}
@@ -522,7 +686,7 @@ function FourColProjectCard({ project, isDraggingParent = false }: { project: Pr
   return (
     <Link 
       href={`/projects/${project.slug}`}
-      className={`group relative bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md block h-full ${isDraggingParent ? 'pointer-events-none' : ''}`}
+      className={`group relative bg-white dark:bg-gray-800 shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md block h-full ${isDraggingParent ? 'pointer-events-none' : ''}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={(e) => {
@@ -651,49 +815,37 @@ function TwoColProjectCard({ project, isLarge = false, aspectRatio = 'aspect-vid
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <div className={`relative w-full ${aspectRatio} max-h-[70vh]`}>
-        {/* Video */}
-        <video
-          ref={videoRef}
-          className="absolute inset-0 h-full w-full object-cover transition-opacity duration-300"
-          src={videoUrl}
-          muted
-          playsInline
-          loop
-          autoPlay={isMobile}
-          preload="metadata"
-          style={{ opacity: isVideoVisible ? 1 : 0 }}
-        />
-        
-        {/* Thumbnail Image */}
-        {project.thumbnail_url ? (
-          <div 
-            className="absolute inset-0 bg-cover bg-center transition-opacity duration-300" 
-            style={{ 
-              backgroundImage: `url(${project.thumbnail_url})`,
-              opacity: isVideoVisible ? 0 : 1
-            }}
-          />
-        ) : (
-          <div className="absolute inset-0 bg-gray-800 flex items-center justify-center">
-            <span className="text-gray-400">No image</span>
+      {/* Force the aspect ratio with an outer div */}
+      <div className={`${aspectRatio} w-full overflow-hidden`} style={{ display: 'block', maxHeight: '80vh' }}>
+        <div className="relative w-full h-full overflow-hidden">
+          {/* Background image */}
+          <div className="absolute inset-0 bg-gray-900">
+            {project.thumbnail_url && (
+              <img 
+                src={project.thumbnail_url} 
+                alt={project.title} 
+                className="w-full h-full object-cover opacity-80"
+              />
+            )}
           </div>
-        )}
-        
-        {/* Overlay gradient - always visible but more intense on hover */}
-        <div className={`absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent transition-opacity duration-300 ${isHovering ? 'opacity-100' : 'opacity-70'}`}></div>
-        
-        {/* Text container - always visible but transforms on hover */}
-        <div className="absolute inset-x-0 bottom-0 p-8 transition-all duration-300 ease-in-out transform group-hover:translate-y-0">
-          <div className="transform transition-transform duration-300 group-hover:translate-y-0 group-hover:scale-105">
-            <h3 className="font-bold text-white text-xl md:text-2xl">
+          
+          {/* Video overlay */}
+          <div className={`absolute inset-0 transition-opacity duration-500 ${isVideoVisible ? 'opacity-100' : 'opacity-0'}`}>
+            <video 
+              ref={videoRef}
+              src={videoUrl}
+              muted
+              loop
+              playsInline
+              className="w-full h-full object-cover"
+            />
+          </div>
+          
+          {/* Content overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent flex flex-col justify-end p-8">
+            <h3 className={`font-bold text-white line-clamp-2 ${isMobile ? 'text-base' : 'text-lg md:text-xl'}`}>
               {project.title}
             </h3>
-            {project.category && (
-              <p className="text-gray-300 mt-3 text-sm md:text-base opacity-80">
-                {project.category.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-              </p>
-            )}
           </div>
         </div>
       </div>

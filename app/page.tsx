@@ -42,11 +42,13 @@ export default async function HomePage() {
       
       <FeaturedProjects 
         projects={featuredProjects} 
-        limit={4} 
-        background="projects"
+        background="white"
         layout="twoCol"
         showLayoutToggle={true}
-        useSwiperOnFourCol={false}
+        useSwiperOnFourCol={true}
+        title="Featured Projects"
+        subtitle="A selection of my recent work"
+        showSubtitle={true}
       />
       
       <ContactCTA />

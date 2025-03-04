@@ -48,7 +48,7 @@ function getVimeoEmbedUrl(url: string): string {
 export function VideoSection({ 
   backgroundVideoUrl = "https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-videos//demo-reel-bg.mp4",
   popupVideoUrl = "https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-videos//demo-reel-bg.mp4",
-  height = "h-screen",
+  height = "h-[30vh] sm:h-[70vh] md:h-[80vh] lg:h-screen",
   className = ""
 }: VideoSectionProps) {
   // Debug the URLs
