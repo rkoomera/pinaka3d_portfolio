@@ -8,6 +8,7 @@ import { Project } from '@/types';
 import Link from 'next/link';
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, PanInfo } from 'framer-motion';
+import Head from 'next/head';
 // Import Swiper and required modules
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, A11y, Grid } from 'swiper/modules';
@@ -79,7 +80,7 @@ const swiperStyles = `
   
   /* Prevent horizontal scrollbar */
   body {
-    overflow-x: hidden;
+    overflow-x: hidden !important;
   }
   
   /* Custom pagination styles */
@@ -294,8 +295,9 @@ export function FeaturedProjects({
       className="relative overflow-hidden w-full swiper-container-wrapper"
       onMouseEnter={() => setShowNavigation(true)}
       onMouseLeave={() => isMobile ? setShowNavigation(true) : setShowNavigation(false)}
+      style={{ overflowX: 'hidden' }}
     >
-      <div className="swiper-container relative" ref={swiperContainerRef}>
+      <div className="swiper-container relative" ref={swiperContainerRef} style={{ maxWidth: '100%' }}>
         <Swiper
           onSwiper={(swiper) => {
             swiperRef.current = swiper;

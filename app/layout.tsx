@@ -20,6 +20,7 @@ export const metadata: Metadata = {
     template: "%s - Ravi Koomera",
   },
   description: "Portfolio showcasing motion design and web development projects by Ravi Koomera.",
+  viewport: "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no",
 };
 
 export default function RootLayout({
@@ -29,7 +30,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scroll-smooth">
-      <body className={montserrat.className}>
+      <body className={`${montserrat.className} overflow-x-hidden`}>
         <ThemeProvider>
           <AnimatedLayout>
             <div className="flex min-h-screen flex-col">
