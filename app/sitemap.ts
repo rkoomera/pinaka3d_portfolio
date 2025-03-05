@@ -3,7 +3,7 @@ import { getAllProjects } from '@/lib/services/projects';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Base URL for your site
-  const baseUrl = 'https://pinaka3d.vercel.app';
+  const baseUrl = 'https://www.pinaka3d.com';
   
   // Get all projects for dynamic routes
   const projects = await getAllProjects();
