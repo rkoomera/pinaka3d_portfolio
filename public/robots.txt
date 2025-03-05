@@ -1,0 +1,10 @@
+# *
+User-agent: *
+Allow: /
+Disallow: /admin/*
+
+# Host
+Host: https://www.pinaka3d.com
+
+# Sitemaps
+Sitemap: https://www.pinaka3d.com/sitemap.xml

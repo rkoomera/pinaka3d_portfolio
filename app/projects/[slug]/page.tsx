@@ -10,6 +10,7 @@ import { RichTextContent } from '@/components/project/RichTextContent';
 import { FeaturedProjects } from '@/components/portfolio/FeaturedProjects';
 import { getProjectBySlug, getAllProjects, getRelatedProjects } from '@/lib/services/projects';
 import { Project } from '@/types';
+import { JsonLd, createProjectSchema } from '@/components/layout/JsonLd';
 
 type Props = {
   params: {
@@ -84,6 +85,9 @@ export default async function Page({ params }: Props) {
   
   return (
     <>
+      {/* Add JSON-LD structured data */}
+      <JsonLd data={createProjectSchema(project)} />
+      
       {/* Header Section */}
       <Section className="pt-24 md:pt-32 !pb-0">
         <Container size="lg">

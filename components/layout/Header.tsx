@@ -30,7 +30,7 @@ export function Header() {
           <Link href="/" className="flex items-center">
             <Image 
               src={logoSrc}
-              alt="Pinaka Logo" 
+              alt="Ravi Koomera - Motion Designer & Developer" 
               width={50}
               height={48}
               style={{ height: 'auto' }}
@@ -47,6 +47,7 @@ export function Header() {
                     <Link 
                       href={item.path} 
                       className="text-gray-800 dark:text-gray-200 hover:text-brand dark:hover:text-brand-light transition-colors"
+                      aria-label={`Navigate to ${item.label} page`}
                     >
                       {item.label}
                     </Link>
@@ -63,6 +64,7 @@ export function Header() {
             <button 
               className="text-gray-800 dark:text-gray-200 hover:text-brand dark:hover:text-brand-light transition-colors"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label="Open mobile menu"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -80,6 +82,7 @@ export function Header() {
               <button 
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="text-gray-800 dark:text-gray-200 hover:text-brand dark:hover:text-brand-light transition-colors"
+                aria-label="Close mobile menu"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -93,6 +96,7 @@ export function Header() {
                   href={item.path} 
                   className="text-xl text-gray-800 dark:text-gray-200 hover:text-brand dark:hover:text-brand-light transition-colors"
                   onClick={() => setIsMobileMenuOpen(false)}
+                  aria-label={`Navigate to ${item.label} page`}
                 >
                   {item.label}
                 </Link>
