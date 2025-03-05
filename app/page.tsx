@@ -24,12 +24,12 @@ export default async function HomePage() {
             className: "font-normal text-4xl text-brand dark:text-white sm:text-4xl" 
           },
           { 
-            text: "Motion Designer and Developer", 
-            className: "font-normal text-3xl text-gray-900 dark:text-white italic sm:text-3xl" 
+            text: "Motion Designer and Creative Developer", 
+            className: "font-normal text-2xl text-gray-900 dark:text-white italic sm:text-3xl" 
           },
           { 
             text: "based in Frankfurt, Germany.", 
-            className: "font-normal text-3xl text-gray-900 dark:text-white italic sm:text-3xl" 
+            className: "font-normal text-2xl text-gray-900 dark:text-white italic sm:text-3xl" 
           }
         ]}
         imageUrl="https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-images//3d-portrait.jpg?text=Ravi+Koomera"
