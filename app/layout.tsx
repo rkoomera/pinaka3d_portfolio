@@ -6,7 +6,7 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
 import { JsonLd, createPersonSchema, createWebsiteSchema } from '@/components/layout/JsonLd';
-import { Analytics } from '@vercel/analytics/react';
+import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import "./globals.css";
 import AnimatedLayout from "@/components/layout/AnimatedLayout";
