@@ -1,5 +1,12 @@
 import React from 'react';
 
+// Define the primary domain and alternate domains
+const PRIMARY_DOMAIN = "https://www.pinaka3d.com";
+const ALTERNATE_DOMAINS = [
+  "https://www.pinaka.xyz",
+  "https://pinaka3d-portfolio.vercel.app"
+];
+
 interface JsonLdProps {
   data: Record<string, any>;
 }
@@ -18,7 +25,7 @@ export const createPersonSchema = () => {
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: 'Ravi Koomera',
-    url: 'https://www.pinaka3d.com',
+    url: PRIMARY_DOMAIN,
     jobTitle: 'Motion Designer & Developer',
     description: 'Portfolio showcasing motion design and web development projects by Ravi Koomera.',
     sameAs: [
@@ -35,13 +42,21 @@ export const createWebsiteSchema = () => {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: 'Ravi Koomera Portfolio',
-    url: 'https://www.pinaka3d.com',
+    url: PRIMARY_DOMAIN,
     description: 'Portfolio showcasing motion design and web development projects by Ravi Koomera.',
     potentialAction: {
       '@type': 'SearchAction',
-      target: 'https://www.pinaka3d.com/projects?search={search_term_string}',
+      target: `${PRIMARY_DOMAIN}/projects?search={search_term_string}`,
       'query-input': 'required name=search_term_string',
     },
+    // Add alternate URLs
+    additionalProperty: [
+      ...ALTERNATE_DOMAINS.map(domain => ({
+        '@type': 'PropertyValue',
+        name: 'alternateUrl',
+        value: domain
+      }))
+    ]
   };
 };
 
@@ -57,7 +72,7 @@ export const createProjectSchema = (project: any) => {
     },
     dateCreated: project.created_at,
     dateModified: project.updated_at || project.created_at,
-    url: `https://www.pinaka3d.com/projects/${project.slug}`,
+    url: `${PRIMARY_DOMAIN}/projects/${project.slug}`,
     // Add more project-specific details as needed
   };
 }; 

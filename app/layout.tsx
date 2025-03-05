@@ -17,6 +17,9 @@ const montserrat = Montserrat({
   display: "swap"
 });
 
+// Define the primary domain - using www.pinaka3d.com as primary
+const PRIMARY_DOMAIN = "https://www.pinaka3d.com";
+
 export const metadata: Metadata = {
   title: {
     default: "Ravi Koomera - Motion Designer & Developer",
@@ -27,23 +30,35 @@ export const metadata: Metadata = {
   authors: [{ name: "Ravi Koomera" }],
   creator: "Ravi Koomera",
   publisher: "Ravi Koomera",
-  metadataBase: new URL("https://www.pinaka3d.com"),
+  metadataBase: new URL(PRIMARY_DOMAIN),
   alternates: {
     canonical: "/",
+    languages: {
+      'en-US': '/',
+    },
   },
   openGraph: {
     title: "Ravi Koomera - Motion Designer & Developer",
     description: "Portfolio showcasing motion design and web development projects by Ravi Koomera.",
-    url: "https://www.pinaka3d.com",
+    url: PRIMARY_DOMAIN,
     siteName: "Ravi Koomera Portfolio",
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: `${PRIMARY_DOMAIN}/images/og-image.jpg`,
+        width: 1200,
+        height: 630,
+        alt: "Ravi Koomera - Motion Designer & Developer",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Ravi Koomera - Motion Designer & Developer",
     description: "Portfolio showcasing motion design and web development projects by Ravi Koomera.",
     creator: "@ravikoomera",
+    images: [`${PRIMARY_DOMAIN}/images/twitter-image.jpg`],
   },
   robots: {
     index: true,
@@ -57,6 +72,11 @@ export const metadata: Metadata = {
     },
   },
   viewport: "width=device-width, initial-scale=1.0",
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1.0,
 };
 
 export default function RootLayout({
