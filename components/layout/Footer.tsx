@@ -19,27 +19,56 @@ export function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between">
           {/* Logo and Name - Always at top on mobile, center on desktop */}
           <div className="flex items-center mb-6 md:mb-0 order-1 md:order-2">
-            <Image 
-              src={logoSrc} 
-              alt="Pinaka" 
-              width={35} 
-              height={32} 
-              style={{ height: 'auto' }}
-              priority
-            />
-            <h3 className="text-gray-800 dark:text-gray-200 ml-3 text-4xl font-medium">Pinaka</h3>
+            <Link href="/" className="flex items-center">
+              <div data-hover style={{ width: '35px', height: '32px' }}>
+                <div data-hover-bounds className="absolute inset-0 pointer-events-none"></div>
+                <Image 
+                  src={logoSrc} 
+                  alt="Pinaka" 
+                  width={35} 
+                  height={32} 
+                  style={{ height: 'auto' }}
+                  priority
+                />
+              </div>
+              <h3 className="text-gray-800 dark:text-gray-200 ml-3 text-4xl font-medium">Pinaka</h3>
+            </Link>
           </div>
           
           {/* Social Links - Middle on mobile, right on desktop */}
           <div className="flex items-center space-x-6 mb-6 md:mb-0 order-2 md:order-3">
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="text-gray-700 dark:text-gray-300 hover:text-brand dark:hover:text-brand-light transition-colors text-lg">
-              LinkedIn
+            <a 
+              href="https://linkedin.com" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-gray-700 dark:text-gray-300 hover:text-brand dark:hover:text-brand-light transition-colors text-lg"
+            >
+              <div data-hover>
+                <div data-hover-bounds className="absolute inset-0 pointer-events-none"></div>
+                <span>LinkedIn</span>
+              </div>
             </a>
-            <a href="https://behance.net" target="_blank" rel="noopener noreferrer" className="text-gray-700 dark:text-gray-300 hover:text-brand dark:hover:text-brand-light transition-colors text-lg">
-              Behance
+            <a 
+              href="https://behance.net" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-gray-700 dark:text-gray-300 hover:text-brand dark:hover:text-brand-light transition-colors text-lg"
+            >
+              <div data-hover>
+                <div data-hover-bounds className="absolute inset-0 pointer-events-none"></div>
+                <span>Behance</span>
+              </div>
             </a>
-            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="text-gray-700 dark:text-gray-300 hover:text-brand dark:hover:text-brand-light transition-colors text-lg">
-              YouTube
+            <a 
+              href="https://youtube.com" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-gray-700 dark:text-gray-300 hover:text-brand dark:hover:text-brand-light transition-colors text-lg"
+            >
+              <div data-hover>
+                <div data-hover-bounds className="absolute inset-0 pointer-events-none"></div>
+                <span>YouTube</span>
+              </div>
             </a>
           </div>
           

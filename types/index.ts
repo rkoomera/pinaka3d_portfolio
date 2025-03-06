@@ -24,6 +24,8 @@ export interface Project {
   author?: Author;
   duration: string | null;
   role: string | null;
+  github?: string | null;
+  link?: string | null;
 }
 
 export interface Author {

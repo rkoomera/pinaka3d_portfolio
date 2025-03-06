@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
 
 type ScrollToTopProps = {
   showButton?: boolean;
@@ -53,21 +52,23 @@ export function ScrollToTop({
     });
   };
 
-  // If button is not shown, component doesn't render anything
-  if (!showButton) return null;
+  // If button is not shown or not visible, component doesn't render anything
+  if (!showButton || !isVisible) return null;
 
   return (
-    <AnimatePresence>
-      {isVisible && (
-        <motion.button
-          className="fixed bottom-6 right-6 z-50 p-3 rounded-full bg-brand text-white shadow-lg hover:bg-brand-dark transition-colors"
-          onClick={scrollToTop}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.8 }}
-          transition={{ duration: 0.2 }}
-          aria-label="Scroll to top"
-        >
+    <div className="fixed bottom-6 right-6 z-50">
+      <a 
+        href="#top" 
+        onClick={(e) => {
+          e.preventDefault();
+          scrollToTop();
+        }}
+        className="block w-12 h-12 rounded-full bg-brand text-white shadow-lg hover:bg-brand-dark transition-colors"
+        aria-label="Scroll to top"
+        data-hover
+      >
+        <div data-hover-bounds className="absolute inset-0 pointer-events-none"></div>
+        <div className="flex items-center justify-center w-full h-full">
           <svg 
             xmlns="http://www.w3.org/2000/svg" 
             className="h-5 w-5" 
@@ -82,8 +83,8 @@ export function ScrollToTop({
               d="M5 10l7-7m0 0l7 7m-7-7v18" 
             />
           </svg>
-        </motion.button>
-      )}
-    </AnimatePresence>
+        </div>
+      </a>
+    </div>
   );
 } 

@@ -17,6 +17,7 @@ import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/grid';
 import 'swiper/css/pagination';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 // Custom styles for Swiper
 const swiperStyles = `
@@ -375,9 +376,11 @@ export function FeaturedProjects({
             {/* Previous button */}
             <button 
               onClick={() => swiperRef.current?.slidePrev()}
-              className="text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors flex items-center justify-center mr-4"
+              className="text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors flex items-center justify-center mr-4 relative"
               aria-label="Previous slide"
+              data-hover
             >
+              <div data-hover-bounds className="absolute inset-0"></div>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 md:h-7 md:w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
               </svg>
@@ -409,9 +412,11 @@ export function FeaturedProjects({
             {/* Next button */}
             <button 
               onClick={() => swiperRef.current?.slideNext()}
-              className="text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors flex items-center justify-center ml-4"
+              className="text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors flex items-center justify-center ml-4 relative"
               aria-label="Next slide"
+              data-hover
             >
+              <div data-hover-bounds className="absolute inset-0"></div>
               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 md:h-7 md:w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
               </svg>
@@ -452,7 +457,9 @@ export function FeaturedProjects({
                   }`}
                   aria-label="2-Column Grid"
                   title="2-Column Grid"
+                  data-hover
                 >
+                  <div data-hover-bounds className="absolute inset-0"></div>
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
                   </svg>
@@ -466,7 +473,9 @@ export function FeaturedProjects({
                   }`}
                   aria-label="4-Column Grid"
                   title="4-Column Grid"
+                  data-hover
                 >
+                  <div data-hover-bounds className="absolute inset-0"></div>
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                   </svg>
@@ -492,28 +501,32 @@ export function FeaturedProjects({
               <div className={`flex items-center space-x-2 ${!showHeading ? 'mx-auto' : 'ml-auto'}`}>
                 <button
                   onClick={() => setLayout('twoCol')}
-                  className={`p-2 rounded-md transition-colors ${
+                  className={`p-2 rounded-md transition-colors relative ${
                     layout === 'twoCol'
                       ? 'bg-brand text-white'
                       : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
                   }`}
                   aria-label="2-Column Grid"
                   title="2-Column Grid"
+                  data-hover
                 >
+                  <div data-hover-bounds className="absolute inset-0"></div>
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
                   </svg>
                 </button>
                 <button
                   onClick={() => setLayout('fourCol')}
-                  className={`p-2 rounded-md transition-colors ${
+                  className={`p-2 rounded-md transition-colors relative ${
                     layout === 'fourCol'
                       ? 'bg-brand text-white'
                       : 'bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-700'
                   }`}
                   aria-label="4-Column Grid"
                   title="4-Column Grid"
+                  data-hover
                 >
+                  <div data-hover-bounds className="absolute inset-0"></div>
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                     <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                   </svg>
@@ -729,6 +742,40 @@ function FourColProjectCard({ project, isDraggingParent = false }: { project: Pr
           
           {/* Overlay gradient - always visible on mobile, only on hover for desktop */}
           <div className={`absolute inset-0 bg-gradient-to-t from-black/70 to-transparent transition-opacity duration-300 ${isMobile ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}></div>
+          
+          {/* Project links with magnetic effect */}
+          <div className="absolute bottom-4 right-4 flex gap-3 z-10">
+            {project.github && (
+              <Link 
+                href={project.github} 
+                target="_blank" 
+                className="w-8 h-8 flex items-center justify-center bg-white/10 backdrop-blur-sm rounded-full hover:bg-white/20 transition-colors relative"
+                onClick={(e) => e.stopPropagation()}
+                data-hover
+              >
+                <div data-hover-bounds className="absolute inset-0"></div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" viewBox="0 0 16 16">
+                  <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                </svg>
+              </Link>
+            )}
+            
+            {project.link && (
+              <Link 
+                href={project.link} 
+                target="_blank" 
+                className="w-8 h-8 flex items-center justify-center bg-white/10 backdrop-blur-sm rounded-full hover:bg-white/20 transition-colors relative"
+                onClick={(e) => e.stopPropagation()}
+                data-hover
+              >
+                <div data-hover-bounds className="absolute inset-0"></div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" viewBox="0 0 16 16">
+                  <path fillRule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
+                  <path fillRule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"/>
+                </svg>
+              </Link>
+            )}
+          </div>
         </div>
         
         {/* Text container - always at bottom for mobile, animated for desktop */}
@@ -848,6 +895,40 @@ function TwoColProjectCard({ project, isLarge = false, aspectRatio = 'aspect-vid
             <h3 className={`font-bold text-white line-clamp-2 ${isMobile ? 'text-base' : 'text-lg md:text-xl'}`}>
               {project.title}
             </h3>
+            
+            {/* Project links with magnetic effect */}
+            <div className="flex gap-4 mt-4">
+              {project.github && (
+                <Link 
+                  href={project.github} 
+                  target="_blank" 
+                  className="w-8 h-8 flex items-center justify-center bg-white/10 backdrop-blur-sm rounded-full hover:bg-white/20 transition-colors relative"
+                  onClick={(e) => e.stopPropagation()}
+                  data-hover
+                >
+                  <div data-hover-bounds className="absolute inset-0"></div>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" viewBox="0 0 16 16">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+                  </svg>
+                </Link>
+              )}
+              
+              {project.link && (
+                <Link 
+                  href={project.link} 
+                  target="_blank" 
+                  className="w-8 h-8 flex items-center justify-center bg-white/10 backdrop-blur-sm rounded-full hover:bg-white/20 transition-colors relative"
+                  onClick={(e) => e.stopPropagation()}
+                  data-hover
+                >
+                  <div data-hover-bounds className="absolute inset-0"></div>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white" viewBox="0 0 16 16">
+                    <path fillRule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
+                    <path fillRule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"/>
+                  </svg>
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       </div>

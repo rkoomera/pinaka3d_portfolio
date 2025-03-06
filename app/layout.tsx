@@ -8,6 +8,7 @@ import { ThemeProvider } from '@/components/theme/ThemeProvider';
 import { JsonLd, createPersonSchema, createWebsiteSchema } from '@/components/layout/JsonLd';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import Cursor from '@/components/ui/Cursor';
 import "./globals.css";
 import AnimatedLayout from "@/components/layout/AnimatedLayout";
 
@@ -98,6 +99,7 @@ export default function RootLayout({
               <main className="flex-grow">{children}</main>
               <Footer />
             </div>
+            <Cursor />
           </AnimatedLayout>
         </ThemeProvider>
         <Analytics />

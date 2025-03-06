@@ -8,8 +8,9 @@ export function ThemeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+      className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors relative"
       aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+      data-hover
     >
       {theme === 'light' ? (
         // Moon icon for dark mode
@@ -38,6 +39,7 @@ export function ThemeToggle() {
           />
         </svg>
       )}
+      <div data-hover-bounds></div>
     </button>
   );
 } 

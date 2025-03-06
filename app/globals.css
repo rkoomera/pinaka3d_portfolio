@@ -12,6 +12,8 @@
   --light-secondary: 218, 218, 218;
   --accent: 198, 251, 80;
   --brand: 118, 69, 252;
+  --cursor-size: 20px;
+  --cursor-color: 118, 69, 252; /* Brand color by default */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -25,6 +27,8 @@
     --light-secondary: 218, 218, 218;
     --accent: 198, 251, 80;
     --brand: 118, 69, 252;
+    --cursor-size: 20px;
+    --cursor-color: 198, 251, 80; /* Accent color for dark mode */
   }
 }
 
@@ -40,6 +44,40 @@
     overflow-x: hidden;
     position: relative;
     width: 100%;
+  }
+  
+  /* Only hide default cursor on desktop */
+  @media (min-width: 768px) {
+    html,
+    body {
+      cursor: default; /* Show default cursor alongside custom cursor */
+    }
+    
+    /* Show pointer cursor for interactive elements */
+    a, button, [role="button"], input[type="submit"], input[type="button"], input[type="reset"] {
+      cursor: pointer;
+    }
+    
+    /* Show text cursor for text inputs */
+    input[type="text"], input[type="email"], input[type="password"], input[type="search"], 
+    input[type="tel"], input[type="url"], input[type="number"], textarea {
+      cursor: text;
+    }
+  }
+  
+  /* On mobile, use default cursor behavior */
+  @media (max-width: 767px) {
+    [data-hover], [data-hover-bounds] {
+      /* Disable magnetic effect on mobile */
+      display: initial !important;
+      position: static !important;
+      transform: none !important;
+    }
+    
+    .cursor {
+      /* Hide custom cursor on mobile */
+      display: none !important;
+    }
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -112,6 +150,43 @@
   
   .card:hover {
     @apply shadow-lg transform -translate-y-1;
+  }
+  
+  /* Custom cursor styles */
+  .cursor {
+    width: var(--cursor-size);
+    height: var(--cursor-size);
+    border-radius: 50%;
+    position: fixed;
+    left: 0;
+    top: 0;
+    transform: translate(-50%, -50%);
+    background: rgba(var(--cursor-color), 1);
+    mix-blend-mode: difference;
+    pointer-events: none;
+    z-index: 9999;
+    transition: width 0.3s ease-out, height 0.3s ease-out, background 0.3s ease-out;
+  }
+  
+  /* Hover element styles */
+  [data-hover] {
+    position: relative;
+    display: inline-block; /* Ensure proper sizing */
+    will-change: transform; /* Optimize for animations */
+    z-index: 1; /* Ensure hover elements are above other elements */
+  }
+  
+  [data-hover-bounds] {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none; /* Ensure it doesn't block clicks */
+  }
+  
+  /* Special case for scroll to top button */
+  [aria-label="Scroll to top"][data-hover] {
+    display: block;
+    transform-origin: center;
   }
 }
 

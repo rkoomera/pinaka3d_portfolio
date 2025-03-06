@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { Container } from '@/components/ui/Container';
 import { VideoPlayer } from '@/components/ui/VideoPlayer';
 import { PlayButtonShowcase } from './play-button-showcase';
-import { ButtonVariantsShowcase, ButtonSizesShowcase } from './button-showcase';
+import { ButtonVariantsShowcase, ButtonSizesShowcase, ButtonArrowShowcase } from './button-showcase';
 
 export const metadata: Metadata = {
   title: 'Style Guide - Pinaka Portfolio',
@@ -171,6 +171,13 @@ export default function StyleGuidePage() {
                     <ButtonSizesShowcase />
                   </div>
                 </div>
+                
+                <div>
+                  <h3 className="text-lg font-medium mb-4">Button with Arrow</h3>
+                  <div className="p-8 bg-gray-100 dark:bg-gray-900 rounded-xl">
+                    <ButtonArrowShowcase />
+                  </div>
+                </div>
               </div>
             </section>
             
@@ -249,16 +256,6 @@ export default function StyleGuidePage() {
                   <h3 className="font-medium mb-2">Gray 950 / Gray 50 (Dark Mode)</h3>
                   <p className="text-sm text-gray-300 dark:text-gray-700">background=&quot;gray-950&quot;</p>
                 </div>
-                
-                <div className="p-6 bg-accent rounded-lg border border-accent-dark text-gray-900">
-                  <h3 className="font-medium mb-2">Accent</h3>
-                  <p className="text-sm">background=&quot;accent&quot;</p>
-                </div>
-                
-                <div className="p-6 bg-brand rounded-lg border border-brand-dark text-white">
-                  <h3 className="font-medium mb-2">Brand</h3>
-                  <p className="text-sm text-white/80">background=&quot;brand&quot;</p>
-                </div>
               </div>
             </section>
             
@@ -266,11 +263,19 @@ export default function StyleGuidePage() {
             <section id="video-player" className="mb-20 scroll-mt-32">
               <SectionTitle>Video Player</SectionTitle>
               
-              <div className="max-w-2xl mx-auto">
-                <VideoPlayer 
-                  src="https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-videos//demo-reel-bg.mp4" 
-                  className="aspect-video"
-                />
+              <div className="space-y-8">
+                <div>
+                  <h3 className="text-lg font-medium mb-4">Default Video Player</h3>
+                  <div className="aspect-video bg-gray-900 rounded-xl overflow-hidden">
+                    <VideoPlayer 
+                      src="https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-videos//demo-reel-bg.mp4" 
+                      poster="https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-images//demo-reel-poster.jpg"
+                      autoPlay={false}
+                      loop={true}
+                      muted={false}
+                    />
+                  </div>
+                </div>
               </div>
             </section>
           </main>
@@ -283,7 +288,7 @@ export default function StyleGuidePage() {
 // Helper component for section titles
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="text-xl md:text-2xl font-medium mb-6 pb-2 border-b border-gray-200 dark:border-gray-800">
+    <h2 className="text-2xl md:text-3xl font-medium mb-6 pb-2 border-b border-gray-200 dark:border-gray-800">
       {children}
     </h2>
   );
@@ -295,7 +300,7 @@ function NavItem({ href, children }: { href: string; children: React.ReactNode }
     <li>
       <a 
         href={href} 
-        className="text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200"
+        className="text-gray-700 dark:text-gray-300 hover:text-brand dark:hover:text-brand-light transition-colors"
       >
         {children}
       </a>
@@ -307,10 +312,8 @@ function NavItem({ href, children }: { href: string; children: React.ReactNode }
 function ColorSwatch({ name, color, textColor }: { name: string; color: string; textColor: string }) {
   return (
     <div className="flex flex-col">
-      <div className={`${color} h-20 rounded-lg shadow-sm flex items-end p-3`}>
-        <span className={`${textColor} font-medium`}>{name}</span>
-      </div>
-      <div className="mt-2 text-sm text-gray-700 dark:text-gray-300">{color}</div>
+      <div className={`h-20 ${color} rounded-lg shadow-sm`}></div>
+      <p className={`mt-2 text-sm ${textColor}`}>{name}</p>
     </div>
   );
 } 
