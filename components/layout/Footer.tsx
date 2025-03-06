@@ -20,7 +20,7 @@ export function Footer() {
           {/* Logo and Name - Always at top on mobile, center on desktop */}
           <div className="flex items-center mb-6 md:mb-0 order-1 md:order-2">
             <Link href="/" className="flex items-center">
-              <div data-hover style={{ width: '35px', height: '32px' }}>
+              <div className="relative" data-hover style={{ width: '35px', height: '32px' }}>
                 <div data-hover-bounds className="absolute inset-0 pointer-events-none"></div>
                 <Image 
                   src={logoSrc} 
@@ -37,39 +37,41 @@ export function Footer() {
           
           {/* Social Links - Middle on mobile, right on desktop */}
           <div className="flex items-center space-x-6 mb-6 md:mb-0 order-2 md:order-3">
-            <a 
-              href="https://linkedin.com" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="text-gray-700 dark:text-gray-300 hover:text-brand dark:hover:text-brand-light transition-colors text-lg"
-            >
-              <div data-hover>
-                <div data-hover-bounds className="absolute inset-0 pointer-events-none"></div>
-                <span>LinkedIn</span>
-              </div>
-            </a>
-            <a 
-              href="https://behance.net" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="text-gray-700 dark:text-gray-300 hover:text-brand dark:hover:text-brand-light transition-colors text-lg"
-            >
-              <div data-hover>
-                <div data-hover-bounds className="absolute inset-0 pointer-events-none"></div>
-                <span>Behance</span>
-              </div>
-            </a>
-            <a 
-              href="https://youtube.com" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="text-gray-700 dark:text-gray-300 hover:text-brand dark:hover:text-brand-light transition-colors text-lg"
-            >
-              <div data-hover>
-                <div data-hover-bounds className="absolute inset-0 pointer-events-none"></div>
-                <span>YouTube</span>
-              </div>
-            </a>
+            <div className="relative" data-hover>
+              <div data-hover-bounds className="absolute inset-0 pointer-events-none"></div>
+              <a 
+                href="https://linkedin.com" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="text-gray-700 dark:text-gray-300 hover:text-brand dark:hover:text-brand-light transition-colors text-lg"
+              >
+                LinkedIn
+              </a>
+            </div>
+            
+            <div className="relative" data-hover>
+              <div data-hover-bounds className="absolute inset-0 pointer-events-none"></div>
+              <a 
+                href="https://behance.net" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="text-gray-700 dark:text-gray-300 hover:text-brand dark:hover:text-brand-light transition-colors text-lg"
+              >
+                Behance
+              </a>
+            </div>
+            
+            <div className="relative" data-hover>
+              <div data-hover-bounds className="absolute inset-0 pointer-events-none"></div>
+              <a 
+                href="https://youtube.com" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="text-gray-700 dark:text-gray-300 hover:text-brand dark:hover:text-brand-light transition-colors text-lg"
+              >
+                YouTube
+              </a>
+            </div>
           </div>
           
           {/* Copyright - Bottom on mobile, left on desktop */}

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
+import { usePathname } from 'next/navigation';
 
 // Vector2D class for cursor position calculations
 class Vec2 {
@@ -39,6 +40,7 @@ class Vec2 {
 export default function Cursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
   const [isDesktop, setIsDesktop] = useState(false);
+  const pathname = usePathname(); // Get current pathname for navigation detection
   
   // Check if we're on desktop
   useEffect(() => {
@@ -73,9 +75,9 @@ export default function Cursor() {
     
     // Initialize cursor scale state
     const scale = {
-      previous: 0.5,
-      current: 0.5,
-      target: 0.5,
+      previous: 1,
+      current: 1,
+      target: 1,
       lerpAmount: 0.1
     };
     
@@ -156,22 +158,35 @@ export default function Cursor() {
     
     // Add event listeners for hover elements
     const setupHoverElements = () => {
+      // First, remove any existing event listeners to prevent duplicates
+      const existingHoverElements = document.querySelectorAll<HTMLElement>("[data-hover]");
+      existingHoverElements.forEach((el) => {
+        el.removeEventListener("pointerover", () => {});
+        el.removeEventListener("pointerout", () => {});
+        el.removeEventListener("pointermove", () => {});
+      });
+      
+      // Now set up the hover elements
       const hoverElements = document.querySelectorAll<HTMLElement>("[data-hover]");
+      console.log(`Setting up ${hoverElements.length} hover elements`);
       
       hoverElements.forEach((hoverElement) => {
         // Set hover states
         const hoverBoundsEl = hoverElement.querySelector<HTMLElement>("[data-hover-bounds]");
         if (hoverBoundsEl) {
           // Use the parent element for hover detection
-          hoverElement.addEventListener("pointerover", () => {
+          const handlePointerOver = () => {
             isHovered = true;
             hoverEl = hoverElement;
-          });
+          };
           
-          hoverElement.addEventListener("pointerout", () => {
+          const handlePointerOut = () => {
             isHovered = false;
             hoverEl = null;
-          });
+          };
+          
+          hoverElement.addEventListener("pointerover", handlePointerOver);
+          hoverElement.addEventListener("pointerout", handlePointerOut);
           
           // Magnetic effect
           const xTo = gsap.quickTo(hoverElement, "x", {
@@ -184,15 +199,25 @@ export default function Cursor() {
             ease: "elastic.out(1, 0.3)"
           });
           
-          hoverElement.addEventListener("pointermove", (event) => {
+          const handlePointerMove = (event: PointerEvent) => {
             const { clientX: cx, clientY: cy } = event;
             const { height, width, left, top } = hoverElement.getBoundingClientRect();
             const x = cx - (left + width / 2);
             const y = cy - (top + height / 2);
             xTo(x * 0.8);
             yTo(y * 0.8);
-          });
+          };
           
+          hoverElement.addEventListener("pointermove", handlePointerMove);
+          
+          // Store the event handlers on the element for cleanup
+          (hoverElement as any)._cursorHandlers = {
+            pointerOver: handlePointerOver,
+            pointerOut: handlePointerOut,
+            pointerMove: handlePointerMove
+          };
+          
+          // Reset position on pointer out
           hoverElement.addEventListener("pointerout", () => {
             xTo(0);
             yTo(0);
@@ -212,6 +237,27 @@ export default function Cursor() {
     // Initialize
     setupHoverElements();
     
+    // Set up a MutationObserver to detect DOM changes
+    const observer = new MutationObserver((mutations) => {
+      // Check if any mutations added or removed nodes
+      const shouldReinitialize = mutations.some(mutation => 
+        mutation.type === 'childList' || 
+        mutation.type === 'attributes' && mutation.attributeName === 'data-hover'
+      );
+      
+      if (shouldReinitialize) {
+        setupHoverElements();
+      }
+    });
+    
+    // Start observing the document with the configured parameters
+    observer.observe(document.body, { 
+      childList: true, 
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['data-hover']
+    });
+    
     // Add event listeners
     gsap.ticker.add(update);
     window.addEventListener("pointermove", onMouseMove);
@@ -220,8 +266,20 @@ export default function Cursor() {
     return () => {
       gsap.ticker.remove(update);
       window.removeEventListener("pointermove", onMouseMove);
+      observer.disconnect();
+      
+      // Clean up event listeners
+      const hoverElements = document.querySelectorAll<HTMLElement>("[data-hover]");
+      hoverElements.forEach((el) => {
+        const handlers = (el as any)._cursorHandlers;
+        if (handlers) {
+          el.removeEventListener("pointerover", handlers.pointerOver);
+          el.removeEventListener("pointerout", handlers.pointerOut);
+          el.removeEventListener("pointermove", handlers.pointerMove);
+        }
+      });
     };
-  }, [isDesktop]); // Re-initialize when desktop status changes
+  }, [isDesktop, pathname]); // Re-initialize when desktop status changes or pathname changes
   
   // Don't render the cursor on mobile
   if (!isDesktop) return null;

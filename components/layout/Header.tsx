@@ -29,7 +29,7 @@ export function Header() {
         <div className="flex items-center justify-between py-4">
           <Link href="/" className="flex items-center">
             <div className="relative" data-hover>
-              <div data-hover-bounds className="absolute inset-0"></div>
+              <div data-hover-bounds className="absolute inset-0 pointer-events-none"></div>
               <Image 
                 src={logoSrc}
                 alt="Ravi Koomera - Motion Designer & Creative Developer" 
@@ -47,16 +47,16 @@ export function Header() {
               <ul className="flex space-x-8">
                 {navItems.map((item) => (
                   <li key={item.path}>
-                    <Link 
-                      href={item.path} 
-                      className="text-gray-800 dark:text-gray-200 hover:text-brand dark:hover:text-brand-light transition-colors block px-1"
-                      aria-label={`Navigate to ${item.label} page`}
-                    >
-                      <div className="relative" data-hover>
-                        <div data-hover-bounds className="absolute inset-0 pointer-events-none"></div>
-                        <span>{item.label}</span>
-                      </div>
-                    </Link>
+                    <div className="relative" data-hover>
+                      <div data-hover-bounds className="absolute inset-0 pointer-events-none"></div>
+                      <Link 
+                        href={item.path} 
+                        className="text-gray-800 dark:text-gray-200 hover:text-brand dark:hover:text-brand-light transition-colors block px-1"
+                        aria-label={`Navigate to ${item.label} page`}
+                      >
+                        {item.label}
+                      </Link>
+                    </div>
                   </li>
                 ))}
               </ul>
@@ -103,18 +103,17 @@ export function Header() {
             </div>
             <nav className="flex flex-col space-y-8 py-8">
               {navItems.map((item) => (
-                <Link 
-                  key={item.path}
-                  href={item.path} 
-                  className="text-xl text-gray-800 dark:text-gray-200 hover:text-brand dark:hover:text-brand-light transition-colors block"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  aria-label={`Navigate to ${item.label} page`}
-                >
-                  <div className="relative" data-hover>
-                    <div data-hover-bounds className="absolute inset-0 pointer-events-none"></div>
+                <div key={item.path} className="relative" data-hover>
+                  <div data-hover-bounds className="absolute inset-0 pointer-events-none"></div>
+                  <Link 
+                    href={item.path} 
+                    className="text-xl text-gray-800 dark:text-gray-200 hover:text-brand dark:hover:text-brand-light transition-colors block"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    aria-label={`Navigate to ${item.label} page`}
+                  >
                     {item.label}
-                  </div>
-                </Link>
+                  </Link>
+                </div>
               ))}
             </nav>
           </Container>

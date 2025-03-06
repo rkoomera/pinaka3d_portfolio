@@ -262,12 +262,16 @@ export function VideoSection({
         >
           {/* Close button */}
           <button 
+            ref={closeButtonRef}
             className="absolute -top-12 right-2 text-white hover:text-gray-300 transition-colors z-10"
             onClick={handleClosePopup}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <div className="relative" data-hover>
+              <div data-hover-bounds className="absolute inset-0 pointer-events-none"></div>
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </div>
           </button>
 
           {/* Video content */}
