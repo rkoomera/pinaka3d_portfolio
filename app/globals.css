@@ -166,6 +166,16 @@
     pointer-events: none;
     z-index: 9999;
     transition: width 0.3s ease-out, height 0.3s ease-out, background 0.3s ease-out;
+    will-change: transform, scale, rotation;
+  }
+  
+  /* Cursor styles during scrolling */
+  .cursor.is-scrolling {
+    transform: translate(-50%, -50%) scale(1) !important;
+    transition: transform 0.3s ease-out, scale 0.3s ease-out !important;
+    mix-blend-mode: difference !important;
+    rotation: 0 !important;
+    scale: 1 !important;
   }
   
   /* Hover element styles */
@@ -181,12 +191,6 @@
     inset: 0;
     z-index: 1;
     pointer-events: none; /* Ensure it doesn't block clicks */
-  }
-  
-  /* Special case for scroll to top button */
-  [aria-label="Scroll to top"][data-hover] {
-    display: block;
-    transform-origin: center;
   }
 }
 

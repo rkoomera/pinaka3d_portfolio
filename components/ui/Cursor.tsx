@@ -42,6 +42,26 @@ export default function Cursor() {
   const [isDesktop, setIsDesktop] = useState(false);
   const pathname = usePathname(); // Get current pathname for navigation detection
   
+  // Cursor state refs to maintain state across renders
+  const cursorPositionRef = useRef({
+    previous: new Vec2(-100, -100),
+    current: new Vec2(-100, -100),
+    target: new Vec2(-100, -100),
+    lerpAmount: 0.1
+  });
+  
+  const cursorScaleRef = useRef({
+    previous: 1,
+    current: 1,
+    target: 1,
+    lerpAmount: 0.1
+  });
+  
+  const hoverStateRef = useRef({
+    isHovered: false,
+    hoverEl: null as HTMLElement | null
+  });
+  
   // Check if we're on desktop
   useEffect(() => {
     const checkIfDesktop = () => {
@@ -59,31 +79,15 @@ export default function Cursor() {
     };
   }, []);
   
+  // Initialize cursor
   useEffect(() => {
     // Only initialize cursor on desktop
     if (!isDesktop || !cursorRef.current) return;
     
     const cursor = cursorRef.current;
-    
-    // Initialize cursor position state
-    const position = {
-      previous: new Vec2(-100, -100),
-      current: new Vec2(-100, -100),
-      target: new Vec2(-100, -100),
-      lerpAmount: 0.1
-    };
-    
-    // Initialize cursor scale state
-    const scale = {
-      previous: 1,
-      current: 1,
-      target: 1,
-      lerpAmount: 0.1
-    };
-    
-    // Hover state
-    let isHovered = false;
-    let hoverEl: HTMLElement | null = null;
+    const position = cursorPositionRef.current;
+    const scale = cursorScaleRef.current;
+    const hoverState = hoverStateRef.current;
     
     // Update function for animation
     const update = () => {
@@ -104,7 +108,7 @@ export default function Cursor() {
         y: position.current.y
       });
       
-      if (!isHovered) {
+      if (!hoverState.isHovered) {
         const angle = Math.atan2(delta.y, delta.x) * (180 / Math.PI);
         const distance = Math.sqrt(delta.x * delta.x + delta.y * delta.y) * 0.04;
         
@@ -118,8 +122,8 @@ export default function Cursor() {
     
     // Update target position based on mouse movement
     const updateTargetPosition = (x: number, y: number) => {
-      if (isHovered && hoverEl) {
-        const bounds = hoverEl.getBoundingClientRect();
+      if (hoverState.isHovered && hoverState.hoverEl) {
+        const bounds = hoverState.hoverEl.getBoundingClientRect();
         
         const cx = bounds.x + bounds.width / 2;
         const cy = bounds.y + bounds.height / 2;
@@ -131,10 +135,9 @@ export default function Cursor() {
         position.target.y = cy + dy * 0.8;
         
         // Calculate scale based on element size
-        // Get the larger dimension (width or height) and add a small padding
         const elementSize = Math.max(bounds.width, bounds.height);
         const cursorSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cursor-size'));
-        const scaleFactor = (elementSize + 16) / cursorSize; // Add 16px padding (8px on each side)
+        const scaleFactor = (elementSize + 16) / cursorSize;
         
         scale.target = scaleFactor;
         
@@ -156,9 +159,17 @@ export default function Cursor() {
       }
     };
     
+    // Mouse move handler for normal operations
+    const onMouseMove = (event: MouseEvent) => {
+      const x = event.clientX;
+      const y = event.clientY;
+      
+      updateTargetPosition(x, y);
+    };
+    
     // Add event listeners for hover elements
     const setupHoverElements = () => {
-      // First, remove any existing event listeners to prevent duplicates
+      // Remove existing listeners
       const existingHoverElements = document.querySelectorAll<HTMLElement>("[data-hover]");
       existingHoverElements.forEach((el) => {
         el.removeEventListener("pointerover", () => {});
@@ -166,23 +177,23 @@ export default function Cursor() {
         el.removeEventListener("pointermove", () => {});
       });
       
-      // Now set up the hover elements
+      // Set up hover elements
       const hoverElements = document.querySelectorAll<HTMLElement>("[data-hover]");
-      console.log(`Setting up ${hoverElements.length} hover elements`);
       
       hoverElements.forEach((hoverElement) => {
-        // Set hover states
+        // Get bounds element
         const hoverBoundsEl = hoverElement.querySelector<HTMLElement>("[data-hover-bounds]");
+        
         if (hoverBoundsEl) {
-          // Use the parent element for hover detection
+          // Hover handlers
           const handlePointerOver = () => {
-            isHovered = true;
-            hoverEl = hoverElement;
+            hoverState.isHovered = true;
+            hoverState.hoverEl = hoverElement;
           };
           
           const handlePointerOut = () => {
-            isHovered = false;
-            hoverEl = null;
+            hoverState.isHovered = false;
+            hoverState.hoverEl = null;
           };
           
           hoverElement.addEventListener("pointerover", handlePointerOver);
@@ -210,7 +221,7 @@ export default function Cursor() {
           
           hoverElement.addEventListener("pointermove", handlePointerMove);
           
-          // Store the event handlers on the element for cleanup
+          // Store handlers for cleanup
           (hoverElement as any)._cursorHandlers = {
             pointerOver: handlePointerOver,
             pointerOut: handlePointerOut,
@@ -226,20 +237,11 @@ export default function Cursor() {
       });
     };
     
-    // Mouse move handler
-    const onMouseMove = (event: MouseEvent) => {
-      const x = event.clientX;
-      const y = event.clientY;
-      
-      updateTargetPosition(x, y);
-    };
-    
     // Initialize
     setupHoverElements();
     
-    // Set up a MutationObserver to detect DOM changes
+    // MutationObserver to detect DOM changes
     const observer = new MutationObserver((mutations) => {
-      // Check if any mutations added or removed nodes
       const shouldReinitialize = mutations.some(mutation => 
         mutation.type === 'childList' || 
         mutation.type === 'attributes' && mutation.attributeName === 'data-hover'
@@ -250,7 +252,7 @@ export default function Cursor() {
       }
     });
     
-    // Start observing the document with the configured parameters
+    // Observe the document
     observer.observe(document.body, { 
       childList: true, 
       subtree: true,
@@ -258,7 +260,7 @@ export default function Cursor() {
       attributeFilter: ['data-hover']
     });
     
-    // Add event listeners
+    // Event listeners
     gsap.ticker.add(update);
     window.addEventListener("pointermove", onMouseMove);
     
@@ -268,7 +270,7 @@ export default function Cursor() {
       window.removeEventListener("pointermove", onMouseMove);
       observer.disconnect();
       
-      // Clean up event listeners
+      // Clean up hover element listeners
       const hoverElements = document.querySelectorAll<HTMLElement>("[data-hover]");
       hoverElements.forEach((el) => {
         const handlers = (el as any)._cursorHandlers;
@@ -279,9 +281,9 @@ export default function Cursor() {
         }
       });
     };
-  }, [isDesktop, pathname]); // Re-initialize when desktop status changes or pathname changes
+  }, [isDesktop, pathname]); // Re-initialize on these changes
   
-  // Don't render the cursor on mobile
+  // Don't render on mobile
   if (!isDesktop) return null;
   
   return (

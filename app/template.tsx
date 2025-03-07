@@ -3,7 +3,6 @@
 import { usePathname } from 'next/navigation';
 import { AnimatePresence } from 'framer-motion';
 import { AdvancedPageTransition } from '@/components/layout/AdvancedPageTransition';
-import { ScrollToTop } from '@/components/layout/ScrollToTop';
 import { PageLoadingIndicator } from '@/components/layout/PageLoadingIndicator';
 import { useTheme } from '@/components/theme/ThemeProvider';
 
@@ -18,9 +17,6 @@ export default function Template({ children }: { children: React.ReactNode }) {
     <div className={`${bgClass} min-h-screen transition-colors duration-300`}>
       {/* Add loading indicator at the top of the page */}
       <PageLoadingIndicator />
-      
-      {/* Add scroll to top functionality with visible button */}
-      <ScrollToTop showButton={true} threshold={400} />
       
       {/* Wrap content in AnimatePresence for exit animations */}
       <AnimatePresence 
