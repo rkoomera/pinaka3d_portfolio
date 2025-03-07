@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'User Management',
-  description: 'Manage user accounts and permissions',
+  description: 'Manage user accounts and permissions'
 };
 
 export default async function UsersPage() {

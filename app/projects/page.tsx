@@ -1,13 +1,19 @@
 // app/projects/page.tsx
-import { Metadata } from 'next';
+import { Metadata, Viewport } from 'next';
 import { getAllProjects } from '@/lib/services/projects';
 import { FeaturedProjects } from '@/components/portfolio/FeaturedProjects';
 import { Section } from '@/components/ui/Section';
+import { Container } from '@/components/ui/Container';
 import { SectionHeading } from '@/components/ui/SectionHeading';
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+};
 
 export const metadata: Metadata = {
   title: 'Projects - Ravi Koomera',
-  description: 'Explore my portfolio of motion design and web development projects.',
+  description: 'Browse my creative portfolio of motion design and web development projects.'
 };
 
 export default async function ProjectsPage() {

@@ -1,11 +1,16 @@
 // app/contact/page.tsx
-import { Section } from '@/components/ui/Section';
+import { Viewport,  Section } from '@/components/ui/Section';
 import { Container } from '@/components/ui/Container';
 import { ClientContactWrapper } from '@/components/portfolio/ClientContactWrapper';
 
 // Page configuration
 export const dynamicParams = true;
 
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+};
 export default function ContactPage() {
   return (
     <Section className="pt-24 md:pt-32" background="gray-100">

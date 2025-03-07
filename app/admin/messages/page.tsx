@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Messages | Admin Dashboard',
-  description: 'View and manage contact messages',
+  description: 'View and manage contact messages'
 };
 
 export default async function MessagesPage() {

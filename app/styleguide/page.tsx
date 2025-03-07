@@ -1,12 +1,17 @@
-import { Metadata } from 'next';
+import { Metadata, Viewport } from 'next';
 import { Container } from '@/components/ui/Container';
 import { VideoPlayer } from '@/components/ui/VideoPlayer';
 import { PlayButtonShowcase } from './play-button-showcase';
 import { ButtonVariantsShowcase, ButtonSizesShowcase, ButtonArrowShowcase } from './button-showcase';
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+}
+
 export const metadata: Metadata = {
   title: 'Style Guide - Pinaka Portfolio',
-  description: 'Design system and component library for the Pinaka Portfolio site',
+  description: 'Design system and component library for the Pinaka Portfolio site'
 };
 
 export default function StyleGuidePage() {

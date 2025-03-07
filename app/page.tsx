@@ -1,5 +1,5 @@
 // app/page.tsx
-import { Metadata } from 'next';
+import { Metadata, Viewport } from 'next';
 import { HeroSection } from '@/components/portfolio/HeroSection';
 import { FeaturedProjects } from '@/components/portfolio/FeaturedProjects';
 import { getFeaturedProjects } from '@/lib/services/projects';
@@ -9,8 +9,13 @@ import { InteractiveCubes } from '@/components/3d/InteractiveCubes';
 
 export const metadata: Metadata = {
   title: 'Ravi Koomera - Motion Designer & Developer',
-  description: 'Portfolio showcasing motion design and web development projects by Ravi Koomera.',
+  description: 'Portfolio showcasing motion design and web development projects by Ravi Koomera.'
 };
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+};
+
 
 
 export default async function HomePage() {

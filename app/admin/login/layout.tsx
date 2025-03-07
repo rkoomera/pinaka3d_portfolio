@@ -1,9 +1,14 @@
-import { Metadata } from 'next';
+import { Metadata, Viewport } from 'next';
 
 export const metadata: Metadata = {
   title: 'Admin Login - Pinaka',
-  description: 'Login to the Pinaka admin dashboard',
+  description: 'Login to the Pinaka admin dashboard'
 };
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+};
+
 
 export default function LoginLayout({
   children,

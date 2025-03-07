@@ -1,18 +1,24 @@
 // app/not-found.tsx
 // This is a server component
-import { Metadata } from 'next';
+import { Metadata, Viewport } from 'next';
 import { Section } from '@/components/ui/Section';
 import { Container } from '@/components/ui/Container';
 import { Button } from '@/components/ui/Button';
 import Link from 'next/link';
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+};
+
 export const metadata: Metadata = {
   title: '404 - Page Not Found',
   description: "The page you are looking for doesn't exist or has been moved.",
+
   robots: {
     index: false,
     follow: true,
-  },
+  }
 };
 
 export default function NotFound() {

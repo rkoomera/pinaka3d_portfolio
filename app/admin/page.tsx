@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Admin Dashboard',
-  description: 'Admin dashboard for Pinaka portfolio site',
+  description: 'Admin dashboard for Pinaka portfolio site'
 };
 
 export default async function AdminDashboardPage() {

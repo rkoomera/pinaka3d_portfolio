@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Admin - Projects',
-  description: 'Manage your portfolio projects',
+  description: 'Manage your portfolio projects'
 };
 
 export default async function AdminProjectsPage() {

@@ -1,5 +1,5 @@
 // app/projects/[slug]/page.tsx
-import { Metadata } from 'next';
+import { Metadata, Viewport } from 'next';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { Section } from '@/components/ui/Section';
@@ -17,6 +17,13 @@ type Props = {
     slug: string;
   };
 };
+
+export async function generateViewport(): Promise<Viewport> {
+  return {
+    width: 'device-width',
+    initialScale: 1,
+  };
+}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const slug = params.slug;

@@ -7,7 +7,8 @@ export const metadata: Metadata = {
     default: 'Admin Dashboard - Pinaka',
     template: '%s - Pinaka Admin',
   },
-  description: 'Admin dashboard for Pinaka portfolio site',
+
+  description: 'Admin dashboard for Pinaka portfolio site'
 };
 
 export default async function AdminLayout({

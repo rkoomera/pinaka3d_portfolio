@@ -1,5 +1,5 @@
 // app/about/page.tsx
-import { Metadata } from 'next';
+import { Metadata, Viewport } from 'next';
 import Image from 'next/image';
 import { Section } from '@/components/ui/Section';
 import { Container } from '@/components/ui/Container';
@@ -7,8 +7,13 @@ import { Button } from '@/components/ui/Button';
 
 export const metadata: Metadata = {
   title: 'About Me - Ravi Koomera',
-  description: 'Learn more about Ravi Koomera, a motion designer and web developer.',
+  description: 'Learn more about Ravi Koomera, a motion designer and web developer.'
 };
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+};
+
 
 export default function AboutPage() {
   return (
