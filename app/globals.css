@@ -154,24 +154,17 @@
   
   /* Custom cursor styles */
   .cursor {
-    position: fixed;
-    left: 0;
-    top: 0;
-    transform: translate(-50%, -50%);
-    mix-blend-mode: difference;
-    pointer-events: none;
-    z-index: 9999;
-    will-change: transform;
-    overflow: visible;
+    /* Default cursor properties applied via inline styles */
+    backdrop-filter: blur(0); /* Ensures high quality edges in supported browsers */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
   
   /* Cursor styles during scrolling */
   .cursor.is-scrolling {
     transform: translate(-50%, -50%) scale(1) !important;
-    transition: transform 0.3s ease-out, scale 0.3s ease-out !important;
-    mix-blend-mode: difference !important;
-    rotation: 0 !important;
-    scale: 1 !important;
+    opacity: 0.8 !important;
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out !important;
   }
   
   /* Hover element styles */

@@ -1,7 +1,7 @@
 'use client';
 
 import * as THREE from 'three';
-import { useRef, useMemo, useState, useEffect } from 'react';
+import { useRef, useMemo, useState, useEffect, useCallback } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF, MeshTransmissionMaterial, Environment, Lightformer } from '@react-three/drei';
 import { CuboidCollider, BallCollider, Physics, RigidBody } from '@react-three/rapier';
@@ -36,6 +36,7 @@ const shuffleCubes = () => [
 
 export function InteractiveCubes() {
   const [isMounted, setIsMounted] = useState(false);
+  const [renderError, setRenderError] = useState<string | null>(null);
   const { theme } = useTheme();
   
   // This should match the scene background color
@@ -46,22 +47,68 @@ export function InteractiveCubes() {
     const initTracker = trackResource('interactive-cubes-init', 3);
     initTracker.start();
     
-    setIsMounted(true);
-    
-    if (typeof window !== 'undefined') {
-      // Preload the model on the client side - use the imported useGLTF directly
-      useGLTF.preload(MODEL_URL);
+    try {
+      // Verify THREE.js is available
+      if (typeof THREE === 'undefined') {
+        console.error('THREE is not defined');
+        setRenderError('THREE.js initialization failed');
+        return;
+      }
       
-      // Mark as complete when mounted
-      initTracker.complete();
+      // Force this component to mount on client-side only
+      setIsMounted(true);
       
-      // If component unmounts, still mark as complete to avoid blocking the loading screen
-      return () => {
+      if (typeof window !== 'undefined') {
+        // Force a redraw of the component
+        setTimeout(() => {
+          console.log('InteractiveCubes mounted and ready');
+          const canvas = document.querySelector('canvas');
+          if (canvas) {
+            console.log('Canvas element found:', canvas);
+          } else {
+            console.warn('Canvas element not found in DOM');
+          }
+        }, 100);
+        
+        // Preload the model on the client side
+        useGLTF.preload(MODEL_URL);
+        
+        // Mark as complete when mounted
         initTracker.complete();
-      };
+      }
+    } catch (error) {
+      console.error('Error initializing InteractiveCubes:', error);
+      setRenderError(error instanceof Error ? error.message : 'Unknown error');
+      initTracker.complete(); // Complete tracking even on error
     }
+    
+    // Cleanup
+    return () => {
+      initTracker.complete();
+    };
   }, []);
 
+  // If there was an error, display it
+  if (renderError) {
+    return (
+      <Section background={sectionBgColor} containerSize="full" className="w-full h-screen px-0 py-0 flex items-center justify-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-black">
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
+            <div className="text-red-500 mb-4">Error loading 3D experience</div>
+            <div className="text-white text-sm">{renderError}</div>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="mt-4 px-4 py-2 bg-white text-black rounded hover:bg-gray-200 transition-colors"
+            >
+              Reload
+            </button>
+          </div>
+        </div>
+      </Section>
+    );
+  }
+
+  // Loading state
   if (!isMounted) {
     return (
       <Section background={sectionBgColor} containerSize="full" className="w-full h-screen px-0 py-0 flex items-center justify-center relative overflow-hidden">
@@ -74,11 +121,28 @@ export function InteractiveCubes() {
     );
   }
 
+  // Component is mounted, render the 3D scene
   return (
     <Section background={sectionBgColor} containerSize="full" className="w-full h-screen px-0 py-0 flex items-center justify-center relative overflow-hidden">
       {/* Absolute positioned 3D canvas in the background */}
-      <div className="absolute inset-0 z-0">
-        <Canvas className="w-full h-full" shadows dpr={[1, 1.5]} gl={{ antialias: false }} camera={{ position: [0, 0, 15], fov: 17.5, near: 1, far: 20 }}>
+      <div className="absolute inset-0 z-0" style={{ pointerEvents: 'auto' }}>
+        <Canvas 
+          className="w-full h-full" 
+          shadows 
+          dpr={[1, 1.5]} 
+          gl={{ 
+            antialias: true,
+            alpha: false,
+            powerPreference: 'high-performance'
+          }} 
+          camera={{ 
+            position: [0, 0, 15], 
+            fov: 17.5, 
+            near: 1, 
+            far: 20 
+          }}
+          style={{ display: 'block', touchAction: 'none' }}
+        >
           <Scene isDarkMode={theme === 'dark'} />
         </Canvas>
       </div>
@@ -110,6 +174,9 @@ function Scene({ isDarkMode }: SceneProps) {
   
   // Start tracking scene loading
   useEffect(() => {
+    // Only run once
+    const isFirstRender = true;
+    
     // Mark scene as loading when component mounts
     sceneTracker.current.start();
     
@@ -133,11 +200,13 @@ function Scene({ isDarkMode }: SceneProps) {
     const cubes = [];
     // Generate 15 more cubes with random positions
     for (let i = 0; i < 15; i++) {
+      // Create a position that's better distributed in space
+      // Use a larger range for better separation
       cubes.push({
         position: [
-          THREE.MathUtils.randFloatSpread(20),
-          THREE.MathUtils.randFloatSpread(20),
-          THREE.MathUtils.randFloatSpread(10)
+          THREE.MathUtils.randFloatSpread(30),
+          THREE.MathUtils.randFloatSpread(30),
+          THREE.MathUtils.randFloatSpread(20)
         ] as [number, number, number],
         color: i % 2 === 0 ? brandPurple : accentGreen,
         roughness: Math.random() > 0.5 ? 0.1 : 0.75,
@@ -153,11 +222,22 @@ function Scene({ isDarkMode }: SceneProps) {
   return (
     <>
       <color attach="background" args={[bgColor]} />
+      {/* Add basic lighting even if other elements fail */}
       <ambientLight intensity={isDarkMode ? 0.4 : 0.6} />
       <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={isDarkMode ? 1 : 1.2} castShadow />
-      <Physics gravity={[0, 0, 0]}>
+      
+      <Physics 
+        gravity={[0, 0, 0]} 
+        debug={false} // Set to true for debugging physics
+      >
         <Pointer />
-        {connectors.map((props, i) => <Connector key={`original-${i}`} {...props} />)}
+        {connectors.map((props, i) => (
+          <Connector 
+            key={`original-${i}`} 
+            {...props} 
+            debugId={`connector-original-${i}`}
+          />
+        ))}
         {additionalCubes.map((props, i) => (
           <Connector 
             key={`additional-${i}`} 
@@ -165,9 +245,10 @@ function Scene({ isDarkMode }: SceneProps) {
             color={props.color}
             roughness={props.roughness}
             accent={props.accent}
+            debugId={`connector-additional-${i}`}
           />
         ))}
-        <Connector position={[10, 10, 5]}>
+        <Connector position={[10, 10, 5]} debugId="connector-special">
           <MeshTransmissionMaterial clearcoat={1} thickness={0.1} anisotropicBlur={0.1} chromaticAberration={0.1} samples={8} resolution={512} />
         </Connector>
       </Physics>
@@ -192,25 +273,88 @@ interface ConnectorProps {
   color?: string;
   roughness?: number;
   accent?: boolean;
+  debugId?: string;
 }
 
-function Connector({ position, children, color, roughness, accent }: ConnectorProps) {
+function Connector({ position, children, color, roughness, accent, debugId }: ConnectorProps) {
   const api = useRef<any>(null);
   const vec = useMemo(() => new THREE.Vector3(), []);
   const r = (range: number) => THREE.MathUtils.randFloatSpread(range);
-  const pos = useMemo(() => position || [r(10), r(10), r(10)] as [number, number, number], [position]);
+  const pos = useMemo(() => position || [r(15), r(15), r(15)] as [number, number, number], [position]);
+  
+  // Log when this component mounts
+  useEffect(() => {
+    if (debugId) {
+      console.log(`Connector ${debugId} mounted at position:`, pos);
+    }
+    
+    return () => {
+      if (debugId) {
+        console.log(`Connector ${debugId} unmounted`);
+      }
+    };
+  }, [debugId, pos]);
   
   useFrame((state, delta) => {
     delta = Math.min(0.1, delta);
     if (api.current) {
-      api.current.applyImpulse(
-        vec.copy(api.current.translation()).negate().multiplyScalar(0.2)
-      );
+      try {
+        // Apply centering force - pulls cubes toward origin to prevent them from drifting too far
+        api.current.applyImpulse(
+          vec.copy(api.current.translation()).negate().multiplyScalar(0.2)
+        );
+        
+        // Apply repulsion force to avoid merging with other cubes
+        const repulsionForce = new THREE.Vector3();
+        const currentPosition = api.current.translation();
+        
+        // Find other cubes that are too close
+        state.scene.children.forEach(child => {
+          if (child.userData?.physics && child !== api.current.raw()) {
+            const otherPosition = child.position;
+            const distance = currentPosition.distanceTo(otherPosition);
+            
+            // If cubes are too close, add repulsion force
+            if (distance < 2.5) {
+              const force = new THREE.Vector3()
+                .subVectors(currentPosition, otherPosition)
+                .normalize()
+                .multiplyScalar(0.5 * (2.5 - distance)); // Stronger force when closer
+              
+              repulsionForce.add(force);
+            }
+          }
+        });
+        
+        // Apply the repulsion force if any
+        if (repulsionForce.lengthSq() > 0) {
+          api.current.applyImpulse(repulsionForce);
+        }
+      } catch (error) {
+        console.error(`Physics error in Connector ${debugId}:`, error);
+      }
     }
   });
   
+  // Using onCollisionEnter for debugging
+  const handleCollision = useCallback((payload: any) => {
+    if (debugId) {
+      console.log(`Collision detected for ${debugId}:`, payload);
+    }
+  }, [debugId]);
+  
   return (
-    <RigidBody linearDamping={4} angularDamping={1} friction={0.1} position={pos} ref={api} colliders={false}>
+    <RigidBody 
+      linearDamping={4} 
+      angularDamping={1} 
+      friction={0.2} 
+      restitution={0.2} // Add some bounce
+      position={pos} 
+      ref={api} 
+      colliders={false}
+      userData={{ physics: true, debugId }} // Mark as physics object for repulsion logic
+      onCollisionEnter={handleCollision}
+    >
       <CuboidCollider args={[0.38, 1.27, 0.38]} />
       <CuboidCollider args={[1.27, 0.38, 0.38]} />
       <CuboidCollider args={[0.38, 0.38, 1.27]} />

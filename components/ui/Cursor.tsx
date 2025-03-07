@@ -38,7 +38,7 @@ class Vec2 {
 }
 
 export default function Cursor() {
-  const cursorRef = useRef<SVGSVGElement>(null);
+  const cursorRef = useRef<HTMLDivElement>(null);
   const [isDesktop, setIsDesktop] = useState(false);
   const pathname = usePathname(); // Get current pathname for navigation detection
   
@@ -103,20 +103,26 @@ export default function Cursor() {
       position.previous.copy(position.current);
       scale.previous = scale.current;
       
-      gsap.set(cursor, {
-        x: position.current.x,
-        y: position.current.y
-      });
-      
-      if (!hoverState.isHovered) {
-        const angle = Math.atan2(delta.y, delta.x) * (180 / Math.PI);
-        const distance = Math.sqrt(delta.x * delta.x + delta.y * delta.y) * 0.04;
-        
+      // Apply transforms directly to the div
+      if (cursor) {
+        // Position cursor with subpixel accuracy
         gsap.set(cursor, {
-          rotate: angle,
-          scaleX: scale.current + Math.min(distance, 1),
-          scaleY: scale.current - Math.min(distance, 0.3)
+          x: position.current.x,
+          y: position.current.y
         });
+        
+        if (!hoverState.isHovered) {
+          const angle = Math.atan2(delta.y, delta.x) * (180 / Math.PI);
+          const distance = Math.sqrt(delta.x * delta.x + delta.y * delta.y) * 0.04;
+          
+          // Apply rotation and scaling for motion effect
+          gsap.set(cursor, {
+            rotate: angle,
+            scaleX: scale.current + Math.min(distance, 1),
+            scaleY: scale.current - Math.min(distance, 0.3),
+            transformOrigin: "center center"
+          });
+        }
       }
     };
     
@@ -125,34 +131,39 @@ export default function Cursor() {
       if (hoverState.isHovered && hoverState.hoverEl) {
         const bounds = hoverState.hoverEl.getBoundingClientRect();
         
+        // Get the center of the hovered element
         const cx = bounds.x + bounds.width / 2;
         const cy = bounds.y + bounds.height / 2;
         
+        // Calculate distance from mouse to center
         const dx = x - cx;
         const dy = y - cy;
         
-        position.target.x = cx + dx * 0.8;
-        position.target.y = cy + dy * 0.8;
+        // More magnetic effect - stronger pull to center
+        // Only apply 50% of the mouse offset from center
+        position.target.x = cx + dx * 0.5;
+        position.target.y = cy + dy * 0.5;
         
-        // Calculate scale based on element size
+        // Calculate scale based on element size, but ensure minimum size
         const elementSize = Math.max(bounds.width, bounds.height);
         const cursorSize = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--cursor-size'));
-        const scaleFactor = (elementSize + 16) / cursorSize;
+        // Ensure the cursor is at least as large as the element with padding
+        const padding = 10; // 10px extra padding 
+        const scaleFactor = Math.max((elementSize + padding) / cursorSize, 1.2);
         
         scale.target = scaleFactor;
         
+        // Apply distortion effect but cap it for better appearance
         const angle = Math.atan2(dy, dx) * (180 / Math.PI);
         const distance = Math.sqrt(dx * dx + dy * dy) * 0.02;
         
         gsap.set(cursor, { rotate: angle });
         gsap.to(cursor, {
-          scaleX: scale.target + Math.pow(Math.min(distance, 0.8), 3) * 5,
-          scaleY: scale.target - Math.pow(Math.min(distance, 0.5), 3) * 5,
+          scaleX: scale.target + Math.min(Math.pow(distance * 0.8, 2), 0.5),
+          scaleY: scale.target - Math.min(Math.pow(distance * 0.5, 2), 0.3),
           duration: 0.5,
           ease: "power4.out",
-          overwrite: true,
-          force3D: true,
-          smoothOrigin: true
+          overwrite: true
         });
       } else {
         position.target.x = x;
@@ -289,24 +300,28 @@ export default function Cursor() {
   if (!isDesktop) return null;
   
   return (
-    <svg 
-      ref={cursorRef}
-      className="cursor" 
-      width="40" 
-      height="40" 
-      viewBox="0 0 40 40" 
-      aria-hidden="true"
-      style={{
-        width: 'var(--cursor-size)',
-        height: 'var(--cursor-size)',
-      }}
-    >
-      <circle 
-        cx="20" 
-        cy="20" 
-        r="19"
-        fill="rgba(var(--cursor-color), 1)"
-      />
-    </svg>
+    <>
+      {/* Using a simple div with blur for anti-aliasing */}
+      <div 
+        ref={cursorRef} 
+        className="cursor"
+        style={{
+          position: 'fixed',
+          left: '0',
+          top: '0',
+          width: 'var(--cursor-size)',
+          height: 'var(--cursor-size)',
+          transform: 'translate(-50%, -50%)',
+          backgroundColor: `rgba(var(--cursor-color), 1)`,
+          borderRadius: '50%',
+          mixBlendMode: 'difference',
+          pointerEvents: 'none',
+          zIndex: 9999,
+          willChange: 'transform',
+          boxShadow: '0 0 0 1px rgba(var(--cursor-color), 0.2)'
+        }}
+        aria-hidden="true"
+      ></div>
+    </>
   );
 } 
