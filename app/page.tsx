@@ -5,6 +5,7 @@ import { FeaturedProjects } from '@/components/portfolio/FeaturedProjects';
 import { getFeaturedProjects } from '@/lib/services/projects';
 import { VideoSection } from '@/components/layout/VideoSection';
 import { ContactCTA } from '@/components/portfolio/ContactCTA';
+import { InteractiveCubes } from '@/components/3d/InteractiveCubes';
 
 export const metadata: Metadata = {
   title: 'Ravi Koomera - Motion Designer & Developer',
@@ -51,7 +52,7 @@ export default async function HomePage() {
         showSubtitle={true}
       />
       
-      <ContactCTA />
+      <InteractiveCubes />
     </>
   );
 }
