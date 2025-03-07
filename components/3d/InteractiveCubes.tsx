@@ -10,6 +10,7 @@ import { easing } from 'maath';
 import { Section } from '@/components/ui/Section';
 import { useTheme } from '@/components/theme/ThemeProvider';
 import { Button } from '@/components/ui/Button';
+import { trackResource } from '@/lib/resourceLoader';
 
 // Model configuration
 const modelConfig = { scale: 3 };
@@ -39,12 +40,25 @@ export function InteractiveCubes() {
   
   // This should match the scene background color
   const sectionBgColor = 'gray-950';  // Or any Tailwind color class that matches your scene background
-
+  
   useEffect(() => {
+    // Track this component's initialization
+    const initTracker = trackResource('interactive-cubes-init', 3);
+    initTracker.start();
+    
     setIsMounted(true);
+    
     if (typeof window !== 'undefined') {
       // Preload the model on the client side - use the imported useGLTF directly
       useGLTF.preload(MODEL_URL);
+      
+      // Mark as complete when mounted
+      initTracker.complete();
+      
+      // If component unmounts, still mark as complete to avoid blocking the loading screen
+      return () => {
+        initTracker.complete();
+      };
     }
   }, []);
 
@@ -92,6 +106,25 @@ interface SceneProps {
 }
 
 function Scene({ isDarkMode }: SceneProps) {
+  const sceneTracker = useRef(trackResource('interactive-cubes-scene', 2));
+  
+  // Start tracking scene loading
+  useEffect(() => {
+    // Mark scene as loading when component mounts
+    sceneTracker.current.start();
+    
+    // Once the first frame is rendered, mark as complete
+    const timeout = setTimeout(() => {
+      sceneTracker.current.complete();
+    }, 500);
+    
+    return () => {
+      clearTimeout(timeout);
+      // Always mark as complete on unmount to avoid blocking the loading screen
+      sceneTracker.current.complete();
+    };
+  }, []);
+  
   // Using a fixed accent color instead of changing it on click
   const connectors = useMemo(() => shuffleCubes(), []);
   
@@ -246,7 +279,11 @@ function Pointer() {
   useFrame(({ mouse, viewport }) => {
     if (ref.current) {
       ref.current.setNextKinematicTranslation(
-        vec.set((mouse.x * viewport.width) / 2, (mouse.y * viewport.height) / 2, 0)
+        vec.set(
+          (mouse.x * viewport.width) / 2, 
+          (mouse.y * viewport.height) / 2, 
+          0
+        )
       );
     }
   });

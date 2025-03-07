@@ -38,7 +38,7 @@ class Vec2 {
 }
 
 export default function Cursor() {
-  const cursorRef = useRef<HTMLDivElement>(null);
+  const cursorRef = useRef<SVGSVGElement>(null);
   const [isDesktop, setIsDesktop] = useState(false);
   const pathname = usePathname(); // Get current pathname for navigation detection
   
@@ -150,7 +150,9 @@ export default function Cursor() {
           scaleY: scale.target - Math.pow(Math.min(distance, 0.5), 3) * 5,
           duration: 0.5,
           ease: "power4.out",
-          overwrite: true
+          overwrite: true,
+          force3D: true,
+          smoothOrigin: true
         });
       } else {
         position.target.x = x;
@@ -287,6 +289,24 @@ export default function Cursor() {
   if (!isDesktop) return null;
   
   return (
-    <div ref={cursorRef} className="cursor" aria-hidden="true"></div>
+    <svg 
+      ref={cursorRef}
+      className="cursor" 
+      width="40" 
+      height="40" 
+      viewBox="0 0 40 40" 
+      aria-hidden="true"
+      style={{
+        width: 'var(--cursor-size)',
+        height: 'var(--cursor-size)',
+      }}
+    >
+      <circle 
+        cx="20" 
+        cy="20" 
+        r="19"
+        fill="rgba(var(--cursor-color), 1)"
+      />
+    </svg>
   );
 } 

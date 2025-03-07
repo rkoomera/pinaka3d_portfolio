@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'Ravi Koomera - Motion Designer & Developer',
+    name: 'Ravi Koomera - Motion Designer & Creative Developer',
     short_name: 'Ravi Koomera',
     description: 'Portfolio showcasing motion design and web development projects by Ravi Koomera.',
     start_url: '/',
