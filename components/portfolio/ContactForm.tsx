@@ -184,7 +184,8 @@ export function ContactForm() {
         <Button 
           type="submit" 
           disabled={isSubmitting}
-          className="w-full sm:w-auto px-6 py-3 text-base"
+          variant="primary"
+          className="w-full sm:w-auto px-6 py-3"
         >
           {isSubmitting ? 'Sending...' : 'Send Message'}
         </Button>

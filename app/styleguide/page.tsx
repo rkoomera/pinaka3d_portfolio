@@ -47,36 +47,36 @@ export default function StyleGuidePage() {
                 <div>
                   <h3 className="text-lg font-medium mb-4">Brand Colors</h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <ColorSwatch name="Brand" color="bg-brand" textColor="text-white" />
-                    <ColorSwatch name="Brand Light" color="bg-brand-light" textColor="text-white" />
-                    <ColorSwatch name="Brand Dark" color="bg-brand-dark" textColor="text-white" />
-                    <ColorSwatch name="Accent" color="bg-accent" textColor="text-gray-900" />
-                    <ColorSwatch name="Accent Dark" color="bg-accent-dark" textColor="text-gray-900" />
+                    <ColorSwatch name="Brand" color="bg-brand" />
+                    <ColorSwatch name="Brand Light" color="bg-brand-light" />
+                    <ColorSwatch name="Brand Dark" color="bg-brand-dark" />
+                    <ColorSwatch name="Accent" color="bg-accent" />
+                    <ColorSwatch name="Accent Dark" color="bg-accent-dark" />
                   </div>
                 </div>
                 
                 <div>
                   <h3 className="text-lg font-medium mb-4">Gray Scale</h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <ColorSwatch name="White" color="bg-white" textColor="text-gray-900" />
-                    <ColorSwatch name="Gray 200" color="bg-gray-200" textColor="text-gray-900" />
-                    <ColorSwatch name="Gray 300" color="bg-gray-300" textColor="text-gray-900" />
-                    <ColorSwatch name="Gray 400" color="bg-gray-400" textColor="text-gray-900" />
-                    <ColorSwatch name="Gray 500" color="bg-gray-500" textColor="text-white" />
-                    <ColorSwatch name="Gray 600" color="bg-gray-600" textColor="text-white" />
-                    <ColorSwatch name="Gray 700" color="bg-gray-700" textColor="text-white" />
-                    <ColorSwatch name="Gray 800" color="bg-gray-800" textColor="text-white" />
-                    <ColorSwatch name="Gray 900" color="bg-gray-900" textColor="text-white" />
-                    <ColorSwatch name="Gray 950" color="bg-gray-950" textColor="text-white" />
+                    <ColorSwatch name="White" color="bg-white" />
+                    <ColorSwatch name="Gray 200" color="bg-gray-200" />
+                    <ColorSwatch name="Gray 300" color="bg-gray-300" />
+                    <ColorSwatch name="Gray 400" color="bg-gray-400" />
+                    <ColorSwatch name="Gray 500" color="bg-gray-500" />
+                    <ColorSwatch name="Gray 600" color="bg-gray-600" />
+                    <ColorSwatch name="Gray 700" color="bg-gray-700" />
+                    <ColorSwatch name="Gray 800" color="bg-gray-800" />
+                    <ColorSwatch name="Gray 900" color="bg-gray-900" />
+                    <ColorSwatch name="Gray 950" color="bg-gray-950" />
                   </div>
                 </div>
                 
                 <div>
                   <h3 className="text-lg font-medium mb-4">Text Colors</h3>
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    <ColorSwatch name="Text Default" color="bg-gray-900" textColor="text-white" />
-                    <ColorSwatch name="Text Light" color="bg-gray-700" textColor="text-white" />
-                    <ColorSwatch name="Text Dark" color="bg-gray-200" textColor="text-gray-900" />
+                    <ColorSwatch name="Text Default" color="bg-gray-900" />
+                    <ColorSwatch name="Text Light" color="bg-gray-700" />
+                    <ColorSwatch name="Text Dark" color="bg-gray-200" />
                   </div>
                 </div>
               </div>
@@ -309,11 +309,11 @@ function NavItem({ href, children }: { href: string; children: React.ReactNode }
 }
 
 // Helper component for color swatches
-function ColorSwatch({ name, color, textColor }: { name: string; color: string; textColor: string }) {
+function ColorSwatch({ name, color, textColor }: { name: string; color: string; textColor?: string }) {
   return (
     <div className="flex flex-col">
       <div className={`h-20 ${color} rounded-lg shadow-sm`}></div>
-      <p className={`mt-2 text-sm ${textColor}`}>{name}</p>
+      <p className="mt-2 text-sm text-gray-900 dark:text-white">{name}</p>
     </div>
   );
 } 

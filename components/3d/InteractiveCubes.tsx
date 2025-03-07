@@ -1,19 +1,19 @@
 'use client';
 
 import * as THREE from 'three';
-import { useRef, useReducer, useMemo, useState, useEffect } from 'react';
+import { useRef, useMemo, useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF, MeshTransmissionMaterial, Environment, Lightformer } from '@react-three/drei';
 import { CuboidCollider, BallCollider, Physics, RigidBody } from '@react-three/rapier';
 import { EffectComposer, N8AO } from '@react-three/postprocessing';
 import { easing } from 'maath';
 import { Section } from '@/components/ui/Section';
-import { SectionHeading } from '@/components/ui/SectionHeading';
 import { useTheme } from '@/components/theme/ThemeProvider';
 import { Button } from '@/components/ui/Button';
 
 // Model configuration
 const modelConfig = { scale: 3 };
+const MODEL_URL = 'https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/3d-assets//cube1.glb';
 
 // Use brand color as the only accent color
 // Define the two colors we want to use for all cubes
@@ -39,17 +39,12 @@ export function InteractiveCubes() {
   
   // This should match the scene background color
   const sectionBgColor = 'gray-950';  // Or any Tailwind color class that matches your scene background
-  const textColorClass = theme === 'dark' ? 'text-white' : 'text-gray-900';
-  const loadingBgClass = theme === 'dark' ? 'bg-gray-900' : 'bg-gray-200';
-  const loadingTextClass = theme === 'dark' ? 'text-white' : 'text-gray-900';
 
   useEffect(() => {
     setIsMounted(true);
     if (typeof window !== 'undefined') {
-      // Preload the model on the client side
-      import('@react-three/drei').then(({ useGLTF }) => {
-        useGLTF.preload('https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/3d-assets//cube1.glb');
-      });
+      // Preload the model on the client side - use the imported useGLTF directly
+      useGLTF.preload(MODEL_URL);
     }
   }, []);
 
@@ -57,7 +52,7 @@ export function InteractiveCubes() {
     return (
       <Section background={sectionBgColor} containerSize="full" className="w-full h-screen px-0 py-0 flex items-center justify-center relative overflow-hidden">
         <div className="absolute inset-0 bg-black">
-          <div className={`absolute inset-0 flex items-center justify-center`}>
+          <div className="absolute inset-0 flex items-center justify-center">
             <div className="animate-pulse text-white">Loading 3D experience...</div>
           </div>
         </div>
@@ -201,7 +196,7 @@ function ConnectorModel({ color = 'white', roughness = 0 }: ConnectorModelProps)
   const modelRef = useRef<THREE.Object3D>(null);
   
   // Load the cube model
-  const { scene } = useGLTF('https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/3d-assets//cube.glb');
+  const { scene } = useGLTF(MODEL_URL);
   
   // Clone the scene to avoid issues with reusing the same object
   const clonedScene = useMemo(() => {

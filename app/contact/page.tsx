@@ -1,9 +1,10 @@
 // app/contact/page.tsx
-'use client';
-
 import { Section } from '@/components/ui/Section';
 import { Container } from '@/components/ui/Container';
-import { ContactForm } from '@/components/portfolio/ContactForm';
+import { ClientContactWrapper } from '@/components/portfolio/ClientContactWrapper';
+
+// Page configuration
+export const dynamicParams = true;
 
 export default function ContactPage() {
   return (
@@ -29,7 +30,7 @@ export default function ContactPage() {
           </div>
           
           <div>
-            <ContactForm />
+            <ClientContactWrapper />
           </div>
         </div>
       </Container>
