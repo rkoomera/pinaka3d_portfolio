@@ -16,19 +16,21 @@ import { Button } from '@/components/ui/Button';
 const modelConfig = { scale: 3 };
 
 // Use brand color as the only accent color
-const accentColor = '#7645fc';
+// Define the two colors we want to use for all cubes
+const brandPurple = '#3b3b3b';
+const accentGreen = '#c6fb50';
 
 // Create a single shuffle function for both modes
 const shuffleCubes = () => [
-  { color: '#ff480', roughness: 0.1 },
-  { color: '#444', roughness: 0.75 },
-  { color: '#444', roughness: 0.75 },
-  { color: 'white', roughness: 0.1 },
-  { color: 'white', roughness: 0.75 },
-  { color: 'white', roughness: 0.1 },
-  { color: accentColor, roughness: 0.1, accent: true },
-  { color: accentColor, roughness: 0.75, accent: true },
-  { color: accentColor, roughness: 0.1, accent: true }
+  { color: brandPurple, roughness: 0.1 },
+  { color: brandPurple, roughness: 0.75 },
+  { color: brandPurple, roughness: 0.1 },
+  { color: accentGreen, roughness: 0.1 },
+  { color: accentGreen, roughness: 0.75 },
+  { color: accentGreen, roughness: 0.1 },
+  { color: brandPurple, roughness: 0.1, accent: true },
+  { color: accentGreen, roughness: 0.75, accent: true },
+  { color: brandPurple, roughness: 0.75, accent: true }
 ];
 
 export function InteractiveCubes() {
@@ -103,15 +105,13 @@ function Scene({ isDarkMode }: SceneProps) {
     const cubes = [];
     // Generate 15 more cubes with random positions
     for (let i = 0; i < 15; i++) {
-      const primaryColor = 'white';
-      const secondaryColor = '#444';
       cubes.push({
         position: [
           THREE.MathUtils.randFloatSpread(20),
           THREE.MathUtils.randFloatSpread(20),
           THREE.MathUtils.randFloatSpread(10)
         ] as [number, number, number],
-        color: i % 3 === 0 ? accentColor : (i % 2 === 0 ? primaryColor : secondaryColor),
+        color: i % 2 === 0 ? brandPurple : accentGreen,
         roughness: Math.random() > 0.5 ? 0.1 : 0.75,
         accent: i % 5 === 0
       });
