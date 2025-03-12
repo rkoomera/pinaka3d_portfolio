@@ -4,6 +4,9 @@ import Image from 'next/image';
 import { Section } from '@/components/ui/Section';
 import { Container } from '@/components/ui/Container';
 import { Button } from '@/components/ui/Button';
+import { SectionHeading } from '@/components/ui/SectionHeading';
+import { ContactCTA } from '@/components/portfolio/ContactCTA';
+import { ProfileTabs } from '@/components/portfolio/ProfileTabs';
 
 export const metadata: Metadata = {
   title: 'About Me - Ravi Koomera',
@@ -14,6 +17,81 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+interface ExperienceItem {
+  company: string;
+  position: string;
+  duration: string;
+  description: string;
+}
+
+interface SkillItem {
+  name: string;
+  icon: string;
+}
+
+interface EducationItem {
+  institution: string;
+  degree: string;
+  duration: string;
+  description: string;
+}
+
+const experiences: ExperienceItem[] = [
+  {
+    company: "Motion Design Studio",
+    position: "Senior Motion Designer",
+    duration: "January 2022 - Present",
+    description: "Leading motion design projects for major clients, creating animated brand experiences and overseeing a team of junior designers. Specialized in 3D animations and interactive web experiences."
+  },
+  {
+    company: "Creative Agency",
+    position: "Web Developer & Motion Designer",
+    duration: "March 2019 - December 2021",
+    description: "Developed websites with modern JavaScript frameworks while creating engaging animations. Implemented seamless transitions and micro-interactions to enhance user experiences across various client projects."
+  },
+  {
+    company: "Digital Products Inc.",
+    position: "UI/UX Designer",
+    duration: "June 2017 - February 2019",
+    description: "Designed user interfaces for web and mobile applications. Created interactive prototypes and collaborated with development teams to ensure design integrity during implementation."
+  },
+  {
+    company: "Tech Startup",
+    position: "Frontend Developer Intern",
+    duration: "January - May 2017",
+    description: "Assisted in developing responsive web interfaces and learned frontend development best practices. Gained experience with React and modern CSS frameworks."
+  }
+];
+
+const education: EducationItem[] = [
+  {
+    institution: "Design University",
+    degree: "Master of Arts in Digital Design",
+    duration: "2015 - 2017",
+    description: "Focused on interactive design and digital experiences. Graduated with honors and received the Dean's Award for Outstanding Creative Project."
+  },
+  {
+    institution: "Technology Institute",
+    degree: "Bachelor of Science in Computer Science",
+    duration: "2012 - 2015",
+    description: "Specialized in web technologies and user interface programming. Participated in multiple hackathons and design competitions."
+  }
+];
+
+const skills: SkillItem[] = [
+  { name: "Motion Design", icon: "✦" },
+  { name: "After Effects", icon: "✦" },
+  { name: "Cinema 4D", icon: "✦" },
+  { name: "React", icon: "✦" },
+  { name: "Next.js", icon: "✦" },
+  { name: "Framer Motion", icon: "✦" },
+  { name: "GSAP", icon: "✦" },
+  { name: "TypeScript", icon: "✦" },
+  { name: "Figma", icon: "✦" },
+  { name: "Lottie", icon: "✦" },
+  { name: "Three.js", icon: "✦" },
+  { name: "Tailwind CSS", icon: "✦" },
+];
 
 export default function AboutPage() {
   return (
@@ -70,6 +148,55 @@ export default function AboutPage() {
           </div>
         </Container>
       </Section>
+
+      {/* Combined Professional Profile Section */}
+      <Section className="py-24" background="gray-100">
+        <Container>
+          <div className="relative">
+            <SectionHeading 
+              title="Professional Profile" 
+              subtitle="My experience, education and specialized skills"
+            />
+            
+            <div className="mt-12 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16">
+              {/* Tab System for Experience and Education */}
+              <ProfileTabs experiences={experiences} education={education} />
+              
+              {/* Skills Column */}
+              <div className="lg:col-span-5">
+                <h3 className="text-xl text-black dark:text-white border-b border-gray-300 dark:border-gray-600 pb-3 mb-8 flex items-center">
+                  <span className="h-5 w-1 bg-brand mr-3 rounded-full"></span>
+                  Technical Skills
+                </h3>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  {skills.map((skill, index) => (
+                    <div 
+                      key={index} 
+                      className="p-4 rounded-lg border border-gray-300 dark:border-gray-600 hover:shadow-md transition-all duration-300 hover:translate-y-[-2px] hover:border-brand/20 dark:hover:border-brand/20 dark:bg-gray-800/50"
+                    >
+                      <div className="flex items-center space-x-3">
+                        <span className="flex items-center justify-center w-8 h-8 rounded-md bg-brand/10 dark:bg-brand/30 text-brand text-lg">{skill.icon}</span>
+                        <span className="text-black dark:text-white">{skill.name}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                {/* Add a small introduction to skills */}
+                <div className="mt-8 p-5 rounded-lg border-l-4 border-brand border-y border-r border-gray-300 dark:border-gray-600 dark:bg-gray-800/50">
+                  <p className="text-gray-800 dark:text-gray-200 text-sm">
+                    My technical expertise spans both motion design and web development, 
+                    with a focus on creating seamless, interactive digital experiences.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Container>
+      </Section>
+      
+      <ContactCTA />
     </>
   );
 }

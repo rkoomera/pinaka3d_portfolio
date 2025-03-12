@@ -21,7 +21,7 @@ export function SectionHeading({
       centered && 'text-center',
       className
     )}>
-      <h2 className="mb-3 text-3xl md:text-4xl font-bold tracking-tight text-gray-900 dark:text-white transition-colors duration-200">
+      <h2 className="mb-3 text-3xl md:text-4xl font-normal tracking-tight text-gray-900 dark:text-white transition-colors duration-200">
         {title}
       </h2>
       {subtitle && (

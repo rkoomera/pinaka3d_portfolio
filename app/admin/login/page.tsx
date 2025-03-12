@@ -5,10 +5,14 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { Section } from '@/components/ui/Section';
 import { Container } from '@/components/ui/Container';
 import { Button } from '@/components/ui/Button';
-import { createBrowserClient } from '@supabase/ssr';
-import { Database } from '@/types/supabase';
+import { createSupabaseBrowserClient } from '@/lib/supabase/browser-client';
 
 export const dynamic = 'force-dynamic';
+
+// Check if a cookie exists
+function hasCookie(name: string): boolean {
+  return document.cookie.split(';').some(c => c.trim().startsWith(name + '='));
+}
 
 // Separate component that uses useSearchParams
 function LoginForm() {
@@ -17,48 +21,46 @@ function LoginForm() {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-  const [hasRedirected, setHasRedirected] = useState(false);
+  const [debugInfo, setDebugInfo] = useState<string>('');
   
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectTo = searchParams?.get('redirectTo') || '/admin';
-  // Check if we're coming from a redirect to prevent loops
-  const fromRedirect = searchParams?.get('from') === 'auth';
+  const from = searchParams?.get('from') || '/admin';
   
-  const supabase = createBrowserClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
+  const supabase = createSupabaseBrowserClient();
   
   // Check auth status on mount
   useEffect(() => {
     const checkAuth = async () => {
-      if (hasRedirected || fromRedirect) {
-        // Skip auth check if we're coming from a redirect or already redirected
-        setIsCheckingAuth(false);
-        return;
-      }
-      
       try {
-        setIsCheckingAuth(true);
+        // Check if auth cookies exist
+        const hasSupabaseCookie = hasCookie('sb-access-token') || hasCookie('sb-refresh-token');
+        setDebugInfo(prev => prev + `\nCookies present: ${hasSupabaseCookie}`);
+
         const { data, error } = await supabase.auth.getSession();
         
         if (error) {
           console.error('Error checking auth status:', error);
+          setError('Error checking authentication status');
+          setDebugInfo(prev => prev + `\nSession error: ${error.message}`);
         } else if (data.session) {
-          // If already logged in, redirect to admin dashboard
-          setHasRedirected(true);
-          router.push(redirectTo);
+          setDebugInfo(prev => prev + `\nSession found: ${data.session.access_token.slice(0, 10)}...`);
+          // Session exists, redirect to admin
+          router.push(from);
+          return;
+        } else {
+          setDebugInfo(prev => prev + `\nNo session found`);
         }
-      } catch (err: unknown) {
+      } catch (err) {
         console.error('Unexpected error checking auth:', err);
+        setDebugInfo(prev => prev + `\nUnexpected error: ${err instanceof Error ? err.message : String(err)}`);
       } finally {
         setIsCheckingAuth(false);
       }
     };
     
     checkAuth();
-  }, [supabase.auth, router, redirectTo, hasRedirected, fromRedirect]);
+  }, [supabase.auth, router, from]);
   
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,6 +69,7 @@ function LoginForm() {
     
     try {
       console.log('Attempting login with email:', email);
+      setDebugInfo('Login attempt started');
       
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
@@ -75,24 +78,26 @@ function LoginForm() {
       
       if (error) {
         console.error('Login error from Supabase:', error);
+        setDebugInfo(prev => prev + `\nLogin error: ${error.message}`);
         throw error;
       }
       
       if (data.session) {
-        console.log('Login successful, session:', data.session.access_token.slice(0, 10) + '...');
-        console.log('User ID:', data.user?.id);
-        console.log('Redirecting to:', redirectTo);
+        console.log('Login successful, redirecting...');
+        setDebugInfo(prev => prev + `\nLogin successful, session: ${data.session.access_token.slice(0, 10)}...`);
         
-        // Set hasRedirected to prevent further redirects
-        setHasRedirected(true);
+        // Check if cookies were set after login
+        const hasSupabaseCookie = hasCookie('sb-access-token') || hasCookie('sb-refresh-token');
+        setDebugInfo(prev => prev + `\nCookies after login: ${hasSupabaseCookie}`);
         
-        // Use window.location for a full page refresh to ensure session is properly recognized
-        window.location.href = redirectTo;
+        // Use window location for hard reload to ensure cookies are properly initialized
+        window.location.href = from;
       } else {
         console.error('No session returned after login');
+        setDebugInfo(prev => prev + '\nNo session returned after login');
         throw new Error('No session returned after login');
       }
-    } catch (err: unknown) {
+    } catch (err) {
       console.error('Login error:', err);
       setError(err instanceof Error ? err.message : 'Failed to sign in');
     } finally {
@@ -166,6 +171,13 @@ function LoginForm() {
           {isLoading ? 'Signing in...' : 'Sign In'}
         </Button>
       </form>
+
+      {debugInfo && (
+        <div className="mt-8 p-4 bg-gray-100 dark:bg-gray-800 rounded-md text-xs font-mono whitespace-pre-wrap overflow-auto max-h-60">
+          <div className="mb-2 font-semibold">Debug Information:</div>
+          {debugInfo}
+        </div>
+      )}
     </div>
   );
 }
@@ -182,6 +194,7 @@ function LoginFormLoading() {
           Loading...
         </p>
       </div>
+      <div className="w-12 h-12 border-4 border-brand border-t-transparent rounded-full animate-spin mx-auto mt-6"></div>
     </div>
   );
 }

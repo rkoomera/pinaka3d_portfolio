@@ -1,10 +1,11 @@
-# *
+# robots.txt for www.pinaka3d.com
 User-agent: *
 Allow: /
-Disallow: /admin/*
 
-# Host
-Host: https://www.pinaka3d.com
+# Disallow admin paths
+Disallow: /admin/
+Disallow: /api/
 
 # Sitemaps
 Sitemap: https://www.pinaka3d.com/sitemap.xml
+Sitemap: https://www.pinaka3d.com/sitemap-0.xml

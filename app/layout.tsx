@@ -1,21 +1,34 @@
 // app/layout.tsx
 
 import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
+import { Inter, Montserrat } from "next/font/google";
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { ThemeProvider } from '@/components/theme/ThemeProvider';
 import { JsonLd, createPersonSchema, createWebsiteSchema } from '@/components/layout/JsonLd';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import Script from 'next/script';
 import Cursor from '@/components/ui/Cursor';
 import "./globals.css";
 import AnimatedLayout from "@/components/layout/AnimatedLayout";
 
+// Optimize font loading
+const inter = Inter({ 
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+  preload: true,
+  fallback: ['system-ui', 'sans-serif']
+})
+
 const montserrat = Montserrat({ 
-  subsets: ["latin"],
-  weight: ["400"],
-  display: "swap"
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-montserrat',
+  preload: true,
+  weight: ['400'],
+  fallback: ['system-ui', 'sans-serif']
 });
 
 // Define the primary domain - using www.pinaka3d.com as primary
@@ -23,7 +36,7 @@ const PRIMARY_DOMAIN = "https://www.pinaka3d.com";
 
 export const metadata: Metadata = {
   title: {
-    default: "Ravi Koomera - Motion Designer & Developer",
+    default: "Ravi Koomera - Motion Designer & Creative Developer",
     template: "%s - Ravi Koomera",
   },
   description: "Portfolio showcasing motion design and web development projects by Ravi Koomera.",
@@ -85,8 +98,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="scroll-smooth">
+    <html 
+      lang="en" 
+      className={`${inter.variable} ${montserrat.variable} scroll-smooth`}
+    >
       <head>
+        <link
+          rel="preconnect"
+          href="https://fonts.googleapis.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
         <JsonLd data={createPersonSchema()} />
         <JsonLd data={createWebsiteSchema()} />
       </head>
@@ -103,6 +129,20 @@ export default function RootLayout({
         </ThemeProvider>
         <Analytics />
         <SpeedInsights />
+        
+        {/* Google Analytics - Load with afterInteractive strategy */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-XXXXXXXXXX');
+          `}
+        </Script>
       </body>
     </html>
   );

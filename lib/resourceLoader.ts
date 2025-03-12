@@ -234,46 +234,17 @@ if (typeof window !== 'undefined') {
   resourceRegistry.initialize();
 }
 
-// Helper for 3D model loading
-export const track3DModel = (modelUrl: string, weight: number = 3): Promise<void> => {
-  return new Promise((resolve, reject) => {
-    const resourceId = `model:${modelUrl}`;
-    
-    resourceRegistry.registerAndStartLoading(resourceId, weight);
-    
-    // Create a temporary loader
-    const image = new Image();
-    image.onload = () => {
-      resourceRegistry.resourceLoaded(resourceId);
-      resolve();
-    };
-    
-    image.onerror = () => {
-      resourceRegistry.resourceError(resourceId);
-      // Resolve anyway to not block the loading process
-      resolve();
-    };
-    
-    // Start loading the model (this is just a ping to verify the resource exists)
-    image.src = `${modelUrl}?ping=${Date.now()}`;
-  });
-};
-
-// Helper to track a custom resource
+// Helper to track a resource
 export const trackResource = (id: string, weight: number = 1): {
   start: () => void;
   complete: () => void;
   error: () => void;
 } => {
-  const resourceId = `custom:${id}`;
-  resourceRegistry.registerResource(resourceId, weight);
+  resourceRegistry.registerResource(id, weight);
   
   return {
-    start: () => resourceRegistry.startLoading(resourceId),
-    complete: () => resourceRegistry.resourceLoaded(resourceId),
-    error: () => resourceRegistry.resourceError(resourceId)
+    start: () => resourceRegistry.startLoading(id),
+    complete: () => resourceRegistry.resourceLoaded(id),
+    error: () => resourceRegistry.resourceError(id)
   };
-};
-
-// Export default tracking functions
-export default resourceRegistry; 
+}; 

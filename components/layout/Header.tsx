@@ -20,8 +20,8 @@ export function Header() {
   const { theme } = useTheme();
 
   const logoSrc = theme === 'dark' 
-    ? "https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-images//pinaka_logo_dark.svg"
-    : "https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-images//pinaka_logo.svg";
+    ? "https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-images/logos/pinaka_light_bg1.svg"
+    : "https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-images/logos/pinaka_dark_bg1.svg";
 
   return (
     <header className="sticky top-0 z-50 bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 transition-colors duration-200">

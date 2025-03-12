@@ -1,5 +1,6 @@
 // app/contact/page.tsx
-import { Viewport,  Section } from '@/components/ui/Section';
+import { Metadata, Viewport } from 'next';
+import { Section } from '@/components/ui/Section';
 import { Container } from '@/components/ui/Container';
 import { ClientContactWrapper } from '@/components/portfolio/ClientContactWrapper';
 

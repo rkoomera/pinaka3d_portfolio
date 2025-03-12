@@ -39,7 +39,7 @@
 
   html,
   body {
-    @apply m-0 p-0 min-h-screen;
+    @apply m-0 p-0 min-h-screen font-montserrat;
     color: rgb(var(--foreground-rgb));
     overflow-x: hidden;
     position: relative;
@@ -81,7 +81,7 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-normal tracking-tight;
+    @apply font-montserrat font-normal;
   }
 
   h1 {
@@ -115,7 +115,8 @@
   
   /* Ensure all text is regular weight by default */
   .font-medium, .font-semibold, .font-bold {
-    @apply font-normal;
+    @apply tracking-normal;
+    font-weight: 400 !important; /* Override to ensure normal weight */
   }
 }
 
@@ -217,7 +218,6 @@
   }
   to {
     opacity: 1;
-    background-color: rgba(0, 0, 0, 0.9);
   }
 }
 

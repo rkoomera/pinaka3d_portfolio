@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '@/components/theme/ThemeProvider';
-import resourceRegistry from '@/lib/resourceLoader';
+import { resourceRegistry } from '@/lib/resourceLoader';
 
 interface LoadingScreenProps {
   children: React.ReactNode;

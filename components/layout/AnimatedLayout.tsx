@@ -2,16 +2,10 @@
 
 import { ReactNode, useEffect } from 'react';
 import { LoadingScreen } from './LoadingScreen';
-import { track3DModel, trackResource } from '@/lib/resourceLoader';
+import { trackResource } from '@/lib/resourceLoader';
 
-// List of critical 3D assets to track
-const CRITICAL_3D_ASSETS = [
-  'https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/3d-assets//cube1.glb'
-];
-
-// List of critical stylesheets and assets
+// List of critical assets - removed font reference since Next.js handles fonts
 const CRITICAL_ASSETS = [
-  '/fonts/montserrat.woff2',
   '/favicon.ico'
 ];
 
@@ -24,59 +18,35 @@ export default function AnimatedLayout({ children }: AnimatedLayoutProps) {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     
-    // Track critical 3D models
-    CRITICAL_3D_ASSETS.forEach(asset => {
-      track3DModel(asset, 4);
-    });
-    
-    // Track other critical assets
+    // Track critical assets
     CRITICAL_ASSETS.forEach(asset => {
-      const tracker = trackResource(`asset:${asset}`, 2);
-      tracker.start();
-      
-      // Check if asset exists by creating a request
       fetch(asset, { method: 'HEAD' })
-        .then(response => {
-          if (response.ok) {
-            tracker.complete();
-          } else {
-            tracker.error();
-          }
+        .then(() => {
+          trackResource(asset, 1).complete();
         })
         .catch(() => {
-          tracker.error();
+          trackResource(asset, 1).error();
         });
     });
     
-    // Track main bundle
-    const mainBundleTracker = trackResource('main-bundle', 5);
-    mainBundleTracker.start();
+    // Track the main bundle
+    trackResource('main-bundle', 3).complete();
     
-    // Track React Three Fiber related resources
-    const r3fTracker = trackResource('react-three-fiber', 5);
-    r3fTracker.start();
-    
-    // Mark bundles as loaded when everything is complete
-    if (document.readyState === 'complete') {
-      mainBundleTracker.complete();
-      r3fTracker.complete();
-    } else {
-      window.addEventListener('load', () => {
-        mainBundleTracker.complete();
-        // Give R3F a bit more time as it often loads after the initial page load
-        setTimeout(() => {
-          r3fTracker.complete();
-        }, 500);
-      });
-    }
+    // Ensure all resources are marked as loaded when the document is fully loaded
+    window.addEventListener('load', () => {
+      // Add a slight delay to ensure all resources are loaded
+      setTimeout(() => {
+        document.documentElement.classList.add('loaded');
+      }, 100);
+    });
   }, []);
   
   return (
-    <LoadingScreen 
-      minimumLoadingTime={2000}
+    <LoadingScreen
+      minimumLoadingTime={1000}
       additionalResources={[
         { id: 'user-interaction', weight: 1 },
-        { id: 'animation-prep', weight: 2 }
+        { id: 'animation-prep', weight: 1 }
       ]}
     >
       {children}
