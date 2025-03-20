@@ -2,10 +2,16 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { GalleryImage } from '@/components/admin/ProjectGallery';
+import { urlForImage } from '@/sanity/lib/image';
+import type { Image as SanityImage, Reference } from 'sanity';
+
+interface SanityImageAsset extends SanityImage {
+  asset: Reference;
+  alt?: string;
+}
 
 interface ProjectSliderProps {
-  images: GalleryImage[] | string | null;
+  images: SanityImageAsset[] | string | null;
   autoplay?: boolean;
   interval?: number;
   showThumbnails?: boolean;
@@ -19,7 +25,7 @@ export default function ProjectSlider({
   showThumbnails = true,
   className = ''
 }: ProjectSliderProps) {
-  const [parsedImages, setParsedImages] = useState<GalleryImage[]>([]);
+  const [parsedImages, setParsedImages] = useState<SanityImageAsset[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(autoplay);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -90,23 +96,26 @@ export default function ProjectSlider({
     <div className={`relative rounded-lg overflow-hidden ${isFullscreen ? 'fixed inset-0 z-50 bg-black' : className}`}>
       {/* Main Image */}
       <div className={`relative ${isFullscreen ? 'h-screen' : 'aspect-video'}`}>
-        {parsedImages.map((image, index) => (
-          <div
-            key={image.id}
-            className={`absolute inset-0 transition-opacity duration-500 ${
-              index === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'
-            }`}
-          >
-            <Image
-              src={image.url}
-              alt={image.alt || `Project image ${index + 1}`}
-              fill
-              className="object-contain"
-              priority={index === currentIndex}
-              sizes={isFullscreen ? "100vw" : "(max-width: 768px) 100vw, 50vw"}
-            />
-          </div>
-        ))}
+        {parsedImages.map((image, index) => {
+          const imageUrl = urlForImage(image)?.url() || '/placeholder.jpg';
+          return (
+            <div
+              key={image.asset._ref}
+              className={`absolute inset-0 transition-opacity duration-500 ${
+                index === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'
+              }`}
+            >
+              <Image
+                src={imageUrl}
+                alt={(image.alt as string) || `Project image ${index + 1}`}
+                fill
+                className="object-contain"
+                priority={index === currentIndex}
+                sizes={isFullscreen ? "100vw" : "(max-width: 768px) 100vw, 50vw"}
+              />
+            </div>
+          );
+        })}
       </div>
       
       {/* Controls */}
@@ -180,7 +189,7 @@ export default function ProjectSlider({
           <div className="flex space-x-2 bg-gray-800/60 p-2 rounded-lg overflow-x-auto max-w-full">
             {parsedImages.map((image, index) => (
               <button
-                key={image.id}
+                key={image.asset._ref}
                 onClick={() => setCurrentIndex(index)}
                 className={`relative h-14 w-20 flex-shrink-0 rounded overflow-hidden transition-all ${
                   index === currentIndex ? 'ring-2 ring-brand' : 'opacity-70 hover:opacity-100'
@@ -188,8 +197,8 @@ export default function ProjectSlider({
                 aria-label={`Go to slide ${index + 1}`}
               >
                 <Image
-                  src={image.url}
-                  alt={image.alt || `Thumbnail ${index + 1}`}
+                  src={urlForImage(image)?.url() || '/placeholder.jpg'}
+                  alt={(image.alt as string) || `Thumbnail ${index + 1}`}
                   fill
                   className="object-cover"
                   sizes="80px"

@@ -8,7 +8,8 @@ import { Container } from '@/components/ui/Container';
 import ClientVideoSection from '@/components/project/ClientVideoSection';
 import { RichTextContent } from '@/components/project/RichTextContent';
 import { FeaturedProjects } from '@/components/portfolio/FeaturedProjects';
-import { getProjectBySlug, getAllProjects, getRelatedProjects } from '@/lib/services/projects';
+import { getAllProjects, getProjectBySlug, getRelatedProjects } from '@/lib/services/sanity';
+import { urlForImage } from '@/sanity/lib/image';
 import { Project } from '@/types';
 import { JsonLd, createProjectSchema } from '@/components/layout/JsonLd';
 
@@ -26,73 +27,37 @@ export async function generateViewport(): Promise<Viewport> {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const slug = params.slug;
-  const project = await getProjectBySlug(slug);
+  const project = await getProjectBySlug(params.slug);
   
   if (!project) {
-    return {
-      title: 'Project Not Found',
-    };
+    return { title: 'Project Not Found' };
   }
   
   return {
     title: `${project.title} - Ravi Koomera`,
-    description: project.summary || `Details about ${project.title} project`,
+    description: project.summary || project.description || `Details about ${project.title} project`,
   };
 }
 
 export async function generateStaticParams() {
   const projects = await getAllProjects();
-  
   return projects.map((project) => ({
     slug: project.slug,
   }));
 }
 
 export default async function Page({ params }: Props) {
-  const slug = params.slug;
-  const project = await getProjectBySlug(slug);
+  const project = await getProjectBySlug(params.slug);
   
   if (!project) {
     notFound();
   }
   
-  // Get related projects only if we have a valid project ID
-  let relatedProjects: Project[] = [];
-  if (project.id) {
-    console.log('Fetching related projects for project ID:', project.id);
-    relatedProjects = await getRelatedProjects(String(project.id), 8);
-    console.log('Related projects found:', relatedProjects.length);
-    console.log('Related projects:', JSON.stringify(relatedProjects.map(p => ({ id: p.id, title: p.title }))));
-    
-    // Ensure we have exactly 4 projects
-    if (relatedProjects.length < 4) {
-      // Get all projects to fill in the gaps
-      const allProjects = await getAllProjects();
-      const additionalProjects = allProjects
-        .filter(p => p.id !== project.id && !relatedProjects.some(rp => rp.id === p.id))
-        .slice(0, 4 - relatedProjects.length);
-      
-      relatedProjects = [...relatedProjects, ...additionalProjects];
-    }
-    
-    // Limit to exactly 4 projects
-    relatedProjects = relatedProjects.slice(0, 4);
-  } else {
-    console.log('No project ID available to fetch related projects');
-  }
-  
-  // Debug project video URLs
-  console.log('Project data:', {
-    slug: project.slug,
-    id: project.id,
-    background_video_url: project.background_video_url,
-    project_video_url: project.project_video_url
-  });
+  const relatedProjects = await getRelatedProjects(project._id, 4);
+  const thumbnailUrl = project.thumbnail ? urlForImage(project.thumbnail)?.url() || '' : '';
   
   return (
     <>
-      {/* Add JSON-LD structured data */}
       <JsonLd data={createProjectSchema(project)} />
       
       {/* Header Section */}
@@ -115,17 +80,17 @@ export default async function Page({ params }: Props) {
         <div className="w-full overflow-hidden">
           <ClientVideoSection 
             backgroundVideoUrl={project.background_video_url}
-            popupVideoUrl={project.project_video_url || "https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-videos/popup-demo.mp4"}
+            popupVideoUrl={project.project_video_url || ''}
             height="aspect-[16/6]"
             className="shadow-md"
           />
         </div>
-      ) : project.thumbnail_url && (
+      ) : project.thumbnail && (
         <Section className="py-0">
           <Container size="lg">
             <div className="relative aspect-[16/6] w-full overflow-hidden rounded-xl">
               <Image
-                src={project.thumbnail_url}
+                src={thumbnailUrl}
                 alt={project.title}
                 fill
                 className="object-cover"

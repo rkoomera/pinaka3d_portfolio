@@ -1,16 +1,19 @@
 import { NextResponse } from 'next/server';
-import { getUnreadCount } from '@/lib/services/contact';
+import { client } from '@/sanity/lib/client';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
-    const count = await getUnreadCount();
-    return NextResponse.json({ count });
+    const unreadCount = await client.fetch(`
+      count(*[_type == "message" && read == false])
+    `);
+
+    return NextResponse.json({ success: true, count: unreadCount });
   } catch (error) {
     console.error('Error fetching unread count:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch unread count' },
+      { success: false, error: 'Failed to fetch unread count' },
       { status: 500 }
     );
   }

@@ -1,22 +1,30 @@
 // types/index.ts
-import { GalleryImage } from '@/components/admin/ProjectGallery';
+import { Image } from 'sanity'
 
 export type ProjectCategory = 'web' | 'mobile' | 'desktop' | 'ui' | 'branding' | 'other';
 
 export interface Project {
-  id: number;
-  created_at?: string;
-  updated_at?: string;
+  _id: string;
+  _createdAt: string;
+  _updatedAt: string;
   title: string;
-  slug: string;
-  description: string | null;
-  content: string | null;
-  thumbnail_url: string | null;
-  featured_image_path?: string | null;
+  slug: { current: string };
+  description: string;
+  content: any[]; // Sanity Portable Text
+  summary?: string;
+  subtitle?: string;
+  thumbnail: Image;
+  gallery?: Image[];
   status: 'draft' | 'published' | 'archived';
   category: ProjectCategory;
-  user_id: string;
-  gallery_images?: GalleryImage[];
+  client_name?: string;
+  client_website?: string;
+  duration?: string;
+  role?: string;
+  tech_stack?: string[];
+  background_video_url?: string;
+  project_video_url?: string;
+  publishedAt: string;
 }
 
 export interface User {
