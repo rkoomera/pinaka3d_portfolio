@@ -67,5 +67,16 @@
         }
       ]
     }
-  ]
+  ],
+  "buildCommand": "next build",
+  "framework": "nextjs",
+  "devCommand": "next dev",
+  "installCommand": "npm install",
+  "regions": ["iad1"],
+  "outputDirectory": ".next",
+  "env": {
+    "NEXT_PUBLIC_SANITY_PROJECT_ID": "1gdn0bfv",
+    "NEXT_PUBLIC_SANITY_DATASET": "production",
+    "NEXT_PUBLIC_SANITY_API_VERSION": "2023-05-03"
+  }
 } 

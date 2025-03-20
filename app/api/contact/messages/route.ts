@@ -24,8 +24,18 @@ export async function GET() {
     });
   } catch (error) {
     console.error('Error fetching messages:', error);
+    
+    // Check if the error is related to environment variables
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const isEnvError = errorMessage.includes('environment variable');
+    
     return NextResponse.json(
-      { success: false, error: 'Failed to fetch messages' },
+      { 
+        success: false, 
+        error: isEnvError 
+          ? 'Configuration error. Please contact the administrator.' 
+          : 'Failed to fetch messages' 
+      },
       { status: 500 }
     );
   }

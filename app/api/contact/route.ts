@@ -23,8 +23,18 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true, data: result });
   } catch (error) {
     console.error('Error saving message:', error);
+    
+    // Check if the error is related to environment variables
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const isEnvError = errorMessage.includes('environment variable');
+    
     return NextResponse.json(
-      { success: false, error: 'Failed to save message' },
+      { 
+        success: false, 
+        error: isEnvError 
+          ? 'Configuration error. Please contact the administrator.' 
+          : 'Failed to save message' 
+      },
       { status: 500 }
     );
   }
