@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { client } from '@/sanity/lib/client';
+import { getClient } from '@/sanity/lib/client';
 import { v4 as uuidv4 } from 'uuid';
 
 export const dynamic = 'force-dynamic';
@@ -7,7 +7,10 @@ export const dynamic = 'force-dynamic';
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, email, message } = body;
+    const { name, email, subject, message } = body;
+
+    // Use a client with token for write operations
+    const client = getClient(true);
 
     // Create a new message document in Sanity
     const result = await client.create({
@@ -15,6 +18,7 @@ export async function POST(request: Request) {
       _id: uuidv4(),
       name,
       email,
+      subject,
       message,
       read: false,
       createdAt: new Date().toISOString(),

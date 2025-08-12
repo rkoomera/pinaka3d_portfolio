@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
-import { markAsRead } from '@/lib/services/contact';
+import { getClient } from '@/sanity/lib/client';
 
+export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
 export async function POST(
@@ -17,7 +18,8 @@ export async function POST(
       );
     }
     
-    await markAsRead(id);
+    const client = getClient(true);
+    await client.patch(id).set({ read: true }).commit();
     
     return NextResponse.json({ success: true });
   } catch (error) {

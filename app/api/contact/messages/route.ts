@@ -1,26 +1,28 @@
 import { NextResponse } from 'next/server';
-import { client } from '@/sanity/lib/client';
+import { getClient } from '@/sanity/lib/client';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
+    const client = getClient(false);
     const messages = await client.fetch(`
       *[_type == "message"] | order(createdAt desc) {
-        _id,
+        "id": _id,
         name,
         email,
+        subject,
         message,
         read,
-        createdAt
+        "created_at": createdAt
       }
     `);
 
-    return NextResponse.json({ 
+    return NextResponse.json({
       success: true,
       messages,
       count: messages.length,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
   } catch (error) {
     console.error('Error fetching messages:', error);

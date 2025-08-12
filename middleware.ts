@@ -1,13 +1,12 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-// This is a simple middleware that just passes through all requests
-export function middleware(request: NextRequest) {
-  // You can add authentication logic here later
+// Pass-through middleware (no auth gating)
+export function middleware(_request: NextRequest) {
   return NextResponse.next();
 }
 
-// See "Matching Paths" below to learn more
 export const config = {
+  // Keep for future use; currently not enforcing anything
   matcher: ['/admin/:path*'],
 };
