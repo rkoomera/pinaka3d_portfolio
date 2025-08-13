@@ -50,6 +50,15 @@
       ]
     },
     {
+      "source": "/admin/studio(.*)",
+      "headers": [
+        {
+          "key": "Content-Security-Policy",
+          "value": "frame-ancestors 'self' https://*.sanity.io https://*.sanity.app"
+        }
+      ]
+    },
+    {
       "source": "/fonts/(.*)",
       "headers": [
         {

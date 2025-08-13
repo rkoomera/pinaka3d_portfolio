@@ -53,6 +53,7 @@ const nextConfig = {
             key: 'X-Content-Type-Options',
             value: 'nosniff',
           },
+          // Default to denying framing; override below for studio path
           {
             key: 'X-Frame-Options',
             value: 'DENY',
@@ -64,6 +65,17 @@ const nextConfig = {
           {
             key: 'Referrer-Policy',
             value: 'strict-origin-when-cross-origin',
+          },
+        ],
+      },
+      {
+        // Allow embedding Studio in Sanity Dashboard (different origin)
+        source: '/admin/studio(.*)',
+        headers: [
+          // Do not send X-Frame-Options on this path; use CSP below instead
+          {
+            key: 'Content-Security-Policy',
+            value: "frame-ancestors 'self' https://*.sanity.io https://*.sanity.app",
           },
         ],
       },
