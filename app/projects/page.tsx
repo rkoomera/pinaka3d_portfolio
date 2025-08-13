@@ -1,6 +1,6 @@
 // app/projects/page.tsx
 import { Metadata, Viewport } from 'next';
-import { getAllProjects } from '@/lib/services/projects';
+import { getAllProjects } from '@/lib/services/sanity';
 import { FeaturedProjects } from '@/components/portfolio/FeaturedProjects';
 import { Section } from '@/components/ui/Section';
 import { Container } from '@/components/ui/Container';

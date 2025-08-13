@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { getAllProjects } from '@/lib/services/projects';
+import { getAllProjects } from '@/lib/services/sanity';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Base URL for your site
@@ -37,9 +37,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
   
   // Dynamic routes for projects
-  const projectRoutes = projects.map((project) => ({
+  const projectRoutes = projects.map((project: any) => ({
     url: `${baseUrl}/projects/${project.slug}`,
-    lastModified: new Date(project.updated_at || project.created_at),
+    lastModified: new Date(),
     changeFrequency: 'monthly' as const,
     priority: 0.8,
   }));

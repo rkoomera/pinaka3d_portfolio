@@ -14,6 +14,8 @@ const nextConfig = {
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com', pathname: '**' },
       { protocol: 'https', hostname: 'gyuznawtihohzzdmhvtw.supabase.co', pathname: '**' },
+      { protocol: 'https', hostname: 'cdn.sanity.io', pathname: '**' },
+      { protocol: 'https', hostname: 'images.sanitycdn.com', pathname: '**' },
     ],
     // Generate optimized image sizes
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
@@ -52,11 +54,6 @@ const nextConfig = {
           {
             key: 'X-Content-Type-Options',
             value: 'nosniff',
-          },
-          // Default to denying framing; override below for studio path
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY',
           },
           {
             key: 'X-XSS-Protection',

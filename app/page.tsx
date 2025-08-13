@@ -2,7 +2,7 @@
 import { Metadata, Viewport } from 'next';
 import { HeroSection } from '@/components/portfolio/HeroSection';
 import { FeaturedProjects } from '@/components/portfolio/FeaturedProjects';
-import { getFeaturedProjects } from '@/lib/services/projects';
+import { getAllProjects } from '@/lib/services/sanity';
 import { VideoSection } from '@/components/layout/VideoSection';
 import { ContactCTA } from '@/components/portfolio/ContactCTA';
 
@@ -18,7 +18,7 @@ export const viewport: Viewport = {
 
 
 export default async function HomePage() {
-  const featuredProjects = await getFeaturedProjects();
+  const featuredProjects = await getAllProjects();
   
   return (
     <>

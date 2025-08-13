@@ -5,6 +5,7 @@ import { Section } from '@/components/ui/Section';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { Button } from '@/components/ui/Button';
 import { Project } from '@/types';
+import { urlForImage } from '@/sanity/lib/image';
 import Link from 'next/link';
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, PanInfo } from 'framer-motion';
@@ -638,8 +639,11 @@ function FourColProjectCard({ project, isDraggingParent = false }: { project: Pr
   const [isVideoVisible, setIsVideoVisible] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   
-  // Get the video URL from the project's background_video_url field, or use fallback if not available
+  // Resolve media
   const videoUrl = project.background_video_url || FALLBACK_VIDEO_URL;
+  const thumbnailUrl = (project as any).thumbnail
+    ? (urlForImage((project as any).thumbnail)?.url() || '')
+    : ((project as any).thumbnail_url || '');
   
   const handleMouseEnter = () => {
     if (!isMobile && !isDraggingParent) {
@@ -726,11 +730,11 @@ function FourColProjectCard({ project, isDraggingParent = false }: { project: Pr
           />
           
           {/* Thumbnail Image */}
-          {project.thumbnail_url ? (
+          {thumbnailUrl ? (
             <div 
               className="absolute inset-0 bg-cover bg-center transition-opacity duration-300" 
               style={{ 
-                backgroundImage: `url(${project.thumbnail_url})`,
+                backgroundImage: `url(${thumbnailUrl})`,
                 opacity: isVideoVisible ? 0 : 1
               }}
             />
@@ -796,8 +800,11 @@ function TwoColProjectCard({ project, isLarge = false, aspectRatio = 'aspect-vid
   const [isVideoVisible, setIsVideoVisible] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   
-  // Get the video URL from the project's background_video_url field, or use fallback if not available
+  // Resolve media
   const videoUrl = project.background_video_url || FALLBACK_VIDEO_URL;
+  const thumbnailUrl = (project as any).thumbnail
+    ? (urlForImage((project as any).thumbnail)?.url() || '')
+    : ((project as any).thumbnail_url || '');
   
   // Check if device is mobile
   useEffect(() => {
@@ -869,9 +876,9 @@ function TwoColProjectCard({ project, isLarge = false, aspectRatio = 'aspect-vid
         <div className="relative w-full h-full overflow-hidden">
           {/* Background image */}
           <div className="absolute inset-0 bg-gray-900">
-            {project.thumbnail_url && (
+            {thumbnailUrl && (
               <img 
-                src={project.thumbnail_url} 
+                src={thumbnailUrl} 
                 alt={project.title} 
                 className="w-full h-full object-cover opacity-80"
               />
