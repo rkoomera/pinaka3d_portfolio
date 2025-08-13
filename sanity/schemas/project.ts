@@ -4,12 +4,19 @@ export default defineType({
   name: 'project',
   title: 'Project',
   type: 'document',
+  groups: [
+    { name: 'content', title: 'Content', default: true },
+    { name: 'media', title: 'Media' },
+    { name: 'details', title: 'Details' },
+    { name: 'meta', title: 'Meta' },
+  ],
   fields: [
     defineField({
       name: 'title',
       title: 'Name',
       type: 'string',
       validation: (Rule) => Rule.required(),
+      group: 'content',
     }),
     defineField({
       name: 'slug',
@@ -18,8 +25,17 @@ export default defineType({
       options: {
         source: 'title',
         maxLength: 96,
+        slugify: (input: string) =>
+          input
+            .toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, '')
+            .trim()
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-')
+            .slice(0, 96),
       },
       validation: (Rule) => Rule.required(),
+      group: 'meta',
     }),
     defineField({
       name: 'thumbnail',
@@ -37,18 +53,30 @@ export default defineType({
         },
       ],
       validation: (Rule) => Rule.required(),
+      group: 'media',
+    }),
+    defineField({
+      name: 'gallery',
+      title: 'Gallery',
+      type: 'array',
+      of: [{ type: 'image', options: { hotspot: true } }],
+      group: 'media',
     }),
     defineField({
       name: 'background_video_url',
       title: 'Background Video URL',
       type: 'url',
-      description: 'URL to the background video (from Supabase)',
+      description: 'URL to the background video (e.g., Supabase storage)',
+      validation: (Rule) => Rule.uri({ scheme: ['http', 'https'] }),
+      group: 'media',
     }),
     defineField({
       name: 'project_video_url',
       title: 'Project Video URL',
       type: 'url',
-      description: 'URL to the project video (from Supabase)',
+      description: 'URL to the project video (e.g., Supabase storage)',
+      validation: (Rule) => Rule.uri({ scheme: ['http', 'https'] }),
+      group: 'media',
     }),
     defineField({
       name: 'description',
@@ -56,14 +84,53 @@ export default defineType({
       type: 'text',
       rows: 3,
       validation: (Rule) => Rule.required(),
+      group: 'content',
     }),
     defineField({
       name: 'content',
       title: 'Content',
       type: 'array',
       of: [
-        { type: 'block' },
-        { type: 'image' },
+        {
+          type: 'block',
+          styles: [
+            { title: 'Normal', value: 'normal' },
+            { title: 'H2', value: 'h2' },
+            { title: 'H3', value: 'h3' },
+            { title: 'Quote', value: 'blockquote' },
+          ],
+          lists: [
+            { title: 'Bullet', value: 'bullet' },
+            { title: 'Numbered', value: 'number' },
+          ],
+          marks: {
+            decorators: [
+              { title: 'Strong', value: 'strong' },
+              { title: 'Emphasis', value: 'em' },
+              { title: 'Code', value: 'code' },
+              { title: 'Highlight', value: 'highlight' },
+            ],
+            annotations: [
+              {
+                name: 'link',
+                type: 'object',
+                title: 'External Link',
+                fields: [
+                  { name: 'href', type: 'url', title: 'URL', validation: (Rule: any) => Rule.uri({ scheme: ['http','https'] }) },
+                  { name: 'blank', type: 'boolean', title: 'Open in new tab', initialValue: true },
+                ],
+              },
+            ],
+          },
+        },
+        {
+          type: 'image',
+          options: { hotspot: true },
+          fields: [
+            { name: 'alt', type: 'string', title: 'Alt text', validation: (Rule: any) => Rule.required() },
+            { name: 'caption', type: 'string', title: 'Caption' },
+          ],
+        },
         {
           name: 'mediaGallery',
           title: 'Media Gallery',
@@ -143,6 +210,7 @@ export default defineType({
           },
         },
       ],
+      group: 'content',
     }),
     defineField({
       name: 'category',
@@ -159,35 +227,46 @@ export default defineType({
         ],
       },
       validation: (Rule) => Rule.required(),
+      group: 'details',
     }),
     defineField({
       name: 'client_name',
       title: 'Client Name',
       type: 'string',
+      group: 'details',
     }),
     defineField({
       name: 'client_website',
       title: 'Client Website',
       type: 'url',
+      validation: (Rule) => Rule.uri({ scheme: ['http', 'https'] }),
+      group: 'details',
     }),
     defineField({
       name: 'duration',
       title: 'Project Duration',
       type: 'string',
+      group: 'details',
     }),
     defineField({
       name: 'role',
       title: 'My Role',
       type: 'string',
+      group: 'details',
     }),
     defineField({
-      name: 'technologies',
-      title: 'Technologies Used',
-      type: 'array',
-      of: [{ type: 'string' }],
-      options: {
-        layout: 'tags',
-      },
+      name: 'link',
+      title: 'Project Link',
+      type: 'url',
+      validation: (Rule) => Rule.uri({ scheme: ['http', 'https'] }),
+      group: 'details',
+    }),
+    defineField({
+      name: 'github',
+      title: 'GitHub',
+      type: 'url',
+      validation: (Rule) => Rule.uri({ scheme: ['http', 'https'] }),
+      group: 'details',
     }),
     defineField({
       name: 'status',
@@ -202,6 +281,14 @@ export default defineType({
       },
       initialValue: 'draft',
       validation: (Rule) => Rule.required(),
+      group: 'meta',
+    }),
+    defineField({
+      name: 'publishedAt',
+      title: 'Published At',
+      type: 'datetime',
+      initialValue: () => new Date().toISOString(),
+      group: 'meta',
     }),
   ],
   preview: {
