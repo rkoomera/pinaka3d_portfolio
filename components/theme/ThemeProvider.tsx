@@ -13,9 +13,11 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>('light');
+  const [mounted, setMounted] = useState(false);
 
   // Initialize theme from localStorage or system preference
   useEffect(() => {
+    setMounted(true);
     const storedTheme = localStorage.getItem('theme') as Theme | null;
     
     if (storedTheme) {
@@ -25,8 +27,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  // Update document when theme changes
+  // Update document when theme changes (only after mounting)
   useEffect(() => {
+    if (!mounted) return;
+    
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
     } else {
@@ -34,11 +38,20 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     }
     
     localStorage.setItem('theme', theme);
-  }, [theme]);
+  }, [theme, mounted]);
 
   const toggleTheme = () => {
     setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
   };
+
+  // Prevent hydration mismatch by not rendering theme-dependent content until mounted
+  if (!mounted) {
+    return (
+      <ThemeContext.Provider value={{ theme: 'light', toggleTheme: () => {} }}>
+        {children}
+      </ThemeContext.Provider>
+    );
+  }
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
