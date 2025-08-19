@@ -5,6 +5,7 @@ export type ProjectCategory = 'web' | 'mobile' | 'desktop' | 'ui' | 'branding' |
 
 export interface Project {
   _id: string;
+  id?: string; // Add id property for compatibility
   _createdAt: string;
   _updatedAt: string;
   title: string;
@@ -24,6 +25,8 @@ export interface Project {
   tech_stack?: string[];
   background_video_url?: string;
   project_video_url?: string;
+  github?: string; // Add github link property
+  link?: string; // Add project link property
   publishedAt: string;
 }
 

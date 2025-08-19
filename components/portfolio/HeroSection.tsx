@@ -2,6 +2,7 @@
 'use client';
 
 import { Container } from '@/components/ui/Container';
+import { RiveHeroAnimation } from '@/components/ui/RiveHeroAnimation';
 import Image from 'next/image';
 import React from 'react';
 
@@ -11,10 +12,16 @@ interface HeroSectionProps {
     text: string;
     className?: string;
   }>;
-  imageUrl: string;
-  imageAlt: string;
-  imageSize: number;
-  imageHeight: number;
+  // Image props (optional)
+  imageUrl?: string;
+  imageAlt?: string;
+  imageSize?: number;
+  imageHeight?: number;
+  // Rive animation props (optional)
+  riveUrl?: string;
+  riveArtboard?: string;
+  riveStateMachine?: string;
+  riveAutoplay?: boolean;
 }
 
 export function HeroSection({
@@ -23,29 +30,39 @@ export function HeroSection({
   imageUrl,
   imageAlt,
   imageSize,
-  imageHeight
+  imageHeight,
+  riveUrl,
+  riveArtboard = 'Little Boy',
+  riveStateMachine = 'State Machine 1',
+  riveAutoplay = true
 }: HeroSectionProps) {
   return (
     <section className="relative bg-white dark:bg-gray-950 py-12 md:py-16 min-h-[40vh] flex items-center transition-colors duration-200">
       <Container>
         <div className="text-center mx-auto max-w-5xl">
-          {/* Profile Image */}
-          <div className="mb-6 md:mb-6 flex justify-center">
-            <div className="relative w-full max-w-[300px] sm:max-w-[400px]">
-              <Image 
-                src={imageUrl}
-                alt={imageAlt}
-                width={imageSize}
-                height={imageHeight}
-                className="rounded-lg shadow-md" 
-                priority
-                unoptimized={imageUrl.startsWith('http')} // Skip optimization for external URLs
-                style={{
-                  maxWidth: '100%',
-                  height: 'auto',
-                  objectFit: 'cover'
-                }}
-              />
+          {/* Profile Image or Rive Animation */}
+          <div className="mb-8 md:mb-10 flex justify-center">
+            <div className="relative w-full max-w-[300px] sm:max-w-[400px] lg:max-w-[450px]">
+              {riveUrl ? (
+                <RiveHeroAnimation 
+                  className="w-full h-[280px] sm:h-[360px] lg:h-[420px] rounded-lg shadow-lg"
+                />
+              ) : imageUrl ? (
+                <Image 
+                  src={imageUrl}
+                  alt={imageAlt || 'Profile image'}
+                  width={imageSize || 400}
+                  height={imageHeight || 350}
+                  className="rounded-lg shadow-md" 
+                  priority
+                  unoptimized={imageUrl.startsWith('http')} // Skip optimization for external URLs
+                  style={{
+                    maxWidth: '100%',
+                    height: 'auto',
+                    objectFit: 'cover'
+                  }}
+                />
+              ) : null}
             </div>
           </div>
           
@@ -55,7 +72,7 @@ export function HeroSection({
                 {title}
               </h1>
             ) : titleLines ? (
-              <div className="space-y-3">
+              <div className="space-y-1">
                 {titleLines.map((line, index) => (
                   <h1 
                     key={index} 

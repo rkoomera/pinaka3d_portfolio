@@ -30,17 +30,17 @@ export default async function HomePage() {
           },
           { 
             text: "Motion Designer and Creative Developer", 
-            className: "font-normal text-2xl text-gray-900 dark:text-white italic sm:text-3xl" 
+            className: "font-normal text-lg text-gray-900 dark:text-white italic sm:text-xl leading-relaxed" 
           },
           { 
             text: "based in Frankfurt, Germany.", 
-            className: "font-normal text-2xl text-gray-900 dark:text-white italic sm:text-3xl" 
+            className: "font-normal text-lg text-gray-900 dark:text-white italic sm:text-xl leading-relaxed" 
           }
         ]}
-        imageUrl="https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/project-images//3d-portrait.jpg?text=Ravi+Koomera"
-        imageAlt="Ravi Koomera - Motion Designer & Developer"
-        imageSize={400}
-        imageHeight={350}
+        riveUrl="https://gyuznawtihohzzdmhvtw.supabase.co/storage/v1/object/public/3d-assets/little_boy.riv"
+        riveArtboard="Little Boy"
+        riveStateMachine="State Machine 1"
+        riveAutoplay={true}
       />
       
       <VideoSection />

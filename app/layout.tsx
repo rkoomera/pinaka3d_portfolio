@@ -113,6 +113,13 @@ export default function RootLayout({
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
+        {/* Preload Rive WASM for better performance */}
+        <link
+          rel="preload"
+          href="https://unpkg.com/@rive-app/canvas@2.31.2/rive.wasm"
+          as="fetch"
+          crossOrigin="anonymous"
+        />
         <JsonLd data={createPersonSchema()} />
         <JsonLd data={createWebsiteSchema()} />
       </head>

@@ -353,7 +353,7 @@ export function FeaturedProjects({
           className="mySwiper"
         >
           {displayedProjects.map((project, index) => (
-            <SwiperSlide key={`swiper-project-${project.id}-${index}`} className="h-auto">
+            <SwiperSlide key={`swiper-project-${project._id}-${index}`} className="h-auto">
               <div className="h-full">
                 <ProjectCard 
                   project={project} 
@@ -573,7 +573,7 @@ export function FeaturedProjects({
               
             return (
               <div 
-                key={`project-${project.id}-${index}`} 
+                key={`project-${project._id}-${index}`} 
                 className={layout === 'twoCol' 
                   ? 'break-inside-avoid mb-16 inline-block w-full'
                   : ''

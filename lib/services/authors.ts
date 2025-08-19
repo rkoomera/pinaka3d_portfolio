@@ -2,7 +2,12 @@ import { Author } from '@/types';
 import { createServerSupabaseClient } from '@/lib/supabase/server';
 
 export async function getAllAuthors() {
-  const supabaseServer = createServerSupabaseClient();
+  const supabaseServer = await createServerSupabaseClient();
+  
+  if (!supabaseServer) {
+    console.error('Failed to create Supabase client');
+    return [];
+  }
   
   const { data, error } = await supabaseServer
     .from('authors')
@@ -18,7 +23,12 @@ export async function getAllAuthors() {
 }
 
 export async function getAuthorById(id: number) {
-  const supabaseServer = createServerSupabaseClient();
+  const supabaseServer = await createServerSupabaseClient();
+  
+  if (!supabaseServer) {
+    console.error('Failed to create Supabase client');
+    return null;
+  }
   
   const { data, error } = await supabaseServer
     .from('authors')
